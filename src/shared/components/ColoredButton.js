@@ -1,10 +1,10 @@
 import React, { memo } from "react";
 import PropTypes from "prop-types";
-import { Button, createMuiTheme, MuiThemeProvider } from "@material-ui/core";
+import { Button, createTheme, MuiThemeProvider } from "@material-ui/core";
 
 function ColoredButton(props) {
   const { color, children, theme } = props;
-  const buttonTheme = createMuiTheme({
+  const buttonTheme = createTheme({
     ...theme,
     palette: {
       primary: {

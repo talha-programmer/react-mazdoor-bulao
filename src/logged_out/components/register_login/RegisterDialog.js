@@ -7,38 +7,52 @@ import {
   Checkbox,
   Typography,
   FormControlLabel,
-  withStyles,
+  withStyles
 } from "@material-ui/core";
 import FormDialog from "../../../shared/components/FormDialog";
 import HighlightedInformation from "../../../shared/components/HighlightedInformation";
 import ButtonCircularProgress from "../../../shared/components/ButtonCircularProgress";
 import VisibilityPasswordTextField from "../../../shared/components/VisibilityPasswordTextField";
+import axios from "axios";
+import api from "../../../config/api";
+import { withRouter } from "react-router-dom";
 
 const styles = (theme) => ({
   link: {
     transition: theme.transitions.create(["background-color"], {
       duration: theme.transitions.duration.complex,
-      easing: theme.transitions.easing.easeInOut,
+      easing: theme.transitions.easing.easeInOut
     }),
     cursor: "pointer",
     color: theme.palette.primary.main,
     "&:enabled:hover": {
-      color: theme.palette.primary.dark,
+      color: theme.palette.primary.dark
     },
     "&:enabled:focus": {
-      color: theme.palette.primary.dark,
-    },
-  },
+      color: theme.palette.primary.dark
+    }
+  }
 });
 
 function RegisterDialog(props) {
-  const { setStatus, theme, onClose, openTermsDialog, status, classes } = props;
+  const {
+    setStatus,
+    history,
+    theme,
+    onClose,
+    openTermsDialog,
+    status,
+    classes
+  } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [hasTermsOfServiceError, setHasTermsOfServiceError] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const registerTermsCheckbox = useRef();
   const registerPassword = useRef();
   const registerPasswordRepeat = useRef();
+  const registerFullName = useRef();
+  const registerUsername = useRef();
+  const registerEmail = useRef();
 
   const register = useCallback(() => {
     if (!registerTermsCheckbox.current.checked) {
@@ -48,14 +62,48 @@ function RegisterDialog(props) {
     if (
       registerPassword.current.value !== registerPasswordRepeat.current.value
     ) {
-      setStatus("passwordsDontMatch");
+      setStatus(status + "|passwordsDontMatch");
       return;
     }
-    setStatus(null);
+    if (!registerUsername.current.value.match(/^[a-zA-Z0-9_.-]+$/)) {
+      setStatus(status + "|invalidUsername");
+      return;
+    }
+
+    const data = {
+      name: registerFullName.current.value,
+      username: registerUsername.current.value,
+      email: registerEmail.current.value,
+      password: registerPassword.current.value,
+      password_confirmation: registerPasswordRepeat.current.value
+    };
+
+    axios
+      .post(api.register, data)
+      .then((result) => {
+        if (result.data.user) {
+          setTimeout(() => {
+            history.push("/c/dashboard");
+          }, 1500);
+        }
+      })
+      .catch((error) => {
+        const errors = error.response.data.errors;
+
+        let errorStatus = "";
+        if (errors.email) {
+          errorStatus += "|invalidEmail";
+        }
+        if (errors.username) {
+          errorStatus += "|usedUsername";
+        }
+
+        setStatus(status + errorStatus);
+      })
+      .finally(() => setIsLoading(false));
+
+    setStatus("");
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
   }, [
     setIsLoading,
     setStatus,
@@ -63,6 +111,11 @@ function RegisterDialog(props) {
     registerPassword,
     registerPasswordRepeat,
     registerTermsCheckbox,
+    registerUsername,
+    registerFullName,
+    registerEmail,
+    history,
+    status
   ]);
 
   return (
@@ -84,16 +137,76 @@ function RegisterDialog(props) {
             margin="normal"
             required
             fullWidth
-            error={status === "invalidEmail"}
-            label="Email Address"
+            error={status.includes("invalidName")}
+            label="Full Name"
             autoFocus
+            autoComplete="off"
+            type="text"
+            onChange={() => {
+              if (status.includes("invalidName")) {
+                setStatus(status.replace(/invalidName/g, ""));
+              }
+            }}
+            inputRef={registerFullName}
+            FormHelperTextProps={{ error: true }}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            error={
+              status.includes("usedUsername") ||
+              status.includes("invalidUsername")
+            }
+            label="Username"
+            autoComplete="off"
+            type="username"
+            onChange={() => {
+              if (
+                status.includes("usedUsername") ||
+                status.includes("invalidUsername")
+              ) {
+                setStatus(
+                  status
+                    .replace(/usedUsername/g, "")
+                    .replace(/invalidUsername/g, "")
+                );
+              }
+            }}
+            inputRef={registerUsername}
+            helperText={(() => {
+              if (status.includes("usedUsername")) {
+                return "This username is already used. Please try another one!";
+              }
+              if (status.includes("invalidUsername")) {
+                return "Invalid Username. Only alphabets, digits, underscore(_), dash(-) and dot(.) are allowed in username with no white spaces!";
+              }
+              return null;
+            })()}
+            FormHelperTextProps={{ error: true }}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            error={status.includes("invalidEmail")}
+            label="Email Address"
             autoComplete="off"
             type="email"
             onChange={() => {
-              if (status === "invalidEmail") {
-                setStatus(null);
+              if (status.includes("invalidEmail")) {
+                setStatus(status.replace(/invalidEmail/g, ""));
               }
             }}
+            inputRef={registerEmail}
+            helperText={(() => {
+              if (status.includes("invalidEmail")) {
+                return "This email is already registered. Please use another one!";
+              }
+              return null;
+            })()}
             FormHelperTextProps={{ error: true }}
           />
           <VisibilityPasswordTextField
@@ -102,24 +215,29 @@ function RegisterDialog(props) {
             required
             fullWidth
             error={
-              status === "passwordTooShort" || status === "passwordsDontMatch"
+              status.includes("passwordTooShort") ||
+              status.includes("passwordsDontMatch")
             }
             label="Password"
             inputRef={registerPassword}
             autoComplete="off"
             onChange={() => {
               if (
-                status === "passwordTooShort" ||
-                status === "passwordsDontMatch"
+                status.includes("passwordTooShort") ||
+                status.includes("passwordsDontMatch")
               ) {
-                setStatus(null);
+                setStatus(
+                  status
+                    .replace("passwordTooShort", "")
+                    .replace("passwordsDontMatch", "")
+                );
               }
             }}
             helperText={(() => {
-              if (status === "passwordTooShort") {
+              if (status.includes("passwordTooShort")) {
                 return "Create a password at least 6 characters long.";
               }
-              if (status === "passwordsDontMatch") {
+              if (status.includes("passwordsDontMatch")) {
                 return "Your passwords dont match.";
               }
               return null;
@@ -134,24 +252,29 @@ function RegisterDialog(props) {
             required
             fullWidth
             error={
-              status === "passwordTooShort" || status === "passwordsDontMatch"
+              status.includes("passwordTooShort") ||
+              status.includes("passwordsDontMatch")
             }
             label="Repeat Password"
             inputRef={registerPasswordRepeat}
             autoComplete="off"
             onChange={() => {
               if (
-                status === "passwordTooShort" ||
-                status === "passwordsDontMatch"
+                status.includes("passwordTooShort") ||
+                status.includes("passwordsDontMatch")
               ) {
-                setStatus(null);
+                setStatus(
+                  status
+                    .replace("passwordTooShort", "")
+                    .replace("passwordsDontMatch", "")
+                );
               }
             }}
             helperText={(() => {
-              if (status === "passwordTooShort") {
+              if (status.includes("passwordTooShort")) {
                 return "Create a password at least 6 characters long.";
               }
-              if (status === "passwordsDontMatch") {
+              if (status.includes("passwordsDontMatch")) {
                 return "Your passwords dont match.";
               }
             })()}
@@ -199,21 +322,17 @@ function RegisterDialog(props) {
               error
               style={{
                 display: "block",
-                marginTop: theme.spacing(-1),
+                marginTop: theme.spacing(-1)
               }}
             >
               In order to create an account, you have to accept our terms of
               service.
             </FormHelperText>
           )}
-          {status === "accountCreated" ? (
+          {status.includes("accountCreated") && (
             <HighlightedInformation>
               We have created your account. Please click on the link in the
               email we have sent to you before logging in.
-            </HighlightedInformation>
-          ) : (
-            <HighlightedInformation>
-              Registration is disabled until we go live.
             </HighlightedInformation>
           )}
         </Fragment>
@@ -241,7 +360,9 @@ RegisterDialog.propTypes = {
   openTermsDialog: PropTypes.func.isRequired,
   status: PropTypes.string,
   setStatus: PropTypes.func.isRequired,
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles, { withTheme: true })(RegisterDialog);
+export default withRouter(
+  withStyles(styles, { withTheme: true })(RegisterDialog)
+);

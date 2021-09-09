@@ -11,7 +11,7 @@ import {
   withStyles
 } from "@material-ui/core";
 
-const styles = theme => ({
+const styles = (theme) => ({
   tableSortLabel: {
     cursor: "text",
     userSelect: "auto",
@@ -31,7 +31,7 @@ function EnhancedTableHead(props) {
   const { order, orderBy, rows, onRequestSort, classes } = props;
 
   const createSortHandler = useCallback(
-    property => event => {
+    (property) => (event) => {
       onRequestSort(event, property);
     },
     [onRequestSort]
@@ -44,7 +44,7 @@ function EnhancedTableHead(props) {
           <TableCell
             key={index}
             align={row.numeric ? "right" : "inherit"}
-            padding="default"
+            padding="normal"
             sortDirection={orderBy === row.name ? order : false}
             className={index === 0 ? classes.paddingFix : null}
           >

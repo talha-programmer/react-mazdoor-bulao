@@ -5,14 +5,14 @@ import {
   DateTimePicker as DTPicker
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import { withTheme, MuiThemeProvider, createMuiTheme } from "@material-ui/core";
+import { withTheme, MuiThemeProvider, createTheme } from "@material-ui/core";
 import AccessTime from "@material-ui/icons/AccessTime";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import DateRange from "@material-ui/icons/DateRange";
 
-const Theme2 = theme =>
-  createMuiTheme({
+const Theme2 = (theme) =>
+  createTheme({
     ...theme,
     overrides: {
       MuiOutlinedInput: {

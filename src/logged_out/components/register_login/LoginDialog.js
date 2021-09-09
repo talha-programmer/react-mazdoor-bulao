@@ -8,12 +8,14 @@ import {
   Checkbox,
   Typography,
   FormControlLabel,
-  withStyles,
+  withStyles
 } from "@material-ui/core";
 import FormDialog from "../../../shared/components/FormDialog";
 import HighlightedInformation from "../../../shared/components/HighlightedInformation";
 import ButtonCircularProgress from "../../../shared/components/ButtonCircularProgress";
 import VisibilityPasswordTextField from "../../../shared/components/VisibilityPasswordTextField";
+import axios from "axios";
+import api from "../../../config/api";
 
 const styles = (theme) => ({
   forgotPassword: {
@@ -21,19 +23,19 @@ const styles = (theme) => ({
     color: theme.palette.primary.main,
     cursor: "pointer",
     "&:enabled:hover": {
-      color: theme.palette.primary.dark,
+      color: theme.palette.primary.dark
     },
     "&:enabled:focus": {
-      color: theme.palette.primary.dark,
-    },
+      color: theme.palette.primary.dark
+    }
   },
   disabledText: {
     cursor: "auto",
-    color: theme.palette.text.disabled,
+    color: theme.palette.text.disabled
   },
   formControlLabel: {
-    marginRight: 0,
-  },
+    marginRight: 0
+  }
 });
 
 function LoginDialog(props) {
@@ -43,32 +45,44 @@ function LoginDialog(props) {
     classes,
     onClose,
     openChangePasswordDialog,
-    status,
+    status
   } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const loginEmail = useRef();
+  const loginUsername = useRef();
   const loginPassword = useRef();
 
   const login = useCallback(() => {
     setIsLoading(true);
-    setStatus(null);
-    if (loginEmail.current.value !== "test@web.com") {
-      setTimeout(() => {
-        setStatus("invalidEmail");
-        setIsLoading(false);
-      }, 1500);
-    } else if (loginPassword.current.value !== "HaRzwc") {
-      setTimeout(() => {
-        setStatus("invalidPassword");
-        setIsLoading(false);
-      }, 1500);
-    } else {
-      setTimeout(() => {
-        history.push("/c/dashboard");
-      }, 150);
-    }
-  }, [setIsLoading, loginEmail, loginPassword, history, setStatus]);
+    setStatus("");
+
+    const username = loginUsername.current.value;
+    const password = loginPassword.current.value;
+
+    axios
+      .post(api.login, { username, password })
+      .then((result) => {
+        const data = result.data;
+        if (data.user) {
+          setTimeout(() => {
+            history.push("/c/dashboard");
+          }, 150);
+        }
+      })
+      .catch((error) => {
+        const errors = error.response.data;
+
+        let errorStatus = "";
+        if (errors.invalidUsername) {
+          errorStatus += "|invalidUsername";
+        }
+        if (errors.invalidPassword) {
+          errorStatus += "|invalidPassword";
+        }
+        setStatus(status + errorStatus);
+      })
+      .finally(() => setIsLoading(false));
+  }, [setIsLoading, loginUsername, loginPassword, history, setStatus, status]);
 
   return (
     <Fragment>
@@ -87,22 +101,22 @@ function LoginDialog(props) {
             <TextField
               variant="outlined"
               margin="normal"
-              error={status === "invalidEmail"}
+              error={status.includes("invalidUsername")}
               required
               fullWidth
-              label="Email Address"
-              inputRef={loginEmail}
+              label="Username"
+              inputRef={loginUsername}
               autoFocus
               autoComplete="off"
-              type="email"
+              type="text"
               onChange={() => {
-                if (status === "invalidEmail") {
-                  setStatus(null);
+                if (status.includes("invalidUsername")) {
+                  setStatus(status.replace(/invalidUsername/g, ""));
                 }
               }}
               helperText={
-                status === "invalidEmail" &&
-                "This email address isn't associated with an account."
+                status.includes("invalidUsername") &&
+                "This username isn't associated with an account."
               }
               FormHelperTextProps={{ error: true }}
             />
@@ -111,17 +125,17 @@ function LoginDialog(props) {
               margin="normal"
               required
               fullWidth
-              error={status === "invalidPassword"}
+              error={status.includes("invalidPassword")}
               label="Password"
               inputRef={loginPassword}
               autoComplete="off"
               onChange={() => {
-                if (status === "invalidPassword") {
-                  setStatus(null);
+                if (status.includes("invalidPassword")) {
+                  setStatus(status.replace(/invalidPassword/g, ""));
                 }
               }}
               helperText={
-                status === "invalidPassword" ? (
+                status.includes("invalidPassword") ? (
                   <span>
                     Incorrect password. Try again, or click on{" "}
                     <b>&quot;Forgot Password?&quot;</b> to reset it.
@@ -139,16 +153,10 @@ function LoginDialog(props) {
               control={<Checkbox color="primary" />}
               label={<Typography variant="body1">Remember me</Typography>}
             />
-            {status === "verificationEmailSend" ? (
+            {status.includes("verificationEmailSend") && (
               <HighlightedInformation>
                 We have send instructions on how to reset your password to your
                 email address
-              </HighlightedInformation>
-            ) : (
-              <HighlightedInformation>
-                Email is: <b>test@web.com</b>
-                <br />
-                Password is: <b>HaRzwc</b>
               </HighlightedInformation>
             )}
           </Fragment>
@@ -201,7 +209,7 @@ LoginDialog.propTypes = {
   setStatus: PropTypes.func.isRequired,
   openChangePasswordDialog: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
-  status: PropTypes.string,
+  status: PropTypes.string
 };
 
 export default withRouter(withStyles(styles)(LoginDialog));

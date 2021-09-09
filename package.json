@@ -13,6 +13,7 @@
     "@stripe/react-stripe-js": "^1.4.1",
     "@stripe/stripe-js": "^1.16.0",
     "aos": "^2.3.4",
+    "axios": "^0.21.1",
     "classnames": "^2.3.1",
     "date-fns": "^2.23.0",
     "emoji-mart": "^3.0.1",
@@ -22,6 +23,7 @@
     "react-cropper": "^2.1.8",
     "react-dom": "^17.0.2",
     "react-dropzone": "^11.3.4",
+    "react-query": "^3.21.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
@@ -69,6 +71,6 @@
     "type": "git",
     "url": "git+https://github.com/talha-programmer/react-mazdoor-bulao.git"
   },
-  "author": "dunky11",
+  "author": "talha-programmer",
   "license": "MIT"
 }

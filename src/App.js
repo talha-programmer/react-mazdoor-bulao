@@ -4,30 +4,35 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import theme from "./theme";
 import GlobalStyles from "./GlobalStyles";
 import Pace from "./shared/components/Pace";
+import { QueryClient, QueryClientProvider } from "react-query";
+import axios from "axios";
+import api from "./config/api";
 
 const LoggedInComponent = lazy(() => import("./logged_in/components/Main"));
 
 const LoggedOutComponent = lazy(() => import("./logged_out/components/Main"));
-
+const queryClient = new QueryClient();
 function App() {
   return (
-    <BrowserRouter>
-      <MuiThemeProvider theme={theme}>
-        <CssBaseline />
-        <GlobalStyles />
-        <Pace color={theme.palette.primary.light} />
-        <Suspense fallback={<Fragment />}>
-          <Switch>
-            <Route path="/c">
-              <LoggedInComponent />
-            </Route>
-            <Route>
-              <LoggedOutComponent />
-            </Route>
-          </Switch>
-        </Suspense>
-      </MuiThemeProvider>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <MuiThemeProvider theme={theme}>
+          <CssBaseline />
+          <GlobalStyles />
+          <Pace color={theme.palette.primary.light} />
+          <Suspense fallback={<Fragment />}>
+            <Switch>
+              <Route path="/c">
+                <LoggedInComponent />
+              </Route>
+              <Route>
+                <LoggedOutComponent />
+              </Route>
+            </Switch>
+          </Suspense>
+        </MuiThemeProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 

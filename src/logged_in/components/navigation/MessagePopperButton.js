@@ -10,7 +10,7 @@ import {
   ListItemText,
   Typography,
   Box,
-  withStyles,
+  withStyles
 } from "@material-ui/core";
 import MessageIcon from "@material-ui/icons/Message";
 import MessageListItem from "./MessageListItem";
@@ -18,7 +18,7 @@ import MessageListItem from "./MessageListItem";
 const styles = (theme) => ({
   tabContainer: {
     overflowY: "auto",
-    maxHeight: 350,
+    maxHeight: 350
   },
   popoverPaper: {
     width: "100%",
@@ -26,15 +26,15 @@ const styles = (theme) => ({
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(1),
     [theme.breakpoints.down("sm")]: {
-      maxWidth: 270,
-    },
+      maxWidth: 270
+    }
   },
   divider: {
-    marginTop: -2,
+    marginTop: -2
   },
   noShadow: {
-    boxShadow: "none !important",
-  },
+    boxShadow: "none !important"
+  }
 });
 
 function MessagePopperButton(props) {
@@ -55,7 +55,7 @@ function MessagePopperButton(props) {
     <Fragment>
       <IconButton
         onClick={handleClick}
-        buttonRef={anchorEl}
+        ref={anchorEl}
         aria-label="Open Messages"
         aria-describedby={id}
         color="primary"
@@ -69,11 +69,11 @@ function MessagePopperButton(props) {
         anchorEl={anchorEl.current}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "left",
+          horizontal: "left"
         }}
         transformOrigin={{
           vertical: "top",
-          horizontal: "right",
+          horizontal: "right"
         }}
         classes={{ paper: classes.popoverPaper }}
         onClose={handleClickAway}
@@ -108,7 +108,7 @@ function MessagePopperButton(props) {
 
 MessagePopperButton.propTypes = {
   classes: PropTypes.object.isRequired,
-  messages: PropTypes.arrayOf(PropTypes.object).isRequired,
+  messages: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default withStyles(styles, { withTheme: true })(MessagePopperButton);

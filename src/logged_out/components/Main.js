@@ -17,8 +17,8 @@ AOS.init({ once: true });
 const styles = (theme) => ({
   wrapper: {
     backgroundColor: theme.palette.common.white,
-    overflowX: "hidden",
-  },
+    overflowX: "hidden"
+  }
 });
 
 function Main(props) {
@@ -28,17 +28,15 @@ function Main(props) {
   const [blogPosts, setBlogPosts] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(null);
   const [isCookieRulesDialogOpen, setIsCookieRulesDialogOpen] = useState(false);
-
   const selectHome = useCallback(() => {
     smoothScrollTop();
-    document.title =
-      "WaVer - Free template for building a SaaS or admin application";
+    document.title = "MazdoorBulao - Home";
     setSelectedTab("Home");
   }, [setSelectedTab]);
 
   const selectBlog = useCallback(() => {
     smoothScrollTop();
-    document.title = "WaVer - Blog";
+    document.title = "MazdoorBulao - Blog";
     setSelectedTab("Blog");
   }, [setSelectedTab]);
 
@@ -138,7 +136,7 @@ function Main(props) {
 }
 
 Main.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles, { withTheme: true })(memo(Main));

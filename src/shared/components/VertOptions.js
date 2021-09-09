@@ -7,14 +7,14 @@ import {
   ListItemText,
   ListItemIcon,
   MenuItem,
-  withStyles,
+  withStyles
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 const styles = {
   listItemtext: {
-    paddingLeft: "0 !important",
-  },
+    paddingLeft: "0 !important"
+  }
 };
 
 function VertOptions(props) {
@@ -35,7 +35,7 @@ function VertOptions(props) {
     <Fragment>
       <IconButton
         onClick={handleOpen}
-        buttonRef={anchorEl}
+        ref={anchorEl}
         style={{ color: color ? color : null }}
         aria-describedby={id}
         aria-label="More Options"
@@ -48,11 +48,11 @@ function VertOptions(props) {
         anchorEl={anchorEl.current}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "center",
+          horizontal: "center"
         }}
         transformOrigin={{
           vertical: "top",
-          horizontal: "center",
+          horizontal: "center"
         }}
         onClose={handleClose}
         disableScrollLock
@@ -81,7 +81,7 @@ function VertOptions(props) {
 VertOptions.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object).isRequired,
   classes: PropTypes.object.isRequired,
-  color: PropTypes.string,
+  color: PropTypes.string
 };
 
 export default withStyles(styles)(VertOptions);

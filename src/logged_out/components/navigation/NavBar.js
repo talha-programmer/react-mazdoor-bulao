@@ -17,7 +17,7 @@ import LockOpenIcon from "@material-ui/icons/LockOpen";
 import BookIcon from "@material-ui/icons/Book";
 import NavigationDrawer from "../../../shared/components/NavigationDrawer";
 
-const styles = theme => ({
+const styles = (theme) => ({
   appBar: {
     boxShadow: theme.shadows[6],
     backgroundColor: theme.palette.common.white
@@ -82,7 +82,7 @@ function NavBar(props) {
               display="inline"
               color="primary"
             >
-              Wa
+              Mazdoor
             </Typography>
             <Typography
               variant="h4"
@@ -90,7 +90,7 @@ function NavBar(props) {
               display="inline"
               color="secondary"
             >
-              Ver
+              Bulao
             </Typography>
           </div>
           <div>
@@ -104,7 +104,7 @@ function NavBar(props) {
               </IconButton>
             </Hidden>
             <Hidden smDown>
-              {menuItems.map(element => {
+              {menuItems.map((element) => {
                 if (element.link) {
                   return (
                     <Link
