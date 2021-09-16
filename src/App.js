@@ -6,13 +6,13 @@ import GlobalStyles from "./GlobalStyles";
 import Pace from "./shared/components/Pace";
 import { QueryClient, QueryClientProvider } from "react-query";
 import axios from "axios";
-import api from "./config/api";
 
 const LoggedInComponent = lazy(() => import("./logged_in/components/Main"));
 
 const LoggedOutComponent = lazy(() => import("./logged_out/components/Main"));
 const queryClient = new QueryClient();
 function App() {
+  axios.defaults.withCredentials = true;
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
@@ -22,7 +22,7 @@ function App() {
           <Pace color={theme.palette.primary.light} />
           <Suspense fallback={<Fragment />}>
             <Switch>
-              <Route path="/c">
+              <Route path="/user">
                 <LoggedInComponent />
               </Route>
               <Route>

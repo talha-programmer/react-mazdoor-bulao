@@ -14,12 +14,12 @@ const styles = (theme) => ({
     marginLeft: theme.spacing(9),
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+      duration: theme.transitions.duration.leavingScreen
     }),
     [theme.breakpoints.down("xs")]: {
-      marginLeft: 0,
-    },
-  },
+      marginLeft: 0
+    }
+  }
 });
 
 function shuffle(array) {
@@ -41,9 +41,8 @@ function Main(props) {
   const [Dropzone, setDropzone] = useState(null);
   const [hasFetchedDropzone, setHasFetchedDropzone] = useState(false);
   const [DateTimePicker, setDateTimePicker] = useState(null);
-  const [hasFetchedDateTimePicker, setHasFetchedDateTimePicker] = useState(
-    false
-  );
+  const [hasFetchedDateTimePicker, setHasFetchedDateTimePicker] =
+    useState(false);
   const [transactions, setTransactions] = useState([]);
   const [statistics, setStatistics] = useState({ views: [], profit: [] });
   const [posts, setPosts] = useState([]);
@@ -65,7 +64,7 @@ function Main(props) {
         number4: Math.floor(Math.random() * 251),
         name: randomPerson.name,
         profilePicUrl: randomPerson.src,
-        isActivated: Math.round(Math.random()) ? true : false,
+        isActivated: Math.round(Math.random()) ? true : false
       };
       targets.push(target);
     }
@@ -82,7 +81,7 @@ function Main(props) {
 
   const onPaymentSuccess = useCallback(() => {
     pushMessageToSnackbar({
-      text: "Your balance has been updated.",
+      text: "Your balance has been updated."
     });
     setIsAddBalanceDialogOpen(false);
   }, [pushMessageToSnackbar, setIsAddBalanceDialogOpen]);
@@ -100,11 +99,11 @@ function Main(props) {
       curViews += Math.round((Math.random() * 2 - 1) * 10);
       statistics.profit.push({
         value: curProfit,
-        timestamp: curUnix,
+        timestamp: curUnix
       });
       statistics.views.push({
         value: curViews,
-        timestamp: curUnix,
+        timestamp: curUnix
       });
     }
     setStatistics(statistics);
@@ -118,33 +117,33 @@ function Main(props) {
       {
         description: "Starter subscription",
         isSubscription: true,
-        balanceChange: -1499,
+        balanceChange: -1499
       },
       {
         description: "Premium subscription",
         isSubscription: true,
-        balanceChange: -2999,
+        balanceChange: -2999
       },
       {
         description: "Business subscription",
         isSubscription: true,
-        balanceChange: -4999,
+        balanceChange: -4999
       },
       {
         description: "Tycoon subscription",
         isSubscription: true,
-        balanceChange: -9999,
+        balanceChange: -9999
       },
       {
         description: "Added funds",
         isSubscription: false,
-        balanceChange: 2000,
+        balanceChange: 2000
       },
       {
         description: "Added funds",
         isSubscription: false,
-        balanceChange: 5000,
-      },
+        balanceChange: 5000
+      }
     ];
     let curUnix = Math.round(
       new Date().getTime() / 1000 - iterations * oneMonthSeconds
@@ -159,7 +158,7 @@ function Main(props) {
         description: randomTransactionTemplate.description,
         balanceChange: randomTransactionTemplate.balanceChange,
         paidUntil: curUnix + oneMonthSeconds,
-        timestamp: curUnix,
+        timestamp: curUnix
       };
       curUnix += oneMonthSeconds;
       transactions.push(transaction);
@@ -182,7 +181,7 @@ function Main(props) {
         id: i,
         src: person.src,
         date: curUnix,
-        text: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr sed.",
+        text: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr sed."
       };
       curUnix += oneDaySeconds;
       messages.push(message);
@@ -205,7 +204,7 @@ function Main(props) {
         id: i,
         src: person.src,
         timestamp: curUnix,
-        name: person.name,
+        name: person.name
       };
       curUnix += oneDaySeconds;
       posts.push(post);
@@ -218,11 +217,11 @@ function Main(props) {
     if (pushMessageToSnackbar) {
       if (isAccountActivated) {
         pushMessageToSnackbar({
-          text: "Your account is now deactivated.",
+          text: "Your account is now deactivated."
         });
       } else {
         pushMessageToSnackbar({
-          text: "Your account is now activated.",
+          text: "Your account is now activated."
         });
       }
     }
@@ -243,7 +242,7 @@ function Main(props) {
     setSelectedTab,
     setCardChart,
     hasFetchedCardChart,
-    setHasFetchedCardChart,
+    setHasFetchedCardChart
   ]);
 
   const selectPosts = useCallback(() => {
@@ -287,7 +286,7 @@ function Main(props) {
     hasFetchedDropzone,
     setHasFetchedDropzone,
     hasFetchedDateTimePicker,
-    setHasFetchedDateTimePicker,
+    setHasFetchedDateTimePicker
   ]);
 
   const selectSubscription = useCallback(() => {
@@ -314,9 +313,8 @@ function Main(props) {
     fetchRandomStatistics,
     fetchRandomTransactions,
     fetchRandomMessages,
-    fetchRandomPosts,
+    fetchRandomPosts
   ]);
-
   return (
     <Fragment>
       <LazyLoadAddBalanceDialog
@@ -359,7 +357,7 @@ function Main(props) {
 }
 
 Main.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles, { withTheme: true })(memo(Main));

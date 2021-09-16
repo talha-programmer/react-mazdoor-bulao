@@ -17,30 +17,30 @@ const styles = (theme) => ({
       marginLeft: "auto",
       marginRight: "auto",
       marginTop: theme.spacing(4),
-      marginBottom: theme.spacing(4),
+      marginBottom: theme.spacing(4)
     },
     [theme.breakpoints.up("sm")]: {
       marginTop: theme.spacing(6),
       marginBottom: theme.spacing(6),
       width: "90%",
       marginLeft: "auto",
-      marginRight: "auto",
+      marginRight: "auto"
     },
     [theme.breakpoints.up("md")]: {
       marginTop: theme.spacing(6),
       marginBottom: theme.spacing(6),
       width: "82.5%",
       marginLeft: "auto",
-      marginRight: "auto",
+      marginRight: "auto"
     },
     [theme.breakpoints.up("lg")]: {
       marginTop: theme.spacing(6),
       marginBottom: theme.spacing(6),
       width: "70%",
       marginLeft: "auto",
-      marginRight: "auto",
-    },
-  },
+      marginRight: "auto"
+    }
+  }
 });
 
 function Routing(props) {
@@ -63,14 +63,14 @@ function Routing(props) {
     selectDashboard,
     selectPosts,
     selectSubscription,
-    openAddBalanceDialog,
+    openAddBalanceDialog
   } = props;
   useLocationBlocker();
   return (
     <div className={classes.wrapper}>
       <Switch>
         <PropsRoute
-          path="/c/posts"
+          path="/user/posts"
           component={Posts}
           EmojiTextArea={EmojiTextArea}
           ImageCropper={ImageCropper}
@@ -82,7 +82,7 @@ function Routing(props) {
           selectPosts={selectPosts}
         />
         <PropsRoute
-          path="/c/subscription"
+          path="/user/subscription"
           component={Subscription}
           transactions={transactions}
           pushMessageToSnackbar={pushMessageToSnackbar}
@@ -125,7 +125,7 @@ Routing.propTypes = {
   selectDashboard: PropTypes.func.isRequired,
   selectPosts: PropTypes.func.isRequired,
   selectSubscription: PropTypes.func.isRequired,
-  openAddBalanceDialog: PropTypes.func.isRequired,
+  openAddBalanceDialog: PropTypes.func.isRequired
 };
 
 export default withStyles(styles, { withTheme: true })(memo(Routing));

@@ -65,7 +65,8 @@ function LoginDialog(props) {
         const data = result.data;
         if (data.user) {
           setTimeout(() => {
-            history.push("/c/dashboard");
+            localStorage.setItem("loginToken", data.login_token);
+            history.push("/user/dashboard");
           }, 150);
         }
       })

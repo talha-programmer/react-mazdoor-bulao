@@ -11,12 +11,11 @@ import {
   withStyles
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import HomeIcon from "@material-ui/icons/Home";
 import HowToRegIcon from "@material-ui/icons/HowToReg";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
-import BookIcon from "@material-ui/icons/Book";
 import NavigationDrawer from "../../../shared/components/NavigationDrawer";
-
+import sharedMenuItems from "../../../config/sharedMenuItems";
+import DashboardIcon from "@material-ui/icons/Dashboard";
 const styles = (theme) => ({
   appBar: {
     boxShadow: theme.shadows[6],
@@ -49,17 +48,39 @@ function NavBar(props) {
     mobileDrawerOpen,
     selectedTab
   } = props;
-  const menuItems = [
-    {
-      link: "/",
-      name: "Home",
-      icon: <HomeIcon className="text-white" />
-    },
-    {
-      link: "/blog",
-      name: "Blog",
-      icon: <BookIcon className="text-white" />
-    },
+
+  function DisplayMenuItem({ item }) {
+    if (item.link) {
+      return (
+        <Link
+          key={item.name}
+          to={item.link}
+          className={classes.noDecoration}
+          onClick={handleMobileDrawerClose}
+        >
+          <Button
+            color="secondary"
+            size="large"
+            classes={{ text: classes.menuButtonText }}
+          >
+            {item.name}
+          </Button>
+        </Link>
+      );
+    }
+    return (
+      <Button
+        color="secondary"
+        size="large"
+        onClick={item.onClick}
+        classes={{ text: classes.menuButtonText }}
+        key={item.name}
+      >
+        {item.name}
+      </Button>
+    );
+  }
+  const authButtons = [
     {
       name: "Register",
       onClick: openRegisterDialog,
@@ -71,6 +92,28 @@ function NavBar(props) {
       icon: <LockOpenIcon className="text-white" />
     }
   ];
+
+  const loggedInMenuItems = [
+    {
+      name: "Dashboard",
+      link: "/user/dashboard",
+      icon: <DashboardIcon className="text-white" />
+    },
+    {
+      name: "Logout",
+      link: "/logout"
+    }
+  ];
+  let menuItems = null;
+  let leftSideItems = null;
+  if (!localStorage.getItem("loginToken")) {
+    menuItems = sharedMenuItems.concat(authButtons);
+    leftSideItems = authButtons;
+  } else {
+    menuItems = sharedMenuItems.concat(loggedInMenuItems);
+    leftSideItems = loggedInMenuItems;
+  }
+
   return (
     <div className={classes.root}>
       <AppBar position="fixed" className={classes.appBar}>
@@ -92,6 +135,11 @@ function NavBar(props) {
             >
               Bulao
             </Typography>
+            <Hidden smDown>
+              {sharedMenuItems.map((item) => {
+                return <DisplayMenuItem item={item} />;
+              })}
+            </Hidden>
           </div>
           <div>
             <Hidden mdUp>
@@ -103,37 +151,10 @@ function NavBar(props) {
                 <MenuIcon color="primary" />
               </IconButton>
             </Hidden>
+
             <Hidden smDown>
-              {menuItems.map((element) => {
-                if (element.link) {
-                  return (
-                    <Link
-                      key={element.name}
-                      to={element.link}
-                      className={classes.noDecoration}
-                      onClick={handleMobileDrawerClose}
-                    >
-                      <Button
-                        color="secondary"
-                        size="large"
-                        classes={{ text: classes.menuButtonText }}
-                      >
-                        {element.name}
-                      </Button>
-                    </Link>
-                  );
-                }
-                return (
-                  <Button
-                    color="secondary"
-                    size="large"
-                    onClick={element.onClick}
-                    classes={{ text: classes.menuButtonText }}
-                    key={element.name}
-                  >
-                    {element.name}
-                  </Button>
-                );
+              {leftSideItems.map((item) => {
+                return <DisplayMenuItem item={item} />;
               })}
             </Hidden>
           </div>

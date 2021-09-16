@@ -18,7 +18,8 @@ import {
   Box,
   withStyles,
   isWidthUp,
-  withWidth
+  withWidth,
+  Button
 } from "@material-ui/core";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import ImageIcon from "@material-ui/icons/Image";
@@ -30,6 +31,7 @@ import MessagePopperButton from "./MessagePopperButton";
 import SideDrawer from "./SideDrawer";
 import Balance from "./Balance";
 import NavigationDrawer from "../../../shared/components/NavigationDrawer";
+import sharedMenuItems from "../../../config/sharedMenuItems";
 
 const styles = (theme) => ({
   appBar: {
@@ -123,6 +125,9 @@ const styles = (theme) => ({
     justifyContent: "center",
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2)
+  },
+  noDecoration: {
+    textDecoration: "none !important"
   }
 });
 
@@ -148,10 +153,9 @@ function NavBar(props) {
   const closeDrawer = useCallback(() => {
     setIsSideDrawerOpen(false);
   }, [setIsSideDrawerOpen]);
-
   const menuItems = [
     {
-      link: "/c/dashboard",
+      link: "/user/dashboard",
       name: "Dashboard",
       onClick: closeMobileDrawer,
       icon: {
@@ -167,7 +171,7 @@ function NavBar(props) {
       }
     },
     {
-      link: "/c/posts",
+      link: "/user/posts",
       name: "Posts",
       onClick: closeMobileDrawer,
       icon: {
@@ -183,7 +187,7 @@ function NavBar(props) {
       }
     },
     {
-      link: "/c/subscription",
+      link: "/user/subscription",
       name: "Subscription",
       onClick: closeMobileDrawer,
       icon: {
@@ -234,7 +238,7 @@ function NavBar(props) {
                 display="inline"
                 color="primary"
               >
-                Wa
+                Mazdoor
               </Typography>
               <Typography
                 variant="h4"
@@ -242,8 +246,30 @@ function NavBar(props) {
                 display="inline"
                 color="secondary"
               >
-                Ver
+                Bulao
               </Typography>
+              <Hidden smDown>
+                {sharedMenuItems.map((element) => {
+                  if (element.link) {
+                    return (
+                      <Link
+                        key={element.name}
+                        to={element.link}
+                        className={classes.noDecoration}
+                      >
+                        <Button
+                          color="secondary"
+                          size="large"
+                          classes={{ text: classes.menuButtonText }}
+                        >
+                          {element.name}
+                        </Button>
+                      </Link>
+                    );
+                  }
+                  return null;
+                })}
+              </Hidden>
             </Hidden>
           </Box>
           <Box

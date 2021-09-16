@@ -15,11 +15,12 @@ function Dashboard(props) {
     pushMessageToSnackbar,
     targets,
     setTargets,
-    isAccountActivated,
+    isAccountActivated
   } = props;
 
-  useEffect(selectDashboard, [selectDashboard]);
+  //axios.post(api.home + "/user").then((result) => console.log(result.data));
 
+  useEffect(selectDashboard, [selectDashboard]);
   return (
     <Fragment>
       <StatisticsArea CardChart={CardChart} data={statistics} />
@@ -55,7 +56,7 @@ Dashboard.propTypes = {
   targets: PropTypes.arrayOf(PropTypes.object).isRequired,
   setTargets: PropTypes.func.isRequired,
   isAccountActivated: PropTypes.bool.isRequired,
-  selectDashboard: PropTypes.func.isRequired,
+  selectDashboard: PropTypes.func.isRequired
 };
 
 export default Dashboard;

@@ -83,7 +83,8 @@ function RegisterDialog(props) {
       .then((result) => {
         if (result.data.user) {
           setTimeout(() => {
-            history.push("/c/dashboard");
+            localStorage.setItem("loginToken", data.login_token);
+            history.push("/user/dashboard");
           }, 1500);
         }
       })

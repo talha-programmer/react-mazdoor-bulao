@@ -6,6 +6,7 @@ import Home from "./home/Home";
 import Blog from "./blog/Blog";
 import BlogPost from "./blog/BlogPost";
 import useLocationBlocker from "../../shared/functions/useLocationBlocker";
+import Logout from "../../logged_in/components/logout/Logout";
 
 function Routing(props) {
   const { blogPosts, selectBlog, selectHome } = props;
@@ -33,6 +34,7 @@ function Routing(props) {
         selectBlog={selectBlog}
         blogPosts={blogPosts}
       />
+      <PropsRoute path="/logout" component={Logout} />
       <PropsRoute path="/" component={Home} selectHome={selectHome} />
     </Switch>
   );
@@ -41,7 +43,7 @@ function Routing(props) {
 Routing.propTypes = {
   blogposts: PropTypes.arrayOf(PropTypes.object),
   selectHome: PropTypes.func.isRequired,
-  selectBlog: PropTypes.func.isRequired,
+  selectBlog: PropTypes.func.isRequired
 };
 
 export default memo(Routing);
