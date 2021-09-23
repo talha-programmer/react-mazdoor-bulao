@@ -16,6 +16,7 @@ import ButtonCircularProgress from "../../../shared/components/ButtonCircularPro
 import VisibilityPasswordTextField from "../../../shared/components/VisibilityPasswordTextField";
 import axios from "axios";
 import api from "../../../config/api";
+import Cookies from "js-cookie";
 
 const styles = (theme) => ({
   forgotPassword: {
@@ -65,7 +66,7 @@ function LoginDialog(props) {
         const data = result.data;
         if (data.user) {
           setTimeout(() => {
-            localStorage.setItem("loginToken", data.login_token);
+            Cookies.set("loginToken", data.login_token, { expires: 1 }); // expires in 1 day
             history.push("/user/dashboard");
           }, 150);
         }

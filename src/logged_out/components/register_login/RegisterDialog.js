@@ -16,6 +16,7 @@ import VisibilityPasswordTextField from "../../../shared/components/VisibilityPa
 import axios from "axios";
 import api from "../../../config/api";
 import { withRouter } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const styles = (theme) => ({
   link: {
@@ -83,7 +84,7 @@ function RegisterDialog(props) {
       .then((result) => {
         if (result.data.user) {
           setTimeout(() => {
-            localStorage.setItem("loginToken", data.login_token);
+            Cookies.set("loginToken", data.login_token, { expires: 1 });
             history.push("/user/dashboard");
           }, 1500);
         }

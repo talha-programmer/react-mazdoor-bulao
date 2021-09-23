@@ -69,7 +69,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/talha-programmer/react-mazdoor-bulao.git"
+    "url": "https://github.com/talha-programmer/react-mazdoor-bulao.git"
   },
   "author": "talha-programmer",
   "license": "MIT"

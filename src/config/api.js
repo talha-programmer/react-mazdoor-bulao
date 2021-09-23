@@ -5,6 +5,7 @@ function api() {
     login: home + "/login",
     register: home + "/register",
     logout: home + "/logout",
+    user: home + "/user",
     jobs: home + "/jobs"
   };
 }

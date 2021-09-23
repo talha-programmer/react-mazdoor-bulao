@@ -7,7 +7,7 @@ import Blog from "./blog/Blog";
 import BlogPost from "./blog/BlogPost";
 import useLocationBlocker from "../../shared/functions/useLocationBlocker";
 import Logout from "../../logged_in/components/logout/Logout";
-import Jobs from "./jobs/Jobs";
+import Jobs from "../../mixed/components/jobs/Jobs";
 
 function Routing(props) {
   const { blogPosts, selectBlog, selectHome } = props;

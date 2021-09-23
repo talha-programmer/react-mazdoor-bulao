@@ -16,6 +16,7 @@ import LockOpenIcon from "@material-ui/icons/LockOpen";
 import NavigationDrawer from "../../../shared/components/NavigationDrawer";
 import sharedMenuItems from "../../../config/sharedMenuItems";
 import DashboardIcon from "@material-ui/icons/Dashboard";
+import Cookies from "js-cookie";
 const styles = (theme) => ({
   appBar: {
     boxShadow: theme.shadows[6],
@@ -106,7 +107,7 @@ function NavBar(props) {
   ];
   let menuItems = null;
   let leftSideItems = null;
-  if (!localStorage.getItem("loginToken")) {
+  if (!Cookies.get("loginToken")) {
     menuItems = sharedMenuItems.concat(authButtons);
     leftSideItems = authButtons;
   } else {
