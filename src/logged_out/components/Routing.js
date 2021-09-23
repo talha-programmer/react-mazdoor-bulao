@@ -7,6 +7,7 @@ import Blog from "./blog/Blog";
 import BlogPost from "./blog/BlogPost";
 import useLocationBlocker from "../../shared/functions/useLocationBlocker";
 import Logout from "../../logged_in/components/logout/Logout";
+import Jobs from "./jobs/Jobs";
 
 function Routing(props) {
   const { blogPosts, selectBlog, selectHome } = props;
@@ -33,6 +34,13 @@ function Routing(props) {
         component={Blog}
         selectBlog={selectBlog}
         blogPosts={blogPosts}
+      />
+      <PropsRoute
+        exact
+        path="/jobs"
+        component={Jobs}
+        //selectBlog={selectBlog}
+        //blogPosts={blogPosts}
       />
       <PropsRoute path="/logout" component={Logout} />
       <PropsRoute path="/" component={Home} selectHome={selectHome} />

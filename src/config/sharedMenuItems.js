@@ -11,6 +11,11 @@ function sharedMenuItems() {
       link: "/blog",
       name: "Blog",
       icon: <BookIcon className="text-white" />
+    },
+    {
+      link: "/jobs",
+      name: "Jobs",
+      icon: <BookIcon className="text-white" />
     }
   ];
 }
