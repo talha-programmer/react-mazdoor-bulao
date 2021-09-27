@@ -17,6 +17,7 @@ import VisibilityPasswordTextField from "../../../shared/components/VisibilityPa
 import axios from "axios";
 import api from "../../../config/api";
 import Cookies from "js-cookie";
+import AuthController from "../../../controllers/AuthController";
 
 const styles = (theme) => ({
   forgotPassword: {
@@ -66,6 +67,7 @@ function LoginDialog(props) {
         const data = result.data;
         if (data.user) {
           setTimeout(() => {
+            AuthController.saveLoggedInUser(data.user);
             Cookies.set("loginToken", data.login_token, { expires: 1 }); // expires in 1 day
             history.push("/user/dashboard");
           }, 150);

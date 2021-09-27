@@ -7,11 +7,11 @@ function sharedMenuItems() {
       name: "Home",
       icon: <HomeIcon className="text-white" />
     },
-    {
-      link: "/blog",
-      name: "Blog",
-      icon: <BookIcon className="text-white" />
-    },
+    // {
+    //   link: "/blog",
+    //   name: "Blog",
+    //   icon: <BookIcon className="text-white" />
+    // },
     {
       link: "/jobs",
       name: "Jobs",

@@ -3,6 +3,7 @@ import axios from "axios";
 import api from "../../../config/api";
 import { withRouter } from "react-router-dom";
 import Cookies from "js-cookie";
+import AuthController from "../../../controllers/AuthController";
 
 function Logout(props) {
   const { history } = props;
@@ -10,7 +11,10 @@ function Logout(props) {
   axios
     .post(api.logout)
     .catch((error) => console.log(error))
-    .finally(() => history.push("/"));
+    .finally(() => {
+      AuthController.deleteLoggedInUser();
+      history.push("/");
+    });
   return (
     <div>
       <TextField>Logout Successful</TextField>

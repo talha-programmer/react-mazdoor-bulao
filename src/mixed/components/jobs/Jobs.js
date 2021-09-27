@@ -9,7 +9,7 @@ import {
   Typography,
   Card
 } from "@material-ui/core";
-import useJobs from "../../../hooks/useJobs";
+import useJobs from "../../../hooks/jobs/useJobs";
 import format from "date-fns/format";
 
 const styles = (theme) => ({
@@ -28,7 +28,7 @@ const styles = (theme) => ({
   // },
   // noDecoration: {
   //   textDecoration: "none !important"
-  // },
+  // }
   card: {
     boxShadow: theme.shadows[2],
     padding: 20
@@ -45,29 +45,34 @@ function Jobs(props) {
       justifyContent="center"
       className={classNames("lg-p-top")}
     >
-      <div className={classes.blogContentWrapper}>
-        <Grid container spacing={3} justifyContent="center" alignItems="center">
-          {jobsQuery.isLoading ? (
-            <span>Loading...</span>
-          ) : jobsQuery.isError ? (
-            jobsQuery.error.message
-          ) : (
-            jobsQuery.data.map((job) => (
-              <Grid item xs={8}>
-                <Card className={classes.card}>
-                  <Typography variant="h5">{job.title}</Typography>
-                  <Typography variant="body2">
-                    {format(new Date(job.created_at), "PPP", {
-                      awareOfUnicodeTokens: true
-                    })}
-                  </Typography>
-                  <Typography variant="body2">{job.details}</Typography>
-                </Card>
-              </Grid>
-            ))
-          )}
-        </Grid>
-      </div>
+      <Grid container spacing={3} justifyContent="center" alignItems="center">
+        {jobsQuery.isLoading ? (
+          <span>Loading...</span>
+        ) : jobsQuery.isError ? (
+          jobsQuery.error.message
+        ) : (
+          jobsQuery.data.map((job) => (
+            <Grid item xs={8}>
+              <Card className={classes.card}>
+                <Typography variant="h5">{job.title}</Typography>
+                <Typography variant="body2">
+                  {format(new Date(job.created_at), "PPP", {
+                    awareOfUnicodeTokens: true
+                  })}
+                </Typography>
+                <Typography variant="body2">
+                  Location: {job.location}
+                </Typography>
+                <Typography variant="body2">Budget: RS {job.budget}</Typography>
+                <Typography variant="body2">
+                  Deadline {job.deadline} days
+                </Typography>
+                <Typography variant="body2">{job.details}</Typography>
+              </Card>
+            </Grid>
+          ))
+        )}
+      </Grid>
     </Box>
   );
 }

@@ -3,18 +3,17 @@ import PropTypes from "prop-types";
 import { Switch } from "react-router-dom";
 import PropsRoute from "../../shared/components/PropsRoute";
 import Home from "./home/Home";
-import Blog from "./blog/Blog";
-import BlogPost from "./blog/BlogPost";
 import useLocationBlocker from "../../shared/functions/useLocationBlocker";
 import Logout from "../../logged_in/components/logout/Logout";
 import Jobs from "../../mixed/components/jobs/Jobs";
+import CreateJob from "../../logged_in/components/createJob/CreateJob";
 
 function Routing(props) {
-  const { blogPosts, selectBlog, selectHome } = props;
+  const { selectHome } = props;
   useLocationBlocker();
   return (
     <Switch>
-      {blogPosts.map((post) => (
+      {/* {blogPosts.map((post) => (
         <PropsRoute
           path={post.url}
           component={BlogPost}
@@ -28,13 +27,7 @@ function Routing(props) {
           )}
         />
       ))}
-      <PropsRoute
-        exact
-        path="/blog"
-        component={Blog}
-        selectBlog={selectBlog}
-        blogPosts={blogPosts}
-      />
+       */}
       <PropsRoute
         exact
         path="/jobs"
@@ -42,6 +35,7 @@ function Routing(props) {
         //selectBlog={selectBlog}
         //blogPosts={blogPosts}
       />
+      <PropsRoute exact path="/jobs/create" component={CreateJob} />
       <PropsRoute path="/logout" component={Logout} />
       <PropsRoute path="/" component={Home} selectHome={selectHome} />
     </Switch>
