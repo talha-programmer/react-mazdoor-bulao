@@ -7,10 +7,12 @@ import {
   withWidth,
   withStyles,
   Typography,
-  Card
+  Card,
+  Button
 } from "@material-ui/core";
 import useJobs from "../../../hooks/jobs/useJobs";
 import format from "date-fns/format";
+import CreateBid from "../../../logged_in/components/sellingZone/createBid/CreateBid";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -68,6 +70,14 @@ function Jobs(props) {
                   Deadline {job.deadline} days
                 </Typography>
                 <Typography variant="body2">{job.details}</Typography>
+                <Button
+                  onClick={() => {
+                    console.log("clicked");
+                    <CreateBid job={job} />;
+                  }}
+                >
+                  Bid on this job
+                </Button>
               </Card>
             </Grid>
           ))

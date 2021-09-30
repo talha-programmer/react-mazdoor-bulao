@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 
 export default class AuthController {
   static saveLoggedInUser(user) {
-    localStorage.setItem("loggedInUser", user);
+    localStorage.setItem("loggedInUser", JSON.stringify(user));
   }
 
   static deleteLoggedInUser() {
@@ -11,7 +11,7 @@ export default class AuthController {
 
   static loggedInUser() {
     if (Cookies.get("loginToken")) {
-      const user = localStorage.getItem("loggedInUser");
+      const user = JSON.parse(localStorage.getItem("loggedInUser"));
       if (user) {
         return user;
       }

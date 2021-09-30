@@ -13,9 +13,8 @@ import {
   Button,
   InputAdornment
 } from "@material-ui/core";
-import ButtonCircularProgress from "../../../shared/components/ButtonCircularProgress";
-import AuthController from "../../../controllers/AuthController";
-import useSaveJob from "../../../hooks/jobs/useSaveJob";
+import ButtonCircularProgress from "../../../../shared/components/ButtonCircularProgress";
+import useSaveJob from "../../../../hooks/jobs/useSaveJob";
 
 const styles = (theme) => ({
   card: {
@@ -52,10 +51,10 @@ function CreateJob(props) {
     <Box
       display="flex"
       justifyContent="center"
-      className={classNames("lg-p-top")}
+      //className={classNames("lg-p-top")}
     >
       <Grid container spacing={3} justifyContent="center" alignItems="center">
-        <Grid item xs={6}>
+        <Grid item xs={9}>
           <TextField
             variant="outlined"
             margin="normal"

@@ -17,7 +17,8 @@ import VisibilityPasswordTextField from "../../../shared/components/VisibilityPa
 import axios from "axios";
 import api from "../../../config/api";
 import Cookies from "js-cookie";
-import AuthController from "../../../controllers/AuthController";
+import { useQueryClient } from "react-query";
+import queryKeys from "../../../config/queryKeys";
 
 const styles = (theme) => ({
   forgotPassword: {
@@ -53,6 +54,7 @@ function LoginDialog(props) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const loginUsername = useRef();
   const loginPassword = useRef();
+  const queryClient = useQueryClient();
 
   const login = useCallback(() => {
     setIsLoading(true);
@@ -67,8 +69,9 @@ function LoginDialog(props) {
         const data = result.data;
         if (data.user) {
           setTimeout(() => {
-            AuthController.saveLoggedInUser(data.user);
             Cookies.set("loginToken", data.login_token, { expires: 1 }); // expires in 1 day
+
+            queryClient.invalidateQueries(queryKeys.user);
             history.push("/user/dashboard");
           }, 150);
         }
@@ -86,7 +89,7 @@ function LoginDialog(props) {
         setStatus(status + errorStatus);
       })
       .finally(() => setIsLoading(false));
-  }, [setIsLoading, loginUsername, loginPassword, history, setStatus, status]);
+  }, [setStatus, queryClient, history, status]);
 
   return (
     <Fragment>

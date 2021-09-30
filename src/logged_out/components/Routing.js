@@ -6,7 +6,6 @@ import Home from "./home/Home";
 import useLocationBlocker from "../../shared/functions/useLocationBlocker";
 import Logout from "../../logged_in/components/logout/Logout";
 import Jobs from "../../mixed/components/jobs/Jobs";
-import CreateJob from "../../logged_in/components/createJob/CreateJob";
 
 function Routing(props) {
   const { selectHome } = props;
@@ -35,7 +34,6 @@ function Routing(props) {
         //selectBlog={selectBlog}
         //blogPosts={blogPosts}
       />
-      <PropsRoute exact path="/jobs/create" component={CreateJob} />
       <PropsRoute path="/logout" component={Logout} />
       <PropsRoute path="/" component={Home} selectHome={selectHome} />
     </Switch>
