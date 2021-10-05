@@ -1,7 +1,8 @@
 function queryKeys() {
   return {
     jobs: "jobs",
-    user: "user"
+    user: "user",
+    bids: "bids"
   };
 }
 

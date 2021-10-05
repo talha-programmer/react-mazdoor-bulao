@@ -88,6 +88,8 @@ function NavBar(props) {
   const [loading, setLoading] = useState(true);
   const userQuery = useUser();
 
+  // Run this useEffect whenever the auth state changes.
+  // For that, we added userQuery dependency
   useEffect(() => {
     const authButtons = [
       {

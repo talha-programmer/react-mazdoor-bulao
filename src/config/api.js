@@ -7,7 +7,9 @@ function api() {
     logout: home + "/logout",
     user: home + "/user",
     jobs: home + "/jobs",
-    storeJob: home + "/store_job"
+    bids: home + "/bids",
+    storeJob: home + "/store_job",
+    storeBid: home + "/store_job_bid"
   };
 }
 

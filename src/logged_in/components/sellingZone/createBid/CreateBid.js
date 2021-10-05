@@ -1,20 +1,15 @@
 import React, { Fragment, useRef } from "react";
 import PropTypes from "prop-types";
-import classNames from "classnames";
 import {
-  Grid,
-  Box,
   withWidth,
   withStyles,
   Typography,
-  Card,
   TextField,
-  FormControlLabel,
   Button,
   InputAdornment
 } from "@material-ui/core";
-import ButtonCircularProgress from "../../../../shared/components/ButtonCircularProgress";
 import FormDialog from "../../../../shared/components/FormDialog";
+import useSaveBid from "../../../../hooks/bids/useSaveBid";
 
 const styles = (theme) => ({
   card: {
@@ -24,42 +19,33 @@ const styles = (theme) => ({
 });
 
 function CreateBid(props) {
-  const { classes, job } = props;
-  console.log("reached in bid");
-  // const title = useRef();
-  // const details = useRef();
-  // const budget = useRef();
-  // const deadline = useRef();
-  // const location = useRef();
-  //const { mutate, isSuccess, isError } = useSaveJob();
+  const { job, open, setOpen } = props;
+  const details = useRef();
+  const offeredAmount = useRef();
+  const completionTime = useRef();
+  const { mutate, isSuccess, isError } = useSaveBid();
 
-  // const onSubmit = (e) => {
-  //   e.preventDefault();
+  const jobId = job.id;
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const bid = {
+      job_id: jobId,
+      details: details.current.value,
+      offered_amount: offeredAmount.current.value,
+      completion_time: completionTime.current.value
+    };
 
-  //   const bid = {
-  //     title: title.current.value,
-  //     details: details.current.value,
-  //     budget: budget.current.value,
-  //     deadline: deadline.current.value,
-  //     location: location.current.value
-  //   };
-
-  //   mutate(bid);
-  // };
+    mutate(bid);
+  };
 
   return (
     <FormDialog
-      open
-      //onClose={onClose}
-      //loading={isLoading}
-      // onFormSubmit={(e) => {
-      //   e.preventDefault();
-      //   login();
-      // }}
-      hideBackdrop
+      open={open}
+      onClose={() => setOpen(false)}
+      onFormSubmit={onSubmit}
       headline="Bid on Job"
       content={
-        <Fragment>
+        <>
           <Typography variant="h6">{job.title}</Typography>
 
           <TextField
@@ -67,13 +53,56 @@ function CreateBid(props) {
             margin="normal"
             required
             fullWidth
-            label="Title"
+            label="Details"
             autoFocus
+            multiline
+            maxRows={4}
             autoComplete="off"
             type="text"
             FormHelperTextProps={{ error: true }}
-            //inputRef={title}
+            inputRef={details}
           />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            required
+            label="Offered Amount"
+            autoComplete="off"
+            type="number"
+            FormHelperTextProps={{ error: true }}
+            inputRef={offeredAmount}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">RS</InputAdornment>
+            }}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            required
+            label="Completion Time"
+            autoComplete="off"
+            type="number"
+            FormHelperTextProps={{ error: true }}
+            inputRef={completionTime}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">days</InputAdornment>
+            }}
+          />
+        </>
+      }
+      actions={
+        <Fragment>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="secondary"
+            size="large"
+          >
+            Create Bid
+          </Button>
         </Fragment>
       }
     />

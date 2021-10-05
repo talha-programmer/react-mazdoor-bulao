@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import {
@@ -40,6 +40,8 @@ const styles = (theme) => ({
 function Jobs(props) {
   const { classes } = props;
   const jobsQuery = useJobs();
+  const [openBidDialog, setOpenBidDialog] = useState(false);
+  const [job, setJob] = useState(null);
 
   return (
     <Box
@@ -72,8 +74,8 @@ function Jobs(props) {
                 <Typography variant="body2">{job.details}</Typography>
                 <Button
                   onClick={() => {
-                    console.log("clicked");
-                    <CreateBid job={job} />;
+                    setOpenBidDialog(true);
+                    setJob(job);
                   }}
                 >
                   Bid on this job
@@ -81,6 +83,13 @@ function Jobs(props) {
               </Card>
             </Grid>
           ))
+        )}
+        {openBidDialog && (
+          <CreateBid
+            job={job}
+            open={openBidDialog}
+            setOpen={setOpenBidDialog}
+          />
         )}
       </Grid>
     </Box>

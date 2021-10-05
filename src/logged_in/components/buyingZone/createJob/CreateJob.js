@@ -1,15 +1,11 @@
-import React, { Fragment, useRef } from "react";
+import React, { useRef } from "react";
 import PropTypes from "prop-types";
-import classNames from "classnames";
 import {
   Grid,
   Box,
   withWidth,
   withStyles,
-  Typography,
-  Card,
   TextField,
-  FormControlLabel,
   Button,
   InputAdornment
 } from "@material-ui/core";
@@ -24,7 +20,7 @@ const styles = (theme) => ({
 });
 
 function CreateJob(props) {
-  const { classes } = props;
+  //const { classes } = props;
 
   const title = useRef();
   const details = useRef();
