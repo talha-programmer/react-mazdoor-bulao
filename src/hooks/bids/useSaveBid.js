@@ -11,6 +11,7 @@ function useSaveBid() {
       onSuccess: () => {
         // Invalidate and refetch
         queryClient.invalidateQueries(queryKeys.bids);
+        queryClient.invalidateQueries(queryKeys.appliedJobs);
       }
     }
   );

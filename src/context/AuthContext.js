@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 import { useMemo } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import useUser from "../hooks/useUser";
+import useUser from "../hooks/user/useUser";
 import React from "react";
 
 const AuthContext = React.createContext();

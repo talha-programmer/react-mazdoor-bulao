@@ -17,7 +17,7 @@ import NavigationDrawer from "../../../shared/components/NavigationDrawer";
 import sharedMenuItems from "../../../config/sharedMenuItems";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import Cookies from "js-cookie";
-import useUser from "../../../hooks/useUser";
+import useUser from "../../../hooks/user/useUser";
 const styles = (theme) => ({
   appBar: {
     boxShadow: theme.shadows[6],

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useQuery } from "react-query";
-import api from "../config/api";
-import queryKeys from "../config/queryKeys";
+import api from "../../config/api";
+import queryKeys from "../../config/queryKeys";
 
 function useUser() {
   async function getUser() {

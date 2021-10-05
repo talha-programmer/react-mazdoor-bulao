@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import {
@@ -13,6 +13,7 @@ import {
 import useJobs from "../../../hooks/jobs/useJobs";
 import format from "date-fns/format";
 import CreateBid from "../../../logged_in/components/sellingZone/createBid/CreateBid";
+import useAppliedJobs from "../../../hooks/user/useAppliedJobs";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -30,7 +31,8 @@ const styles = (theme) => ({
   // },
   // noDecoration: {
   //   textDecoration: "none !important"
-  // }
+  // }import useAppliedJobs from '../../../hooks/user/useAppliedJobs';
+
   card: {
     boxShadow: theme.shadows[2],
     padding: 20
@@ -40,8 +42,25 @@ const styles = (theme) => ({
 function Jobs(props) {
   const { classes } = props;
   const jobsQuery = useJobs();
+  const appliedJobsQuery = useAppliedJobs();
   const [openBidDialog, setOpenBidDialog] = useState(false);
   const [job, setJob] = useState(null);
+  const [jobs, setJobs] = useState();
+  const [loading, setLoading] = useState(true);
+  const [appliedJobs, setAppliedJobs] = useState();
+
+  useEffect(() => {
+    if (jobsQuery.isFetched && appliedJobsQuery.isFetched) {
+      setAppliedJobs(appliedJobsQuery.data);
+      setJobs(jobsQuery.data);
+      setLoading(false);
+    }
+  }, [
+    jobsQuery.data,
+    jobsQuery.isFetched,
+    appliedJobsQuery.data,
+    appliedJobsQuery.isFetched
+  ]);
 
   return (
     <Box
@@ -50,12 +69,10 @@ function Jobs(props) {
       className={classNames("lg-p-top")}
     >
       <Grid container spacing={3} justifyContent="center" alignItems="center">
-        {jobsQuery.isLoading ? (
+        {loading ? (
           <span>Loading...</span>
-        ) : jobsQuery.isError ? (
-          jobsQuery.error.message
         ) : (
-          jobsQuery.data.map((job) => (
+          jobs.map((job) => (
             <Grid item xs={8}>
               <Card className={classes.card}>
                 <Typography variant="h5">{job.title}</Typography>
@@ -72,14 +89,17 @@ function Jobs(props) {
                   Deadline {job.deadline} days
                 </Typography>
                 <Typography variant="body2">{job.details}</Typography>
-                <Button
-                  onClick={() => {
-                    setOpenBidDialog(true);
-                    setJob(job);
-                  }}
-                >
-                  Bid on this job
-                </Button>
+
+                {!(job.id in appliedJobs) && (
+                  <Button
+                    onClick={() => {
+                      setOpenBidDialog(true);
+                      setJob(job);
+                    }}
+                  >
+                    Bid on this job
+                  </Button>
+                )}
               </Card>
             </Grid>
           ))

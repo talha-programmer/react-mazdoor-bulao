@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import theme from "./theme";
 import GlobalStyles from "./GlobalStyles";
 import Pace from "./shared/components/Pace";
-import useUser from "./hooks/useUser";
+import useUser from "./hooks/user/useUser";
 const LoggedInComponent = lazy(() => import("./logged_in/components/Main"));
 
 const LoggedOutComponent = lazy(() => import("./logged_out/components/Main"));
