@@ -247,8 +247,8 @@ function Main(props) {
 
   const selectPosts = useCallback(() => {
     smoothScrollTop();
-    document.title = "WaVer - Posts";
-    setSelectedTab("Posts");
+    document.title = "MazdoorBulao - Bids";
+    setSelectedTab("Bids");
     if (!hasFetchedEmojiTextArea) {
       setHasFetchedEmojiTextArea(true);
       import("../../shared/components/EmojiTextArea").then((Component) => {

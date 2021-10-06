@@ -8,6 +8,8 @@ import Subscription from "./subscription/Subscription";
 import PropsRoute from "../../shared/components/PropsRoute";
 import useLocationBlocker from "../../shared/functions/useLocationBlocker";
 import CreateJob from "./buyingZone/createJob/CreateJob";
+import Bids from "./sellingZone/bids/Bids";
+import JobsPosted from "./buyingZone/jobsPosted/JobsPosted";
 const styles = (theme) => ({
   wrapper: {
     margin: theme.spacing(1),
@@ -90,6 +92,8 @@ function Routing(props) {
           openAddBalanceDialog={openAddBalanceDialog}
         />
         <PropsRoute path="/user/jobs_posted/create" component={CreateJob} />
+        <PropsRoute path="/user/jobs_posted" component={JobsPosted} />
+        <PropsRoute path="/user/bids" component={Bids} />
 
         <PropsRoute
           path=""

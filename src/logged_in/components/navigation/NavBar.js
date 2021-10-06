@@ -171,14 +171,30 @@ function NavBar(props) {
       }
     },
     {
-      link: "/user/posts",
-      name: "Posts",
+      link: "/user/bids",
+      name: "Bids",
       onClick: closeMobileDrawer,
       icon: {
         desktop: (
           <ImageIcon
             className={
-              selectedTab === "Posts" ? classes.textPrimary : "text-white"
+              selectedTab === "Bids" ? classes.textPrimary : "text-white"
+            }
+            fontSize="small"
+          />
+        ),
+        mobile: <ImageIcon className="text-white" />
+      }
+    },
+    {
+      link: "/user/jobs_posted",
+      name: "Jobs Posted",
+      onClick: closeMobileDrawer,
+      icon: {
+        desktop: (
+          <ImageIcon
+            className={
+              selectedTab === "Bids" ? classes.textPrimary : "text-white"
             }
             fontSize="small"
           />
@@ -205,7 +221,23 @@ function NavBar(props) {
       }
     },
     {
-      link: "/",
+      link: "/user/jobs_posted/create",
+      name: "Create Job",
+      onClick: closeMobileDrawer,
+      icon: {
+        desktop: (
+          <AccountBalanceIcon
+            className={
+              selectedTab === "CreateJobs" ? classes.textPrimary : "text-white"
+            }
+            fontSize="small"
+          />
+        ),
+        mobile: <AccountBalanceIcon className="text-white" />
+      }
+    },
+    {
+      link: "/logout",
       name: "Logout",
       icon: {
         desktop: (
