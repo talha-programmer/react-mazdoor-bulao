@@ -7,7 +7,8 @@ import {
   withWidth,
   withStyles,
   Typography,
-  Card
+  Card,
+  Button
 } from "@material-ui/core";
 import format from "date-fns/format";
 import useBids from "../../../../hooks/bids/useBids";
@@ -72,7 +73,9 @@ function Bids(props) {
                 <Typography variant="body2">
                   Completion Time {bid.completion_time} days
                 </Typography>
-                <Typography variant="body2">Bid Status {bid.status}</Typography>
+                <Typography variant="body2">
+                  Bid Status: {bidStatusStrings[bid.status]}
+                </Typography>
                 <Typography variant="body2">{bid.details}</Typography>
               </Card>
             </Grid>

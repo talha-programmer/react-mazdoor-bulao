@@ -27,6 +27,9 @@ import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 import MenuIcon from "@material-ui/icons/Menu";
 import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
+import BidsIcon from "@material-ui/icons/AccountTreeTwoTone";
+import JobsPostedIcon from "@material-ui/icons/DeckSharp";
+import CreateJobIcon from "@material-ui/icons/NewReleasesOutlined";
 import MessagePopperButton from "./MessagePopperButton";
 import SideDrawer from "./SideDrawer";
 import Balance from "./Balance";
@@ -176,14 +179,14 @@ function NavBar(props) {
       onClick: closeMobileDrawer,
       icon: {
         desktop: (
-          <ImageIcon
+          <BidsIcon
             className={
               selectedTab === "Bids" ? classes.textPrimary : "text-white"
             }
             fontSize="small"
           />
         ),
-        mobile: <ImageIcon className="text-white" />
+        mobile: <BidsIcon className="text-white" />
       }
     },
     {
@@ -192,14 +195,14 @@ function NavBar(props) {
       onClick: closeMobileDrawer,
       icon: {
         desktop: (
-          <ImageIcon
+          <JobsPostedIcon
             className={
               selectedTab === "Bids" ? classes.textPrimary : "text-white"
             }
             fontSize="small"
           />
         ),
-        mobile: <ImageIcon className="text-white" />
+        mobile: <JobsPostedIcon className="text-white" />
       }
     },
     {
@@ -226,14 +229,14 @@ function NavBar(props) {
       onClick: closeMobileDrawer,
       icon: {
         desktop: (
-          <AccountBalanceIcon
+          <CreateJobIcon
             className={
               selectedTab === "CreateJobs" ? classes.textPrimary : "text-white"
             }
             fontSize="small"
           />
         ),
-        mobile: <AccountBalanceIcon className="text-white" />
+        mobile: <CreateJobIcon className="text-white" />
       }
     },
     {

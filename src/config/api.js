@@ -10,6 +10,7 @@ function api() {
     appliedJobs: home + "/user/applied_jobs",
     postedJobs: home + "/user/posted_jobs",
     jobs: home + "/jobs",
+    jobCategories: home + "/job_categories",
     storeJob: home + "/store_job",
     storeBid: home + "/store_job_bid"
   };

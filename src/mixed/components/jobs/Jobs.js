@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import {
@@ -10,10 +10,10 @@ import {
   Card,
   Button
 } from "@material-ui/core";
-import useJobs from "../../../hooks/jobs/useJobs";
 import format from "date-fns/format";
-import CreateBid from "../../../logged_in/components/sellingZone/createBid/CreateBid";
-import useAppliedJobs from "../../../hooks/user/useAppliedJobs";
+import { useHistory } from "react-router-dom";
+import { useQueryClient } from "react-query";
+import queryKeys from "../../../config/queryKeys";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -41,26 +41,12 @@ const styles = (theme) => ({
 
 function Jobs(props) {
   const { classes } = props;
-  const jobsQuery = useJobs();
-  const appliedJobsQuery = useAppliedJobs();
-  const [openBidDialog, setOpenBidDialog] = useState(false);
-  const [job, setJob] = useState(null);
-  const [jobs, setJobs] = useState();
-  const [loading, setLoading] = useState(true);
-  const [appliedJobs, setAppliedJobs] = useState();
+  const history = useHistory();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (jobsQuery.isFetched && appliedJobsQuery.isFetched) {
-      setAppliedJobs(appliedJobsQuery.data);
-      setJobs(jobsQuery.data);
-      setLoading(false);
-    }
-  }, [
-    jobsQuery.data,
-    jobsQuery.isFetched,
-    appliedJobsQuery.data,
-    appliedJobsQuery.isFetched
-  ]);
+  // We have fetched jobs already in Routing. That's why accessing
+  // them with queryClient
+  const jobs = queryClient.getQueryData(queryKeys.jobs);
 
   return (
     <Box
@@ -69,8 +55,8 @@ function Jobs(props) {
       className={classNames("lg-p-top")}
     >
       <Grid container spacing={3} justifyContent="center" alignItems="center">
-        {loading ? (
-          <span>Loading...</span>
+        {!jobs ? (
+          <span>No jobs to display</span>
         ) : (
           jobs.map((job) => (
             <Grid item xs={8}>
@@ -90,26 +76,16 @@ function Jobs(props) {
                 </Typography>
                 <Typography variant="body2">{job.details}</Typography>
 
-                {!(job.id in appliedJobs) && (
-                  <Button
-                    onClick={() => {
-                      setOpenBidDialog(true);
-                      setJob(job);
-                    }}
-                  >
-                    Bid on this job
-                  </Button>
-                )}
+                <Button
+                  onClick={() => {
+                    history.push(`/jobs/${job.url}`);
+                  }}
+                >
+                  Job Details
+                </Button>
               </Card>
             </Grid>
           ))
-        )}
-        {openBidDialog && (
-          <CreateBid
-            job={job}
-            open={openBidDialog}
-            setOpen={setOpenBidDialog}
-          />
         )}
       </Grid>
     </Box>

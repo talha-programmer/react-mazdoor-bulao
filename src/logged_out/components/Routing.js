@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Switch } from "react-router-dom";
 import PropsRoute from "../../shared/components/PropsRoute";
@@ -6,10 +6,13 @@ import Home from "./home/Home";
 import useLocationBlocker from "../../shared/functions/useLocationBlocker";
 import Logout from "../../logged_in/components/logout/Logout";
 import Jobs from "../../mixed/components/jobs/Jobs";
+import useJobs from "../../hooks/jobs/useJobs";
+import SingleJob from "../../mixed/components/singleJob/SingleJob";
 
 function Routing(props) {
   const { selectHome } = props;
-  useLocationBlocker();
+  const { data: jobs, isLoading } = useJobs();
+
   return (
     <Switch>
       {/* {blogPosts.map((post) => (
@@ -27,6 +30,17 @@ function Routing(props) {
         />
       ))}
        */}
+
+      {!isLoading &&
+        jobs.map((job) => (
+          <PropsRoute
+            path={`/jobs/${job.url}`}
+            component={SingleJob}
+            jobId={job.id}
+            title={job.title}
+            key={job.url}
+          />
+        ))}
       <PropsRoute
         exact
         path="/jobs"

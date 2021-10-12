@@ -11,10 +11,10 @@ import {
   Button
 } from "@material-ui/core";
 import format from "date-fns/format";
-import usePostedJobs from "../../../../hooks/user/usePostedJobs";
 import { jobStatusStrings } from "../../../../config/enums/jobStatus";
-import { useHistory } from "react-router";
-
+import useJob from "../../../../hooks/jobs/useJob";
+import { bidStatusStrings } from "../../../../config/enums/bidStatus";
+import { useHistory } from "react-router-dom";
 const styles = (theme) => ({
   // blogContentWrapper: {
   //   marginLeft: theme.spacing(1),
@@ -31,26 +31,25 @@ const styles = (theme) => ({
   // },
   // noDecoration: {
   //   textDecoration: "none !important"
-  // }import useAppliedJobs from '../../../hooks/user/useAppliedJobs';
-
+  // }
   card: {
     boxShadow: theme.shadows[2],
     padding: 20
   }
 });
 
-function JobsPosted(props) {
-  const { classes } = props;
-  const { data: postedJobs, isLoading, isError } = usePostedJobs();
-  const history = useHistory();
+function JobPostedSingle(props) {
+  const { classes, jobId } = props;
+  const { data: job, isLoading, isError } = useJob(jobId);
 
+  const history = useHistory();
   return (
     <Box display="flex" justifyContent="center">
       <Grid container spacing={3} justifyContent="center" alignItems="center">
         {isLoading ? (
           <span>Loading...</span>
         ) : (
-          postedJobs.map((job) => (
+          <>
             <Grid item xs={8}>
               <Card className={classes.card}>
                 <Typography variant="h5">{job.title}</Typography>
@@ -69,22 +68,55 @@ function JobsPosted(props) {
                 <Typography variant="body2">{job.details}</Typography>
                 <Button
                   onClick={() => {
-                    history.push(`/user/jobs_posted/${job.url}`);
+                    history.push(`/user/jobs_posted/${job.url}/edit`, {
+                      job: job
+                    });
                   }}
                 >
-                  Job Details
+                  Edit Job
                 </Button>
               </Card>
             </Grid>
-          ))
+            <Grid item xs={8}>
+              <Typography variant="h2">Bids</Typography>
+            </Grid>
+            {job.bids?.map((bid) => (
+              <Grid item xs={8}>
+                <Card className={classes.card}>
+                  <Typography variant="h5">
+                    Posted By: {bid.offered_by?.name}
+                  </Typography>
+                  <Typography variant="body2">
+                    {format(new Date(bid.created_at), "PPP", {
+                      awareOfUnicodeTokens: true
+                    })}
+                  </Typography>
+                  <Typography variant="body2">
+                    Offered Amount: RS {bid.offered_amount}
+                  </Typography>
+                  <Typography variant="body2">
+                    Completion Time: {bid.completion_time} days
+                  </Typography>
+                  <Typography variant="body2">
+                    Bid Status: {bidStatusStrings[bid.status]}
+                  </Typography>
+                  <Typography variant="body2">{bid.details}</Typography>
+                  <Button>Open Chat</Button>
+                  <Button>Hire This Person</Button>
+                </Card>
+              </Grid>
+            ))}
+          </>
         )}
       </Grid>
     </Box>
   );
 }
 
-JobsPosted.propTypes = {
+JobPostedSingle.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withWidth()(withStyles(styles, { withTheme: true })(JobsPosted));
+export default withWidth()(
+  withStyles(styles, { withTheme: true })(JobPostedSingle)
+);
