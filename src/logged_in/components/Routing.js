@@ -12,6 +12,8 @@ import Bids from "./sellingZone/bids/Bids";
 import JobsPosted from "./buyingZone/jobsPosted/JobsPosted";
 import usePostedJobs from "../../hooks/user/usePostedJobs";
 import JobPostedSingle from "./buyingZone/jobPostedSingle/JobPostedSingle";
+import BuyingOrders from "./buyingZone/buyingOrders/BuyingOrders";
+import SellingOrders from "./sellingZone/sellingOrders/SellingOrders";
 const styles = (theme) => ({
   wrapper: {
     margin: theme.spacing(1),
@@ -94,6 +96,9 @@ function Routing(props) {
           selectSubscription={selectSubscription}
           openAddBalanceDialog={openAddBalanceDialog}
         />
+        <PropsRoute path="/user/buying_orders" component={BuyingOrders} />
+        <PropsRoute path="/user/selling_orders" component={SellingOrders} />
+
         {!isLoading &&
           jobsPosted.map((job) => {
             return (

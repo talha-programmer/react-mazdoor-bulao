@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import {
@@ -15,6 +15,7 @@ import { jobStatusStrings } from "../../../../config/enums/jobStatus";
 import useJob from "../../../../hooks/jobs/useJob";
 import { bidStatusStrings } from "../../../../config/enums/bidStatus";
 import { useHistory } from "react-router-dom";
+import useStartOrder from "../../../../hooks/orders/useStartOrder";
 const styles = (theme) => ({
   // blogContentWrapper: {
   //   marginLeft: theme.spacing(1),
@@ -32,6 +33,7 @@ const styles = (theme) => ({
   // noDecoration: {
   //   textDecoration: "none !important"
   // }
+
   card: {
     boxShadow: theme.shadows[2],
     padding: 20
@@ -41,8 +43,18 @@ const styles = (theme) => ({
 function JobPostedSingle(props) {
   const { classes, jobId } = props;
   const { data: job, isLoading, isError } = useJob(jobId);
-
+  const { mutate, isSuccess, isError: orderError } = useStartOrder();
+  let selectedBid = null;
   const history = useHistory();
+
+  const startOrder = () => {
+    const order = {
+      job_bid_id: selectedBid.id,
+      job_id: job.id
+    };
+
+    mutate(order);
+  };
   return (
     <Box display="flex" justifyContent="center">
       <Grid container spacing={3} justifyContent="center" alignItems="center">
@@ -102,7 +114,14 @@ function JobPostedSingle(props) {
                   </Typography>
                   <Typography variant="body2">{bid.details}</Typography>
                   <Button>Open Chat</Button>
-                  <Button>Hire This Person</Button>
+                  <Button
+                    onClick={() => {
+                      selectedBid = bid;
+                      startOrder();
+                    }}
+                  >
+                    Hire This Person
+                  </Button>
                 </Card>
               </Grid>
             ))}

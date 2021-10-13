@@ -1,12 +1,12 @@
 const jobStatusCodes = {
-  ACEPTING_BIDS: 0,
-  WORK_IN_PROGRESS: 1,
-  COMPLETED: 2
+  HIRING: 0,
+  HIRING_COMPLETED: 1,
+  JOB_COMPLETED: 2
 };
 const jobStatusStrings = {
-  0: "Accepting Bids",
-  1: "Work In Progress",
-  2: "Completed"
+  0: "Hiring",
+  1: "Hiring Completed",
+  2: "Job Completed"
 };
 
 export { jobStatusCodes, jobStatusStrings };

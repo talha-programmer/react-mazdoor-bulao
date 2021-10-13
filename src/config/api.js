@@ -12,7 +12,10 @@ function api() {
     jobs: home + "/jobs",
     jobCategories: home + "/job_categories",
     storeJob: home + "/store_job",
-    storeBid: home + "/store_job_bid"
+    storeBid: home + "/store_job_bid",
+    startOrder: home + "/start_order",
+    buyingOrders: home + "/buying_orders",
+    sellingOrders: home + "/selling_orders"
   };
 }
 

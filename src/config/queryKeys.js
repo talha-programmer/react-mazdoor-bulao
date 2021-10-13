@@ -7,7 +7,9 @@ function queryKeys() {
     user: "user",
     appliedJobs: "appliedJobs",
     postedJobs: "postedJobs",
-    bids: "bids"
+    bids: "bids",
+    buyingOrders: "buyingOrders",
+    sellingOrders: "sellingOrders"
   };
 }
 

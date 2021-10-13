@@ -240,6 +240,42 @@ function NavBar(props) {
       }
     },
     {
+      link: "/user/buying_orders",
+      name: "Buying Orders",
+      onClick: closeMobileDrawer,
+      icon: {
+        desktop: (
+          <CreateJobIcon
+            className={
+              selectedTab === "BuyingOrders"
+                ? classes.textPrimary
+                : "text-white"
+            }
+            fontSize="small"
+          />
+        ),
+        mobile: <CreateJobIcon className="text-white" />
+      }
+    },
+    {
+      link: "/user/selling_orders",
+      name: "Selling Orders",
+      onClick: closeMobileDrawer,
+      icon: {
+        desktop: (
+          <CreateJobIcon
+            className={
+              selectedTab === "SellingOrders"
+                ? classes.textPrimary
+                : "text-white"
+            }
+            fontSize="small"
+          />
+        ),
+        mobile: <CreateJobIcon className="text-white" />
+      }
+    },
+    {
       link: "/logout",
       name: "Logout",
       icon: {
