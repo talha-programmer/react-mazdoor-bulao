@@ -12,7 +12,6 @@ import SingleJob from "../../mixed/components/singleJob/SingleJob";
 function Routing(props) {
   const { selectHome } = props;
   const { data: jobs, isLoading } = useJobs();
-
   return (
     <Switch>
       {/* {blogPosts.map((post) => (
@@ -32,6 +31,7 @@ function Routing(props) {
        */}
 
       {!isLoading &&
+        Array.isArray(jobs) &&
         jobs.map((job) => (
           <PropsRoute
             path={`/jobs/${job.url}`}

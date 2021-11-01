@@ -8,22 +8,26 @@ import {
   withStyles,
   Typography,
   Card,
-  Button,
-  Input,
-  TextField
+  Button
 } from "@material-ui/core";
 import format from "date-fns/format";
-import usePostedJobs from "../../../../hooks/user/usePostedJobs";
 import { jobStatusStrings } from "../../../../config/enums/jobStatus";
-import { useHistory } from "react-router";
-import useBuyingOrders from "../../../../hooks/orders/useBuyingOrders";
-import useCompleteBuyingOrder from "../../../../hooks/orders/useCompleteBuyingOrder";
+import useJob from "../../../../hooks/jobs/useJob";
+import {
+  bidStatusCodes,
+  bidStatusStrings
+} from "../../../../config/enums/bidStatus";
+import { useHistory } from "react-router-dom";
+import useStartOrder from "../../../../hooks/orders/useStartOrder";
+import useOrder from "../../../../hooks/orders/useOrder";
 import {
   orderStatusCodes,
   orderStatusStrings
 } from "../../../../config/enums/orderStatus";
+import useOrderReviews from "../../../../hooks/review/useOrderReviews";
+import OrderConfirmDialog from "../buyingOrders/OrderConfirmDialog";
 import { Rating } from "@material-ui/lab";
-import OrderConfirmDialog from "./OrderConfirmDialog";
+import { reviewTypesStrings } from "../../../../config/enums/reviewTypes";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -49,18 +53,31 @@ const styles = (theme) => ({
   }
 });
 
-function BuyingOrders(props) {
+function BuyingOrderSingle(props) {
   const { classes } = props;
-  const { data: buyingOrders, isLoading, isError } = useBuyingOrders();
+  const orderId = props.location?.state?.orderId;
+  const { data: order, isLoading, isError } = useOrder(orderId);
+  const { mutate, isSuccess, isError: orderError } = useStartOrder();
+  let selectedBid = null;
   const history = useHistory();
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
 
   const {
-    mutate: mutateCompleteOrder,
-    isLoading: loadingCompleteOrder,
-    isError: errorCompleteOrder
-  } = useCompleteBuyingOrder();
+    data: orderReviews,
+    isLoading: isReviewsLoading,
+    isError: isReviewsError
+  } = useOrderReviews(orderId);
+
+  // const startOrder = () => {
+  //   const order = {
+  //     job_bid_id: selectedBid.id,
+  //     job_id: order.id
+  //   };
+
+  //   mutate(order);
+  // };
 
   return (
     <Box display="flex" justifyContent="center">
@@ -68,7 +85,7 @@ function BuyingOrders(props) {
         {isLoading ? (
           <span>Loading...</span>
         ) : (
-          buyingOrders.map((order) => (
+          <>
             <Grid item xs={8}>
               <Card className={classes.card}>
                 <Typography variant="h5">
@@ -99,32 +116,40 @@ function BuyingOrders(props) {
                   Job: {order.job.details}
                 </Typography>
 
-                {/* <Button
+                <Button
                   onClick={() => {
-                    // const orderToSend = {
-                    //   order_id: order.id
-                    // };
-                    // mutateCompleteOrder(orderToSend);
                     setSelectedOrder(order);
                     setDialogOpen(true);
                   }}
                   disabled={order.status === orderStatusCodes.COMPLETED}
                 >
                   Mark as Complete
-                </Button> */}
-
-                <Button
-                  onClick={() => {
-                    history.push("/user/buying_orders/single_order", {
-                      orderId: order.id
-                    });
-                  }}
-                >
-                  Details
                 </Button>
               </Card>
             </Grid>
-          ))
+
+            <Grid item xs={8}>
+              <Typography variant="h2">Reviews</Typography>
+            </Grid>
+
+            {!isReviewsLoading &&
+              orderReviews.map((review) => (
+                <Grid item xs={8}>
+                  <Card className={classes.card}>
+                    <Typography variant="body2">
+                      Given By: {review?.given_by?.name}
+                    </Typography>
+                    <Typography variant="body2">
+                      {review?.review_text}
+                    </Typography>
+                    <Typography variant="body2">
+                      Review Type: {reviewTypesStrings[review?.review_type]}
+                    </Typography>
+                    <Rating value={review.rating} disabled={true} />
+                  </Card>
+                </Grid>
+              ))}
+          </>
         )}
         {dialogOpen && (
           <OrderConfirmDialog
@@ -138,10 +163,10 @@ function BuyingOrders(props) {
   );
 }
 
-BuyingOrders.propTypes = {
+BuyingOrderSingle.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
 export default withWidth()(
-  withStyles(styles, { withTheme: true })(BuyingOrders)
+  withStyles(styles, { withTheme: true })(BuyingOrderSingle)
 );

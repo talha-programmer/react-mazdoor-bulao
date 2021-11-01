@@ -14,6 +14,11 @@ import usePostedJobs from "../../hooks/user/usePostedJobs";
 import JobPostedSingle from "./buyingZone/jobPostedSingle/JobPostedSingle";
 import BuyingOrders from "./buyingZone/buyingOrders/BuyingOrders";
 import SellingOrders from "./sellingZone/sellingOrders/SellingOrders";
+import useBuyingOrders from "../../hooks/orders/useBuyingOrders";
+import BuyingOrderSingle from "./buyingZone/buyingOrderSingle/BuyingOrderSingle";
+import Chat from "./chat/Chat";
+import CreateWorkerProfile from "./sellingZone/workerProfile/CreateWorkerProfile";
+import WorkerProfile from "./sellingZone/workerProfile/WorkerProfile";
 const styles = (theme) => ({
   wrapper: {
     margin: theme.spacing(1),
@@ -72,7 +77,19 @@ function Routing(props) {
     openAddBalanceDialog
   } = props;
   useLocationBlocker();
-  const { data: jobsPosted, isLoading, isError } = usePostedJobs();
+
+  const {
+    data: jobsPosted,
+    isLoading: isJobsLoading,
+    isError
+  } = usePostedJobs();
+
+  const {
+    data: buyingOrders,
+    isLoading: isOrdersLoading,
+    isError: isOrdersError
+  } = useBuyingOrders();
+
   return (
     <div className={classes.wrapper}>
       <Switch>
@@ -96,10 +113,26 @@ function Routing(props) {
           selectSubscription={selectSubscription}
           openAddBalanceDialog={openAddBalanceDialog}
         />
+        {!isOrdersLoading &&
+          buyingOrders.map((order) => {
+            return (
+              <PropsRoute
+                path={`/user/buying_orders/${order.url}`}
+                component={BuyingOrderSingle}
+                key={`${order.url}-buying-order`} // Changed key to became unique
+              />
+            );
+          })}
+
+        <PropsRoute
+          path="/user/buying_orders/single_order"
+          component={BuyingOrderSingle}
+        />
+
         <PropsRoute path="/user/buying_orders" component={BuyingOrders} />
         <PropsRoute path="/user/selling_orders" component={SellingOrders} />
 
-        {!isLoading &&
+        {!isJobsLoading &&
           jobsPosted.map((job) => {
             return (
               <PropsRoute
@@ -109,7 +142,7 @@ function Routing(props) {
               />
             );
           })}
-        {!isLoading &&
+        {!isJobsLoading &&
           jobsPosted.map((job) => {
             return (
               <PropsRoute
@@ -125,6 +158,14 @@ function Routing(props) {
         <PropsRoute path="/user/jobs_posted/create" component={CreateJob} />
         <PropsRoute path="/user/jobs_posted" component={JobsPosted} />
         <PropsRoute path="/user/bids" component={Bids} />
+
+        <PropsRoute path="/user/chat" component={Chat} />
+
+        <PropsRoute path="/user/worker_profile" component={WorkerProfile} />
+        <PropsRoute
+          path="/user/create_worker_profile"
+          component={CreateWorkerProfile}
+        />
 
         <PropsRoute
           path=""

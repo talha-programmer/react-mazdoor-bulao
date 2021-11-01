@@ -68,12 +68,10 @@ function LoginDialog(props) {
       .then((result) => {
         const data = result.data;
         if (data.user) {
-          setTimeout(() => {
-            Cookies.set("loginToken", data.login_token, { expires: 1 }); // expires in 1 day
+          Cookies.set("loginToken", data.login_token, { expires: 1 }); // expires in 1 day
 
-            queryClient.invalidateQueries(queryKeys.user);
-            history.push("/user/dashboard");
-          }, 150);
+          queryClient.invalidateQueries(queryKeys.user);
+          history.push("/user/dashboard");
         }
       })
       .catch((error) => {

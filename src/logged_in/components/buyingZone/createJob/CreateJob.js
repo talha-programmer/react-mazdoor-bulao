@@ -38,9 +38,12 @@ function CreateJob(props) {
   const budget = useRef();
   const deadline = useRef();
   const location = useRef();
-  const [selectedCategories, setSelectedCategories] = useState();
+  const [selectedCategories, setSelectedCategories] = useState(
+    job?.categories.map((category) => category.id).toString()
+  );
   const { mutate, isSuccess, isError } = useSaveJob();
   const { data: jobCategories, isLoading } = useJobCategories();
+
   const onSubmit = (e) => {
     e.preventDefault();
 
@@ -128,25 +131,6 @@ function CreateJob(props) {
               }}
               defaultValue={job?.categories}
             />
-
-            {/* <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="Category"
-              autoComplete="off"
-              select
-              FormHelperTextProps={{ error: true }}
-              inputRef={category}
-              //defaultValue={job?.categories}
-            >
-              {jobCategories.map((option) => (
-                <MenuItem key={option.id} value={option.id}>
-                  {option.name}
-                </MenuItem>
-              ))}
-            </TextField> */}
 
             <Grid
               container

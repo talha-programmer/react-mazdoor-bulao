@@ -46,7 +46,12 @@ function Jobs(props) {
 
   // We have fetched jobs already in Routing. That's why accessing
   // them with queryClient
-  const jobs = queryClient.getQueryData(queryKeys.jobs);
+  let jobs = queryClient.getQueryData(queryKeys.jobs);
+
+  // const loggedInUserId = queryClient.getQueryData(queryKeys.user)?.id;
+  // if (loggedInUserId > 0) {
+  //   jobs = jobs.filter((job) => job.posted_by !== loggedInUserId);
+  // }
 
   return (
     <Box
@@ -55,7 +60,7 @@ function Jobs(props) {
       className={classNames("lg-p-top")}
     >
       <Grid container spacing={3} justifyContent="center" alignItems="center">
-        {!jobs ? (
+        {!Array.isArray(jobs) || jobs.length === 0 ? (
           <span>No jobs to display</span>
         ) : (
           jobs.map((job) => (

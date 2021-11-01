@@ -83,10 +83,8 @@ function RegisterDialog(props) {
       .post(api.register, data)
       .then((result) => {
         if (result.data.user) {
-          setTimeout(() => {
-            Cookies.set("loginToken", data.login_token, { expires: 1 });
-            history.push("/user/dashboard");
-          }, 1500);
+          Cookies.set("loginToken", data.login_token, { expires: 1 });
+          history.push("/user/dashboard");
         }
       })
       .catch((error) => {

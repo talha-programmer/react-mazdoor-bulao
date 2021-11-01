@@ -5,11 +5,16 @@ function queryKeys() {
     jobs: "jobs",
     jobCategories: "jobCategories",
     user: "user",
+    workerProfile: "workerProfile",
+    workerSkills: "workerSkills",
     appliedJobs: "appliedJobs",
     postedJobs: "postedJobs",
     bids: "bids",
     buyingOrders: "buyingOrders",
-    sellingOrders: "sellingOrders"
+    sellingOrders: "sellingOrders",
+    chatUsers: "chatUsers",
+    chatWithUser: "chatWithUser",
+    orderReviews: "orderReviews"
   };
 }
 

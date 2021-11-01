@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import {
@@ -13,9 +13,15 @@ import {
 import format from "date-fns/format";
 import { jobStatusStrings } from "../../../../config/enums/jobStatus";
 import useJob from "../../../../hooks/jobs/useJob";
-import { bidStatusStrings } from "../../../../config/enums/bidStatus";
+import {
+  bidStatusCodes,
+  bidStatusStrings
+} from "../../../../config/enums/bidStatus";
 import { useHistory } from "react-router-dom";
 import useStartOrder from "../../../../hooks/orders/useStartOrder";
+import { useQueryClient } from "react-query";
+import queryKeys from "../../../../config/queryKeys";
+import useAddInChat from "../../../../hooks/chat/useAddInChat";
 const styles = (theme) => ({
   // blogContentWrapper: {
   //   marginLeft: theme.spacing(1),
@@ -47,6 +53,15 @@ function JobPostedSingle(props) {
   let selectedBid = null;
   const history = useHistory();
 
+  const allowedChats = useQueryClient().getQueryData(queryKeys.chatUsers);
+  const [chatUserId, setChatUserId] = useState();
+
+  const {
+    mutate: mutateAddInChat,
+    isSuccess: isChatMtSuccess,
+    isError: isChatMtError
+  } = useAddInChat();
+
   const startOrder = () => {
     const order = {
       job_bid_id: selectedBid.id,
@@ -55,6 +70,15 @@ function JobPostedSingle(props) {
 
     mutate(order);
   };
+
+  useEffect(() => {
+    if (isChatMtSuccess) {
+      history.push("/user/chat", {
+        selectedUserId: chatUserId
+      });
+    }
+  }, [history, isChatMtSuccess, chatUserId]);
+
   return (
     <Box display="flex" justifyContent="center">
       <Grid container spacing={3} justifyContent="center" alignItems="center">
@@ -113,14 +137,25 @@ function JobPostedSingle(props) {
                     Bid Status: {bidStatusStrings[bid.status]}
                   </Typography>
                   <Typography variant="body2">{bid.details}</Typography>
-                  <Button>Open Chat</Button>
+                  <Button
+                    onClick={() => {
+                      let chatId = bid.offered_by.id;
+                      setChatUserId(chatId);
+                      mutateAddInChat(chatId);
+                    }}
+                  >
+                    Open Chat
+                  </Button>
                   <Button
                     onClick={() => {
                       selectedBid = bid;
                       startOrder();
                     }}
+                    disabled={bid.status === bidStatusCodes.ACCEPTED}
                   >
-                    Hire This Person
+                    {bid.status === bidStatusCodes.ACCEPTED
+                      ? "Hired"
+                      : "Hire This Person"}
                   </Button>
                 </Card>
               </Grid>

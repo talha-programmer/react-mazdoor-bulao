@@ -30,12 +30,14 @@ import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
 import BidsIcon from "@material-ui/icons/AccountTreeTwoTone";
 import JobsPostedIcon from "@material-ui/icons/DeckSharp";
 import CreateJobIcon from "@material-ui/icons/NewReleasesOutlined";
+import ChatIcon from "@material-ui/icons/Chat";
 import MessagePopperButton from "./MessagePopperButton";
 import SideDrawer from "./SideDrawer";
 import Balance from "./Balance";
 import NavigationDrawer from "../../../shared/components/NavigationDrawer";
 import sharedMenuItems from "../../../config/sharedMenuItems";
-
+import { useQueryClient } from "react-query";
+import queryKeys from "../../../config/queryKeys";
 const styles = (theme) => ({
   appBar: {
     boxShadow: theme.shadows[6],
@@ -140,7 +142,8 @@ function NavBar(props) {
   const links = useRef([]);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isSideDrawerOpen, setIsSideDrawerOpen] = useState(false);
-
+  const queryClient = useQueryClient();
+  const loggedInUser = queryClient.getQueryData(queryKeys.user);
   const openMobileDrawer = useCallback(() => {
     setIsMobileOpen(true);
   }, [setIsMobileOpen]);
@@ -276,6 +279,40 @@ function NavBar(props) {
       }
     },
     {
+      link: "/user/chat",
+      name: "Chat",
+      onClick: closeMobileDrawer,
+      icon: {
+        desktop: (
+          <ChatIcon
+            className={
+              selectedTab === "Chat" ? classes.textPrimary : "text-white"
+            }
+            fontSize="small"
+          />
+        ),
+        mobile: <ChatIcon className="text-white" />
+      }
+    },
+    {
+      link: "/user/worker_profile",
+      name: "Worker Profile",
+      onClick: closeMobileDrawer,
+      icon: {
+        desktop: (
+          <CreateJobIcon
+            className={
+              selectedTab === "WorkerProfile"
+                ? classes.textPrimary
+                : "text-white"
+            }
+            fontSize="small"
+          />
+        ),
+        mobile: <CreateJobIcon className="text-white" />
+      }
+    },
+    {
       link: "/logout",
       name: "Logout",
       icon: {
@@ -364,14 +401,16 @@ function NavBar(props) {
             >
               <Avatar
                 alt="profile picture"
-                src={`${process.env.PUBLIC_URL}/images/logged_in/profilePicture.jpg`}
+                //src={`${process.env.PUBLIC_URL}/images/logged_in/profilePicture.jpg`}
                 className={classNames(classes.accountAvatar)}
               />
               {isWidthUp("sm", width) && (
                 <ListItemText
                   className={classes.username}
                   primary={
-                    <Typography color="textPrimary">Username</Typography>
+                    <Typography color="textPrimary">
+                      {loggedInUser?.username}
+                    </Typography>
                   }
                 />
               )}

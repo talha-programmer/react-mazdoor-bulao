@@ -5,7 +5,7 @@ import queryKeys from "../../config/queryKeys";
 
 function useJobs() {
   return useQuery(queryKeys.jobs, () =>
-    axios.post(api.jobs).then((result) => result.data)
+    axios.post(api.jobs).then((result) => result.data.jobs)
   );
 }
 
