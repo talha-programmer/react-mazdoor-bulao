@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useContext } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import {
@@ -16,8 +16,7 @@ import LockOpenIcon from "@material-ui/icons/LockOpen";
 import NavigationDrawer from "../../../shared/components/NavigationDrawer";
 import sharedMenuItems from "../../../config/sharedMenuItems";
 import DashboardIcon from "@material-ui/icons/Dashboard";
-import Cookies from "js-cookie";
-import useUser from "../../../hooks/user/useUser";
+import { AuthContext } from "../../../context/AuthContext";
 const styles = (theme) => ({
   appBar: {
     boxShadow: theme.shadows[6],
@@ -83,106 +82,99 @@ function NavBar(props) {
     );
   }
 
-  const [menuItems, setMenuItems] = useState(null);
-  const [leftSideItems, setLeftSideItems] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const userQuery = useUser();
+  const { token } = useContext(AuthContext);
 
-  // Run this useEffect whenever the auth state changes.
-  // For that, we added userQuery dependency
-  useEffect(() => {
-    const authButtons = [
-      {
-        name: "Register",
-        onClick: openRegisterDialog,
-        icon: <HowToRegIcon className="text-white" />
-      },
-      {
-        name: "Login",
-        onClick: openLoginDialog,
-        icon: <LockOpenIcon className="text-white" />
-      }
-    ];
+  let menuItems = null;
+  let leftSideItems = null;
 
-    const loggedInMenuItems = [
-      {
-        name: "Dashboard",
-        link: "/user/dashboard",
-        icon: <DashboardIcon className="text-white" />
-      },
-      {
-        name: "Logout",
-        link: "/logout"
-      }
-    ];
-
-    if (!Cookies.get("loginToken")) {
-      setMenuItems(sharedMenuItems.concat(authButtons));
-      setLeftSideItems(authButtons);
-    } else {
-      setMenuItems(sharedMenuItems.concat(loggedInMenuItems));
-      setLeftSideItems(loggedInMenuItems);
+  const authButtons = [
+    {
+      name: "Register",
+      onClick: openRegisterDialog,
+      icon: <HowToRegIcon className="text-white" />
+    },
+    {
+      name: "Login",
+      onClick: openLoginDialog,
+      icon: <LockOpenIcon className="text-white" />
     }
-    setLoading(false);
-  }, [openLoginDialog, openRegisterDialog, userQuery.data]);
+  ];
+
+  const loggedInMenuItems = [
+    {
+      name: "Dashboard",
+      link: "/user/dashboard",
+      icon: <DashboardIcon className="text-white" />
+    },
+    {
+      name: "Logout",
+      link: "/logout"
+    }
+  ];
+
+  if (!token) {
+    menuItems = sharedMenuItems.concat(authButtons);
+    leftSideItems = authButtons;
+  } else {
+    menuItems = sharedMenuItems.concat(loggedInMenuItems);
+    leftSideItems = loggedInMenuItems;
+  }
 
   return (
     <div className={classes.root}>
-      {!loading && (
-        <>
-          <AppBar position="fixed" className={classes.appBar}>
-            <Toolbar className={classes.toolbar}>
-              <div>
-                <Typography
-                  variant="h4"
-                  className={classes.brandText}
-                  display="inline"
-                  color="primary"
+      <>
+        <AppBar position="fixed" className={classes.appBar}>
+          <Toolbar className={classes.toolbar}>
+            <div>
+              <Typography
+                variant="h4"
+                className={classes.brandText}
+                display="inline"
+                color="primary"
+              >
+                Mazdoor
+              </Typography>
+              <Typography
+                variant="h4"
+                className={classes.brandText}
+                display="inline"
+                color="secondary"
+              >
+                Bulao
+              </Typography>
+              <Hidden smDown>
+                {sharedMenuItems.map((item) => {
+                  return <DisplayMenuItem item={item} />;
+                })}
+              </Hidden>
+            </div>
+            <div>
+              <Hidden mdUp>
+                <IconButton
+                  className={classes.menuButton}
+                  onClick={handleMobileDrawerOpen}
+                  aria-label="Open Navigation"
                 >
-                  Mazdoor
-                </Typography>
-                <Typography
-                  variant="h4"
-                  className={classes.brandText}
-                  display="inline"
-                  color="secondary"
-                >
-                  Bulao
-                </Typography>
-                <Hidden smDown>
-                  {sharedMenuItems.map((item) => {
-                    return <DisplayMenuItem item={item} />;
-                  })}
-                </Hidden>
-              </div>
-              <div>
-                <Hidden mdUp>
-                  <IconButton
-                    className={classes.menuButton}
-                    onClick={handleMobileDrawerOpen}
-                    aria-label="Open Navigation"
-                  >
-                    <MenuIcon color="primary" />
-                  </IconButton>
-                </Hidden>
+                  <MenuIcon color="primary" />
+                </IconButton>
+              </Hidden>
 
-                <Hidden smDown>
-                  {leftSideItems.map((item) => {
-                    return <DisplayMenuItem item={item} />;
-                  })}
-                </Hidden>
-              </div>
-            </Toolbar>
-          </AppBar>
-          <NavigationDrawer
-            menuItems={menuItems}
-            anchor="right"
-            open={mobileDrawerOpen}
-            selectedItem={selectedTab}
-            onClose={handleMobileDrawerClose}
-          />
-        </>
-      )}
+              <Hidden smDown>
+                {leftSideItems.map((item) => {
+                  return <DisplayMenuItem item={item} />;
+                })}
+              </Hidden>
+            </div>
+          </Toolbar>
+        </AppBar>
+        <NavigationDrawer
+          menuItems={menuItems}
+          anchor="right"
+          open={mobileDrawerOpen}
+          selectedItem={selectedTab}
+          onClose={handleMobileDrawerClose}
+        />
+      </>
     </div>
   );
 }
