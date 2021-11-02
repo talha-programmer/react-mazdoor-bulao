@@ -114,10 +114,26 @@ const Chat = (props) => {
   const classes = useStyles();
   const userIdPassed = props.location?.state?.selectedUserId;
   const [selectedUserId, setSelectedUserId] = useState(userIdPassed);
-  const { data: chatUsers, isLoading, isError, isFetched } = useChatUsers();
+  const [chatUsers, setChatUsers] = useState();
+  const {
+    data: dataChatUsers,
+    isLoading: isUsersLoading,
+    isError: isUsersError,
+    isFetched: isUsersFetched
+  } = useChatUsers();
   const messageRef = useRef();
+  const searchRef = useRef();
+  const {
+    mutate,
+    isSuccess: isMessageSuccess,
+    isError: isMessageError
+  } = useSendMessage();
 
-  const { mutate, isSuccess, isError: isMessageError } = useSendMessage();
+  useEffect(() => {
+    if (isUsersFetched) {
+      setChatUsers(Object.values(dataChatUsers));
+    }
+  }, [dataChatUsers, isUsersFetched]);
 
   const sendMessage = () => {
     const messageText = messageRef.current.value;
@@ -131,10 +147,24 @@ const Chat = (props) => {
   };
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isMessageSuccess) {
       messageRef.current.value = "";
     }
-  }, [isSuccess]);
+  }, [isMessageSuccess]);
+
+  const searchUsers = () => {
+    let value = searchRef.current.value;
+    if (value.length > 0 && isUsersFetched) {
+      let chat = Object.values(dataChatUsers).filter((user) => {
+        const name = user.name.toLowerCase();
+        value = value.toLowerCase();
+        return name.includes(value);
+      });
+      setChatUsers(chat);
+    } else {
+      setChatUsers(Object.values(dataChatUsers));
+    }
+  };
 
   return (
     <div>
@@ -148,16 +178,23 @@ const Chat = (props) => {
       <Grid container component={Paper} className={classes.chatSection}>
         <Grid item xs={3} className={classes.borderRight500}>
           <Grid item xs={12} style={{ padding: "10px" }}>
-            <TextField label="Search" variant="outlined" fullWidth />
+            <TextField
+              label="Search"
+              variant="outlined"
+              fullWidth
+              inputRef={searchRef}
+              onChange={searchUsers}
+            />
           </Grid>
           <Divider />
 
-          {isLoading ? (
+          {isUsersLoading ? (
             <span>Loading...</span>
           ) : (
             <List className={classes.chatUsers}>
-              {isFetched &&
-                Object.values(chatUsers).map((user) => (
+              {isUsersFetched &&
+                chatUsers &&
+                chatUsers.map((user) => (
                   <ListItem
                     button
                     key={user.id}
