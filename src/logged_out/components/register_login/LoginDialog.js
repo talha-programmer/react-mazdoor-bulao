@@ -1,4 +1,10 @@
-import React, { useState, useCallback, useRef, Fragment } from "react";
+import React, {
+  useState,
+  useCallback,
+  useRef,
+  Fragment,
+  useContext
+} from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { withRouter } from "react-router-dom";
@@ -19,6 +25,7 @@ import api from "../../../config/api";
 import Cookies from "js-cookie";
 import { useQueryClient } from "react-query";
 import queryKeys from "../../../config/queryKeys";
+import { AuthContext } from "../../../context/AuthContext";
 
 const styles = (theme) => ({
   forgotPassword: {
@@ -55,6 +62,7 @@ function LoginDialog(props) {
   const loginUsername = useRef();
   const loginPassword = useRef();
   const queryClient = useQueryClient();
+  const { setToken } = useContext(AuthContext);
 
   const login = useCallback(() => {
     setIsLoading(true);
@@ -69,7 +77,7 @@ function LoginDialog(props) {
         const data = result.data;
         if (data.user) {
           Cookies.set("loginToken", data.login_token, { expires: 1 }); // expires in 1 day
-
+          setToken(data.login_token);
           queryClient.invalidateQueries(queryKeys.user);
           history.push("/user/dashboard");
         }
@@ -87,7 +95,7 @@ function LoginDialog(props) {
         setStatus(status + errorStatus);
       })
       .finally(() => setIsLoading(false));
-  }, [setStatus, queryClient, history, status]);
+  }, [setStatus, setToken, queryClient, history, status]);
 
   return (
     <Fragment>

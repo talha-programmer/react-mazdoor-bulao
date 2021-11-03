@@ -1,4 +1,10 @@
-import React, { useState, useCallback, useRef, Fragment } from "react";
+import React, {
+  useState,
+  useCallback,
+  useRef,
+  Fragment,
+  useContext
+} from "react";
 import PropTypes from "prop-types";
 import {
   FormHelperText,
@@ -17,6 +23,7 @@ import axios from "axios";
 import api from "../../../config/api";
 import { withRouter } from "react-router-dom";
 import Cookies from "js-cookie";
+import { AuthContext } from "../../../context/AuthContext";
 
 const styles = (theme) => ({
   link: {
@@ -54,6 +61,7 @@ function RegisterDialog(props) {
   const registerFullName = useRef();
   const registerUsername = useRef();
   const registerEmail = useRef();
+  const { setToken } = useContext(AuthContext);
 
   const register = useCallback(() => {
     if (!registerTermsCheckbox.current.checked) {
@@ -84,6 +92,7 @@ function RegisterDialog(props) {
       .then((result) => {
         if (result.data.user) {
           Cookies.set("loginToken", data.login_token, { expires: 1 });
+          setToken(data.login_token);
           history.push("/user/dashboard");
         }
       })
@@ -115,7 +124,8 @@ function RegisterDialog(props) {
     registerFullName,
     registerEmail,
     history,
-    status
+    status,
+    setToken
   ]);
 
   return (

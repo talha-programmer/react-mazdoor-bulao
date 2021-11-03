@@ -1,36 +1,39 @@
-import Cookies from "js-cookie";
-import { useMemo } from "react";
 import { useState } from "react";
-import { useEffect } from "react";
+
+import React, { useEffect } from "react";
+import Cookies from "js-cookie";
 import useUser from "../hooks/user/useUser";
-import React from "react";
 
-const AuthContext = React.createContext();
+export const AuthContext = React.createContext();
 
-function useAuth() {
-  const context = React.useContext(AuthContext);
-
-  if (!context) {
-    throw new Error("useAuth must be used with an AuthProvider");
+export const AuthProvider = ({ children }) => {
+  let tokenLocal;
+  try {
+    tokenLocal = Cookies.get("loginToken");
+  } catch (err) {
+    tokenLocal = null;
   }
 
-  return context;
-}
+  const [token, setToken] = useState(tokenLocal);
+  const [user, setUser] = useState(null);
+  const { data: userReceived, isError, isSuccess } = useUser();
 
-function AuthProvider(props) {
-  const [loggedInUser, setLoggedInUser] = useState(null);
-  const userQuery = useUser();
-  if (Cookies.get("loginToken")) {
-    if (userQuery.isSuccess) {
-      setLoggedInUser(userQuery.data);
-    } else if (userQuery.isError) {
-      console.log(userQuery.error);
+  useEffect(() => {
+    if (isSuccess) {
+      setUser(userReceived);
     }
-  }
+  }, [isSuccess, setUser, userReceived]);
 
-  const value = useMemo(() => [loggedInUser, setLoggedInUser], [loggedInUser]);
-
-  return <AuthContext.Provider value={value} {...props} />;
-}
-
-export { useAuth, AuthProvider };
+  return (
+    <AuthContext.Provider
+      value={{
+        token,
+        setToken,
+        user,
+        setUser
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};

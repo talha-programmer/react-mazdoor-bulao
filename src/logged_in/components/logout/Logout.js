@@ -5,11 +5,15 @@ import { withRouter } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useQueryClient } from "react-query";
 import queryKeys from "../../../config/queryKeys";
+import { AuthContext } from "../../../context/AuthContext";
+import { React, useContext } from "react";
 
 function Logout(props) {
   const { history } = props;
+  const { setToken } = useContext(AuthContext);
   const queryClinet = useQueryClient();
   Cookies.remove("loginToken");
+  setToken(null);
   axios
     .post(api.logout)
     .catch((error) => console.log(error))
