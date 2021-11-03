@@ -1,24 +1,58 @@
-import React, { Fragment, Suspense, lazy, useState, useEffect } from "react";
+import React, { Fragment, Suspense, lazy, useContext } from "react";
 import { MuiThemeProvider, CssBaseline } from "@material-ui/core";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import theme from "./theme";
 import GlobalStyles from "./GlobalStyles";
 import Pace from "./shared/components/Pace";
-import useUser from "./hooks/user/useUser";
+import axios from "axios";
+
+import Echo from "laravel-echo";
+import pusherJs from "pusher-js";
+import { AuthContext } from "./context/AuthContext";
+
 const LoggedInComponent = lazy(() => import("./logged_in/components/Main"));
 
 const LoggedOutComponent = lazy(() => import("./logged_out/components/Main"));
 const Router = () => {
-  const userQuery = useUser();
-  const [user, setUser] = useState(null);
+  const { token, user } = useContext(AuthContext);
 
-  useEffect(() => {
-    if (userQuery.isSuccess) {
-      setUser(userQuery.data);
-    } else if (userQuery.isError) {
-      console.log(userQuery.error);
-    }
-  }, [userQuery.data, userQuery.error, userQuery.isError, userQuery.isSuccess]);
+  // It will send auth related cookies with every request
+  axios.defaults.withCredentials = true;
+
+  //const authToken = localStorage.getItem("loginToken");
+  axios.defaults.headers.common = {
+    Authorization: `Bearer ${token}`,
+    Accept: "application/json"
+  };
+
+  // window.Pusher = pusherJs;
+
+  // window.Echo = new Echo({
+  //   broadcaster: "pusher",
+  //   key: "2222",
+  //   wsHost: "localhost",
+  //   wsPort: 6001,
+  //   forceTLS: false,
+  //   disableStats: true,
+  //   //authEndPoint: "http://localhost:8000/broadcasting/auth"
+  //   authorizer: (channel, options) => {
+  //     return {
+  //       authorize: (socketId, callback) => {
+  //         axios
+  //           .post("http://localhost:8000/broadcasting/auth", {
+  //             socket_id: socketId,
+  //             channel_name: channel.name
+  //           })
+  //           .then((response) => {
+  //             callback(false, response.data);
+  //           })
+  //           .catch((error) => {
+  //             callback(true, error);
+  //           });
+  //       }
+  //     };
+  //   }
+  // });
 
   return (
     <BrowserRouter>
