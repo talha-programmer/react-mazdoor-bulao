@@ -63,17 +63,17 @@ const MessageArea = ({ userId }) => {
   }, [chat]);
 
   // TODO Fix multiple times reloading of this code
-  window.Echo.private(`chat.with.${loggedInUserId}`).listen(
-    "MessageReceived",
-    (e) => {
-      console.log("message received");
-      const message = e.message;
-      queryClient.setQueryData(
-        [queryKeys.chatWithUser, message?.from],
-        (oldData) => [...oldData, message]
-      );
-    }
-  );
+  // window.Echo.private(`chat.with.${loggedInUserId}`).listen(
+  //   "MessageReceived",
+  //   (e) => {
+  //     console.log("message received");
+  //     const message = e.message;
+  //     queryClient.setQueryData(
+  //       [queryKeys.chatWithUser, message?.from],
+  //       (oldData) => [...oldData, message]
+  //     );
+  //   }
+  // );
 
   return (
     <>
@@ -90,7 +90,7 @@ const MessageArea = ({ userId }) => {
                   align={message.from === loggedInUserId ? "right" : "left"}
                 >
                   <Grid item xs={12}>
-                    <ListItemText primary={message.message}></ListItemText>
+                    <ListItemText primary={message.message_text}></ListItemText>
                   </Grid>
                   <Grid item xs={12}>
                     <ListItemText
@@ -112,6 +112,7 @@ const MessageArea = ({ userId }) => {
 
 const Chat = (props) => {
   const classes = useStyles();
+  const { selectChat } = props;
   const userIdPassed = props.location?.state?.selectedUserId;
   const [selectedUserId, setSelectedUserId] = useState(userIdPassed);
   const [chatUsers, setChatUsers] = useState();
@@ -128,6 +129,8 @@ const Chat = (props) => {
     isSuccess: isMessageSuccess,
     isError: isMessageError
   } = useSendMessage();
+
+  useEffect(selectChat, [selectChat]);
 
   useEffect(() => {
     if (isUsersFetched) {
