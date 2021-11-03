@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import {
@@ -40,7 +40,7 @@ const styles = (theme) => ({
 });
 
 function Jobs(props) {
-  const { classes } = props;
+  const { classes, selectJobs } = props;
   const history = useHistory();
   const queryClient = useQueryClient();
 
@@ -48,10 +48,7 @@ function Jobs(props) {
   // them with queryClient
   let jobs = queryClient.getQueryData(queryKeys.jobs);
 
-  // const loggedInUserId = queryClient.getQueryData(queryKeys.user)?.id;
-  // if (loggedInUserId > 0) {
-  //   jobs = jobs.filter((job) => job.posted_by !== loggedInUserId);
-  // }
+  useEffect(selectJobs, [selectJobs]);
 
   return (
     <Box

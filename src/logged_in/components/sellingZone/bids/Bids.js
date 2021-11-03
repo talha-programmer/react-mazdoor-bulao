@@ -39,11 +39,13 @@ const styles = (theme) => ({
 });
 
 function Bids(props) {
-  const { classes } = props;
+  const { classes, selectBids } = props;
   const bidsQuery = useBids();
   //const [openBidDialog, setOpenBidDialog] = useState(false);
   const [bids, setBids] = useState();
   const [loading, setLoading] = useState(true);
+
+  useEffect(selectBids, [selectBids]);
 
   useEffect(() => {
     if (bidsQuery.isFetched) {

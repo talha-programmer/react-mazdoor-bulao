@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import {
@@ -41,9 +41,11 @@ const styles = (theme) => ({
 });
 
 function SellingOrders(props) {
-  const { classes } = props;
+  const { classes, selectSellingOrders } = props;
   const { data: sellingOrders, isLoading, isError } = useSellingOrders();
   const history = useHistory();
+
+  useEffect(selectSellingOrders, [selectSellingOrders]);
 
   return (
     <Box display="flex" justifyContent="center">

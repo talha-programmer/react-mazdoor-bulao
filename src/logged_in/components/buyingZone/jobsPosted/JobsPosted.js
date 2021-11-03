@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import {
@@ -40,9 +40,11 @@ const styles = (theme) => ({
 });
 
 function JobsPosted(props) {
-  const { classes } = props;
+  const { classes, selectJobsPosted } = props;
   const { data: postedJobs, isLoading, isError } = usePostedJobs();
   const history = useHistory();
+
+  useEffect(selectJobsPosted, [selectJobsPosted]);
 
   return (
     <Box display="flex" justifyContent="center">

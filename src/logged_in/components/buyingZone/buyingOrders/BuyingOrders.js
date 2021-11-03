@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import {
@@ -50,7 +50,7 @@ const styles = (theme) => ({
 });
 
 function BuyingOrders(props) {
-  const { classes } = props;
+  const { classes, selectBuyingOrders } = props;
   const { data: buyingOrders, isLoading, isError } = useBuyingOrders();
   const history = useHistory();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -61,6 +61,8 @@ function BuyingOrders(props) {
     isLoading: loadingCompleteOrder,
     isError: errorCompleteOrder
   } = useCompleteBuyingOrder();
+
+  useEffect(selectBuyingOrders, [selectBuyingOrders]);
 
   return (
     <Box display="flex" justifyContent="center">
