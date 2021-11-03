@@ -3,8 +3,6 @@ import PropTypes from "prop-types";
 import { Switch } from "react-router-dom";
 import { withStyles } from "@material-ui/core";
 import Dashboard from "./dashboard/Dashboard";
-import Posts from "./posts/Posts";
-import Subscription from "./subscription/Subscription";
 import PropsRoute from "../../shared/components/PropsRoute";
 import useLocationBlocker from "../../shared/functions/useLocationBlocker";
 import CreateJob from "./buyingZone/createJob/CreateJob";
@@ -57,24 +55,19 @@ const styles = (theme) => ({
 function Routing(props) {
   const {
     classes,
-    EmojiTextArea,
-    ImageCropper,
-    Dropzone,
-    DateTimePicker,
     pushMessageToSnackbar,
-    posts,
-    transactions,
     toggleAccountActivation,
     CardChart,
     statistics,
     targets,
     setTargets,
-    setPosts,
     isAccountActivated,
     selectDashboard,
-    selectPosts,
-    selectSubscription,
-    openAddBalanceDialog
+    selectJobsPosted,
+    selectBids,
+    selectBuyingOrders,
+    selectSellingOrders,
+    selectChat
   } = props;
   useLocationBlocker();
 
@@ -93,26 +86,6 @@ function Routing(props) {
   return (
     <div className={classes.wrapper}>
       <Switch>
-        <PropsRoute
-          path="/user/posts"
-          component={Posts}
-          EmojiTextArea={EmojiTextArea}
-          ImageCropper={ImageCropper}
-          Dropzone={Dropzone}
-          DateTimePicker={DateTimePicker}
-          pushMessageToSnackbar={pushMessageToSnackbar}
-          posts={posts}
-          setPosts={setPosts}
-          selectPosts={selectPosts}
-        />
-        <PropsRoute
-          path="/user/subscription"
-          component={Subscription}
-          transactions={transactions}
-          pushMessageToSnackbar={pushMessageToSnackbar}
-          selectSubscription={selectSubscription}
-          openAddBalanceDialog={openAddBalanceDialog}
-        />
         {!isOrdersLoading &&
           buyingOrders.map((order) => {
             return (
@@ -129,8 +102,16 @@ function Routing(props) {
           component={BuyingOrderSingle}
         />
 
-        <PropsRoute path="/user/buying_orders" component={BuyingOrders} />
-        <PropsRoute path="/user/selling_orders" component={SellingOrders} />
+        <PropsRoute
+          path="/user/buying_orders"
+          component={BuyingOrders}
+          selectBuyingOrders={selectBuyingOrders}
+        />
+        <PropsRoute
+          path="/user/selling_orders"
+          component={SellingOrders}
+          selectSellingOrders={selectSellingOrders}
+        />
 
         {!isJobsLoading &&
           jobsPosted.map((job) => {
@@ -156,10 +137,22 @@ function Routing(props) {
           })}
 
         <PropsRoute path="/user/jobs_posted/create" component={CreateJob} />
-        <PropsRoute path="/user/jobs_posted" component={JobsPosted} />
-        <PropsRoute path="/user/bids" component={Bids} />
+        <PropsRoute
+          path="/user/jobs_posted"
+          component={JobsPosted}
+          selectJobsPosted={selectJobsPosted}
+        />
+        <PropsRoute
+          path="/user/bids"
+          component={Bids}
+          selectBids={selectBids}
+        />
 
-        <PropsRoute path="/user/chat" component={Chat} />
+        <PropsRoute
+          path="/user/chat"
+          component={Chat}
+          selectChat={selectChat}
+        />
 
         <PropsRoute path="/user/worker_profile" component={WorkerProfile} />
         <PropsRoute
@@ -186,23 +179,15 @@ function Routing(props) {
 
 Routing.propTypes = {
   classes: PropTypes.object.isRequired,
-  EmojiTextArea: PropTypes.elementType,
-  ImageCropper: PropTypes.elementType,
-  Dropzone: PropTypes.elementType,
-  DateTimePicker: PropTypes.elementType,
   pushMessageToSnackbar: PropTypes.func,
   setTargets: PropTypes.func.isRequired,
-  setPosts: PropTypes.func.isRequired,
-  posts: PropTypes.arrayOf(PropTypes.object).isRequired,
-  transactions: PropTypes.arrayOf(PropTypes.object).isRequired,
   toggleAccountActivation: PropTypes.func,
   CardChart: PropTypes.elementType,
   statistics: PropTypes.object.isRequired,
   targets: PropTypes.arrayOf(PropTypes.object).isRequired,
   isAccountActivated: PropTypes.bool.isRequired,
   selectDashboard: PropTypes.func.isRequired,
-  selectPosts: PropTypes.func.isRequired,
-  selectSubscription: PropTypes.func.isRequired,
+  selectJobsPosted: PropTypes.func.isRequired,
   openAddBalanceDialog: PropTypes.func.isRequired
 };
 

@@ -34,42 +34,12 @@ function Main(props) {
   const [selectedTab, setSelectedTab] = useState(null);
   const [CardChart, setCardChart] = useState(null);
   const [hasFetchedCardChart, setHasFetchedCardChart] = useState(false);
-  const [EmojiTextArea, setEmojiTextArea] = useState(null);
-  const [hasFetchedEmojiTextArea, setHasFetchedEmojiTextArea] = useState(false);
-  const [ImageCropper, setImageCropper] = useState(null);
-  const [hasFetchedImageCropper, setHasFetchedImageCropper] = useState(false);
-  const [Dropzone, setDropzone] = useState(null);
-  const [hasFetchedDropzone, setHasFetchedDropzone] = useState(false);
-  const [DateTimePicker, setDateTimePicker] = useState(null);
-  const [hasFetchedDateTimePicker, setHasFetchedDateTimePicker] =
-    useState(false);
-  const [transactions, setTransactions] = useState([]);
   const [statistics, setStatistics] = useState({ views: [], profit: [] });
-  const [posts, setPosts] = useState([]);
   const [targets, setTargets] = useState([]);
   const [messages, setMessages] = useState([]);
   const [isAccountActivated, setIsAccountActivated] = useState(false);
   const [isAddBalanceDialogOpen, setIsAddBalanceDialogOpen] = useState(false);
   const [pushMessageToSnackbar, setPushMessageToSnackbar] = useState(null);
-
-  const fetchRandomTargets = useCallback(() => {
-    const targets = [];
-    for (let i = 0; i < 35; i += 1) {
-      const randomPerson = persons[Math.floor(Math.random() * persons.length)];
-      const target = {
-        id: i,
-        number1: Math.floor(Math.random() * 251),
-        number2: Math.floor(Math.random() * 251),
-        number3: Math.floor(Math.random() * 251),
-        number4: Math.floor(Math.random() * 251),
-        name: randomPerson.name,
-        profilePicUrl: randomPerson.src,
-        isActivated: Math.round(Math.random()) ? true : false
-      };
-      targets.push(target);
-    }
-    setTargets(targets);
-  }, [setTargets]);
 
   const openAddBalanceDialog = useCallback(() => {
     setIsAddBalanceDialogOpen(true);
@@ -109,64 +79,6 @@ function Main(props) {
     setStatistics(statistics);
   }, [setStatistics]);
 
-  const fetchRandomTransactions = useCallback(() => {
-    const transactions = [];
-    const iterations = 32;
-    const oneMonthSeconds = Math.round(60 * 60 * 24 * 30.5);
-    const transactionTemplates = [
-      {
-        description: "Starter subscription",
-        isSubscription: true,
-        balanceChange: -1499
-      },
-      {
-        description: "Premium subscription",
-        isSubscription: true,
-        balanceChange: -2999
-      },
-      {
-        description: "Business subscription",
-        isSubscription: true,
-        balanceChange: -4999
-      },
-      {
-        description: "Tycoon subscription",
-        isSubscription: true,
-        balanceChange: -9999
-      },
-      {
-        description: "Added funds",
-        isSubscription: false,
-        balanceChange: 2000
-      },
-      {
-        description: "Added funds",
-        isSubscription: false,
-        balanceChange: 5000
-      }
-    ];
-    let curUnix = Math.round(
-      new Date().getTime() / 1000 - iterations * oneMonthSeconds
-    );
-    for (let i = 0; i < iterations; i += 1) {
-      const randomTransactionTemplate =
-        transactionTemplates[
-          Math.floor(Math.random() * transactionTemplates.length)
-        ];
-      const transaction = {
-        id: i,
-        description: randomTransactionTemplate.description,
-        balanceChange: randomTransactionTemplate.balanceChange,
-        paidUntil: curUnix + oneMonthSeconds,
-        timestamp: curUnix
-      };
-      curUnix += oneMonthSeconds;
-      transactions.push(transaction);
-    }
-    transactions.reverse();
-    setTransactions(transactions);
-  }, [setTransactions]);
-
   const fetchRandomMessages = useCallback(() => {
     shuffle(persons);
     const messages = [];
@@ -189,29 +101,6 @@ function Main(props) {
     messages.reverse();
     setMessages(messages);
   }, [setMessages]);
-
-  const fetchRandomPosts = useCallback(() => {
-    shuffle(persons);
-    const posts = [];
-    const iterations = persons.length;
-    const oneDaySeconds = 60 * 60 * 24;
-    let curUnix = Math.round(
-      new Date().getTime() / 1000 - iterations * oneDaySeconds
-    );
-    for (let i = 0; i < iterations; i += 1) {
-      const person = persons[i];
-      const post = {
-        id: i,
-        src: person.src,
-        timestamp: curUnix,
-        name: person.name
-      };
-      curUnix += oneDaySeconds;
-      posts.push(post);
-    }
-    posts.reverse();
-    setPosts(posts);
-  }, [setPosts]);
 
   const toggleAccountActivation = useCallback(() => {
     if (pushMessageToSnackbar) {
@@ -245,54 +134,34 @@ function Main(props) {
     setHasFetchedCardChart
   ]);
 
-  const selectPosts = useCallback(() => {
+  const selectJobsPosted = useCallback(() => {
     smoothScrollTop();
-    document.title = "MazdoorBulao - Bids";
-    setSelectedTab("Bids");
-    if (!hasFetchedEmojiTextArea) {
-      setHasFetchedEmojiTextArea(true);
-      import("../../shared/components/EmojiTextArea").then((Component) => {
-        setEmojiTextArea(Component.default);
-      });
-    }
-    if (!hasFetchedImageCropper) {
-      setHasFetchedImageCropper(true);
-      import("../../shared/components/ImageCropper").then((Component) => {
-        setImageCropper(Component.default);
-      });
-    }
-    if (!hasFetchedDropzone) {
-      setHasFetchedDropzone(true);
-      import("../../shared/components/Dropzone").then((Component) => {
-        setDropzone(Component.default);
-      });
-    }
-    if (!hasFetchedDateTimePicker) {
-      setHasFetchedDateTimePicker(true);
-      import("../../shared/components/DateTimePicker").then((Component) => {
-        setDateTimePicker(Component.default);
-      });
-    }
-  }, [
-    setSelectedTab,
-    setEmojiTextArea,
-    setImageCropper,
-    setDropzone,
-    setDateTimePicker,
-    hasFetchedEmojiTextArea,
-    setHasFetchedEmojiTextArea,
-    hasFetchedImageCropper,
-    setHasFetchedImageCropper,
-    hasFetchedDropzone,
-    setHasFetchedDropzone,
-    hasFetchedDateTimePicker,
-    setHasFetchedDateTimePicker
-  ]);
+    document.title = "WaVer - Jobs Posted";
+    setSelectedTab("JobsPosted");
+  }, [setSelectedTab]);
 
-  const selectSubscription = useCallback(() => {
+  const selectBids = useCallback(() => {
     smoothScrollTop();
-    document.title = "WaVer - Subscription";
-    setSelectedTab("Subscription");
+    document.title = "WaVer - Bids";
+    setSelectedTab("Bids");
+  }, [setSelectedTab]);
+
+  const selectBuyingOrders = useCallback(() => {
+    smoothScrollTop();
+    document.title = "WaVer - Buying Orders";
+    setSelectedTab("BuyingOrders");
+  }, [setSelectedTab]);
+
+  const selectSellingOrders = useCallback(() => {
+    smoothScrollTop();
+    document.title = "WaVer - Selling Orders";
+    setSelectedTab("SellingOrders");
+  }, [setSelectedTab]);
+
+  const selectChat = useCallback(() => {
+    smoothScrollTop();
+    document.title = "WaVer - Chat";
+    setSelectedTab("Chat");
   }, [setSelectedTab]);
 
   const getPushMessageFromChild = useCallback(
@@ -303,18 +172,9 @@ function Main(props) {
   );
 
   useEffect(() => {
-    fetchRandomTargets();
     fetchRandomStatistics();
-    fetchRandomTransactions();
     fetchRandomMessages();
-    fetchRandomPosts();
-  }, [
-    fetchRandomTargets,
-    fetchRandomStatistics,
-    fetchRandomTransactions,
-    fetchRandomMessages,
-    fetchRandomPosts
-  ]);
+  }, [fetchRandomStatistics, fetchRandomMessages]);
   return (
     <Fragment>
       <LazyLoadAddBalanceDialog
@@ -333,23 +193,19 @@ function Main(props) {
       <main className={classNames(classes.main)}>
         <Routing
           isAccountActivated={isAccountActivated}
-          ImageCropper={ImageCropper}
-          EmojiTextArea={EmojiTextArea}
           CardChart={CardChart}
-          Dropzone={Dropzone}
-          DateTimePicker={DateTimePicker}
           toggleAccountActivation={toggleAccountActivation}
           pushMessageToSnackbar={pushMessageToSnackbar}
-          transactions={transactions}
           statistics={statistics}
-          posts={posts}
           targets={targets}
           selectDashboard={selectDashboard}
-          selectPosts={selectPosts}
-          selectSubscription={selectSubscription}
+          selectBids={selectBids}
+          selectJobsPosted={selectJobsPosted}
+          selectBuyingOrders={selectBuyingOrders}
+          selectSellingOrders={selectSellingOrders}
+          selectChat={selectChat}
           openAddBalanceDialog={openAddBalanceDialog}
           setTargets={setTargets}
-          setPosts={setPosts}
         />
       </main>
     </Fragment>
