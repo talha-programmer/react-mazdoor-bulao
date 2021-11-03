@@ -34,10 +34,10 @@ function Main(props) {
     setSelectedTab("Home");
   }, [setSelectedTab]);
 
-  const selectBlog = useCallback(() => {
+  const selectJobs = useCallback(() => {
     smoothScrollTop();
-    document.title = "MazdoorBulao - Blog";
-    setSelectedTab("Blog");
+    document.title = "MazdoorBulao - Jobs";
+    setSelectedTab("Jobs");
   }, [setSelectedTab]);
 
   const openLoginDialog = useCallback(() => {
@@ -128,7 +128,7 @@ function Main(props) {
       <Routing
         blogPosts={blogPosts}
         selectHome={selectHome}
-        selectBlog={selectBlog}
+        selectJobs={selectJobs}
       />
       <Footer />
     </div>
