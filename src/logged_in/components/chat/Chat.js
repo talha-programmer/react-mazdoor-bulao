@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
 import Divider from "@material-ui/core/Divider";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -43,8 +42,8 @@ const useStyles = makeStyles({
   singleMessage: {
     backgroundColor: "rgba(239,239,239,1)",
     borderRadius: "22px",
-    padding: "10px"
-    //width: "fit-content"
+    padding: "10px",
+    width: "fit-content"
   }
 });
 
@@ -77,35 +76,38 @@ const MessageArea = ({ userId }) => {
 
   return (
     <>
-      {isLoading ? (
-        <span>Loading...</span>
-      ) : (
-        <List className={classes.messageArea} scroll="paper">
-          {chat &&
-            chat.map((message) => (
-              <ListItem key={message.id}>
-                <Grid
-                  container
-                  className={classes.singleMessage}
-                  align={message.from === loggedInUserId ? "right" : "left"}
-                >
-                  <Grid item xs={12}>
-                    <ListItemText primary={message.message_text}></ListItemText>
+      <List className={classes.messageArea} scroll="paper">
+        {isLoading ? (
+          <span>Loading...</span>
+        ) : (
+          <>
+            {chat &&
+              chat.map((message) => (
+                <ListItem key={message.id}>
+                  <Grid
+                    container
+                    align={message.from === loggedInUserId ? "right" : "left"}
+                  >
+                    <Grid item xs={12}>
+                      <div className={classes.singleMessage}>
+                        <ListItemText
+                          primary={message.message_text}
+                        ></ListItemText>
+                        <ListItemText
+                          secondary={format(
+                            new Date(message.created_at),
+                            "hh:mm a"
+                          )}
+                        ></ListItemText>
+                      </div>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12}>
-                    <ListItemText
-                      secondary={format(
-                        new Date(message.created_at),
-                        "hh:mm a"
-                      )}
-                    ></ListItemText>
-                  </Grid>
-                </Grid>
-              </ListItem>
-            ))}
-          <ListItem ref={scrollRef}></ListItem>
-        </List>
-      )}
+                </ListItem>
+              ))}
+            <ListItem ref={scrollRef}></ListItem>
+          </>
+        )}
+      </List>
     </>
   );
 };
