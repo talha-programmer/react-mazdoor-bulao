@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
 
   const [token, setToken] = useState(tokenLocal);
   const [user, setUser] = useState(null);
-  const { data: userReceived, isError, isSuccess } = useUser();
+  const { data: userReceived, isError, isSuccess, refetch } = useUser();
 
   useEffect(() => {
     if (isSuccess) {
@@ -24,13 +24,18 @@ export const AuthProvider = ({ children }) => {
     }
   }, [isSuccess, setUser, userReceived]);
 
+  const reloadUser = () => {
+    refetch();
+  };
+
   return (
     <AuthContext.Provider
       value={{
         token,
         setToken,
         user,
-        setUser
+        setUser,
+        reloadUser
       }}
     >
       {children}
