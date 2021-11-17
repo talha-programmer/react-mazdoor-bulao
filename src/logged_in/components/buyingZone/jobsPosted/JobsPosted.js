@@ -14,6 +14,7 @@ import format from "date-fns/format";
 import usePostedJobs from "../../../../hooks/user/usePostedJobs";
 import { jobStatusStrings } from "../../../../config/enums/jobStatus";
 import { useHistory } from "react-router";
+import BoxCircularProgress from "../../../../shared/components/BoxCircularProgress";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -50,7 +51,7 @@ function JobsPosted(props) {
     <Box display="flex" justifyContent="center">
       <Grid container spacing={3} justifyContent="center" alignItems="center">
         {isLoading ? (
-          <span>Loading...</span>
+          <BoxCircularProgress />
         ) : (
           postedJobs.map((job) => (
             <Grid item xs={8}>
