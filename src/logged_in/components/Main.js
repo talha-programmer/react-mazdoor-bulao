@@ -164,6 +164,12 @@ function Main(props) {
     setSelectedTab("Chat");
   }, [setSelectedTab]);
 
+  const selectWorkerProfile = useCallback(() => {
+    smoothScrollTop();
+    document.title = "WaVer - Worker Profile";
+    setSelectedTab("WorkerProfile");
+  }, [setSelectedTab]);
+
   const getPushMessageFromChild = useCallback(
     (pushMessage) => {
       setPushMessageToSnackbar(() => pushMessage);
@@ -204,6 +210,7 @@ function Main(props) {
           selectBuyingOrders={selectBuyingOrders}
           selectSellingOrders={selectSellingOrders}
           selectChat={selectChat}
+          selectWorkerProfile={selectWorkerProfile}
           openAddBalanceDialog={openAddBalanceDialog}
           setTargets={setTargets}
         />
