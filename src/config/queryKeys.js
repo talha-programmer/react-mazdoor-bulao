@@ -5,6 +5,7 @@ function queryKeys() {
     jobs: "jobs",
     jobCategories: "jobCategories",
     user: "user",
+    userProfile: "userProfile",
     workerProfile: "workerProfile",
     workerSkills: "workerSkills",
     appliedJobs: "appliedJobs",
