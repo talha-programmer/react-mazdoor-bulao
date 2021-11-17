@@ -1,4 +1,10 @@
-import React, { Fragment, useRef, useCallback, useState } from "react";
+import React, {
+  Fragment,
+  useRef,
+  useCallback,
+  useState,
+  useContext
+} from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import classNames from "classnames";
@@ -36,8 +42,7 @@ import SideDrawer from "./SideDrawer";
 import Balance from "./Balance";
 import NavigationDrawer from "../../../shared/components/NavigationDrawer";
 import sharedMenuItems from "../../../config/sharedMenuItems";
-import { useQueryClient } from "react-query";
-import queryKeys from "../../../config/queryKeys";
+import { AuthContext } from "../../../context/AuthContext";
 const styles = (theme) => ({
   appBar: {
     boxShadow: theme.shadows[6],
@@ -142,8 +147,7 @@ function NavBar(props) {
   const links = useRef([]);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isSideDrawerOpen, setIsSideDrawerOpen] = useState(false);
-  const queryClient = useQueryClient();
-  const loggedInUser = queryClient.getQueryData(queryKeys.user);
+  const { user: loggedInUser } = useContext(AuthContext);
   const openMobileDrawer = useCallback(() => {
     setIsMobileOpen(true);
   }, [setIsMobileOpen]);
@@ -296,6 +300,22 @@ function NavBar(props) {
       }
     },
     {
+      link: "/user/create_user_profile",
+      name: "User Profile",
+      onClick: closeMobileDrawer,
+      icon: {
+        desktop: (
+          <CreateJobIcon
+            className={
+              selectedTab === "UserProfile" ? classes.textPrimary : "text-white"
+            }
+            fontSize="small"
+          />
+        ),
+        mobile: <CreateJobIcon className="text-white" />
+      }
+    },
+    {
       link: "/logout",
       name: "Logout",
       icon: {
@@ -384,7 +404,7 @@ function NavBar(props) {
             >
               <Avatar
                 alt="profile picture"
-                //src={`${process.env.PUBLIC_URL}/images/logged_in/profilePicture.jpg`}
+                src={loggedInUser?.profile_image?.image_thumbnail_url}
                 className={classNames(classes.accountAvatar)}
               />
               {isWidthUp("sm", width) && (
