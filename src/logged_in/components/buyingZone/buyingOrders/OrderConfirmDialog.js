@@ -62,49 +62,48 @@ function OrderConfirmDialog(props) {
   };
 
   useEffect(() => {
-    console.log("called");
     if (isSuccessOrder) {
-      console.log("reached");
       setOpen(false);
     }
   }, [isSuccessOrder, setOpen]);
 
   return (
-    <FormDialog
-      open={open}
-      onClose={() => setOpen(false)}
-      onFormSubmit={onSubmit}
-      headline="Complete Order"
-      content={
-        <>
-          <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-            This action will mark the current order as complete.
-          </Typography>
+    <>
+      <FormDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        onFormSubmit={onSubmit}
+        headline="Complete Order"
+        content={
+          <>
+            <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+              This action will mark the current order as complete.
+            </Typography>
 
-          <Typography variant="body2">Rate this order</Typography>
+            <Typography variant="body2">Rate this order</Typography>
 
-          <Rating
-            value={rating}
-            onChange={(event, newValue) => {
-              setRating(newValue);
-            }}
-          />
+            <Rating
+              value={rating}
+              onChange={(event, newValue) => {
+                setRating(newValue);
+              }}
+            />
 
-          <TextField
-            variant="outlined"
-            margin="normal"
-            multiline
-            maxRows={5}
-            fullWidth
-            label="Write a Review"
-            autoComplete="off"
-            type="text"
-            // FormHelperTextProps={{ error: true }}
-            inputRef={reviewText}
-            // defaultValue={workerProfile?.description}
-          />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              multiline
+              maxRows={5}
+              fullWidth
+              label="Write a Review"
+              autoComplete="off"
+              type="text"
+              // FormHelperTextProps={{ error: true }}
+              inputRef={reviewText}
+              // defaultValue={workerProfile?.description}
+            />
 
-          {/* <TextField
+            {/* <TextField
             variant="outlined"
             margin="normal"
             required
@@ -146,34 +145,35 @@ function OrderConfirmDialog(props) {
               endAdornment: <InputAdornment position="end">days</InputAdornment>
             }}
           /> */}
-        </>
-      }
-      actions={
-        <Fragment>
-          <Grid container justifyContent="space-between" direction="row">
-            <Button
-              //type="submit"
-              variant="contained"
-              color="secondary"
-              size="large"
-              onClick={() => {
-                setOpen(false);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              size="large"
-            >
-              Confirm Order
-            </Button>
-          </Grid>
-        </Fragment>
-      }
-    />
+          </>
+        }
+        actions={
+          <Fragment>
+            <Grid container justifyContent="space-between" direction="row">
+              <Button
+                //type="submit"
+                variant="contained"
+                color="secondary"
+                size="large"
+                onClick={() => {
+                  setOpen(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                size="large"
+              >
+                Confirm Order
+              </Button>
+            </Grid>
+          </Fragment>
+        }
+      />
+    </>
   );
 }
 
