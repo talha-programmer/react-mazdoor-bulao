@@ -8,22 +8,15 @@ import {
   withStyles,
   Typography,
   Card,
-  Button,
-  Input,
-  TextField
+  Button
 } from "@material-ui/core";
 import format from "date-fns/format";
-import usePostedJobs from "../../../../hooks/user/usePostedJobs";
-import { jobStatusStrings } from "../../../../config/enums/jobStatus";
 import { useHistory } from "react-router";
 import useBuyingOrders from "../../../../hooks/orders/useBuyingOrders";
 import useCompleteBuyingOrder from "../../../../hooks/orders/useCompleteBuyingOrder";
-import {
-  orderStatusCodes,
-  orderStatusStrings
-} from "../../../../config/enums/orderStatus";
-import { Rating } from "@material-ui/lab";
+import { orderStatusStrings } from "../../../../config/enums/orderStatus";
 import OrderConfirmDialog from "./OrderConfirmDialog";
+import BoxCircularProgress from "../../../../shared/components/BoxCircularProgress";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -68,13 +61,13 @@ function BuyingOrders(props) {
     <Box display="flex" justifyContent="center">
       <Grid container spacing={3} justifyContent="center" alignItems="center">
         {isLoading ? (
-          <span>Loading...</span>
+          <BoxCircularProgress />
         ) : (
           buyingOrders.map((order) => (
             <Grid item xs={8}>
               <Card className={classes.card}>
                 <Typography variant="h5">
-                  Worker: {order.worker.name}
+                  Worker: {order.worker?.name}
                 </Typography>
                 <Typography variant="body2">
                   Order Status: {orderStatusStrings[order.status]}
@@ -128,13 +121,13 @@ function BuyingOrders(props) {
             </Grid>
           ))
         )}
-        {dialogOpen && (
+        {/* {dialogOpen && (
           <OrderConfirmDialog
             order={selectedOrder}
             open={dialogOpen}
             setOpen={setDialogOpen}
           />
-        )}
+        )} */}
       </Grid>
     </Box>
   );

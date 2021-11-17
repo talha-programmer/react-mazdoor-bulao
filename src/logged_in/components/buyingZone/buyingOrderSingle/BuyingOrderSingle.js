@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import {
@@ -28,6 +28,8 @@ import useOrderReviews from "../../../../hooks/review/useOrderReviews";
 import OrderConfirmDialog from "../buyingOrders/OrderConfirmDialog";
 import { Rating } from "@material-ui/lab";
 import { reviewTypesStrings } from "../../../../config/enums/reviewTypes";
+import BoxCircularProgress from "../../../../shared/components/BoxCircularProgress";
+import smoothScrollTop from "../../../../shared/functions/smoothScrollTop";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -70,6 +72,8 @@ function BuyingOrderSingle(props) {
     isError: isReviewsError
   } = useOrderReviews(orderId);
 
+  useEffect(smoothScrollTop, [smoothScrollTop]);
+
   // const startOrder = () => {
   //   const order = {
   //     job_bid_id: selectedBid.id,
@@ -83,13 +87,13 @@ function BuyingOrderSingle(props) {
     <Box display="flex" justifyContent="center">
       <Grid container spacing={3} justifyContent="center" alignItems="center">
         {isLoading ? (
-          <span>Loading...</span>
+          <BoxCircularProgress />
         ) : (
           <>
             <Grid item xs={8}>
               <Card className={classes.card}>
                 <Typography variant="h5">
-                  Worker: {order.worker.name}
+                  Worker: {order.worker?.name}
                 </Typography>
                 <Typography variant="body2">
                   Order Status: {orderStatusStrings[order.status]}
