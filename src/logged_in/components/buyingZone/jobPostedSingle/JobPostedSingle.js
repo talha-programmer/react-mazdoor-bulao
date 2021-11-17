@@ -12,7 +12,6 @@ import {
 } from "@material-ui/core";
 import format from "date-fns/format";
 import { jobStatusStrings } from "../../../../config/enums/jobStatus";
-import useJob from "../../../../hooks/jobs/useJob";
 import {
   bidStatusCodes,
   bidStatusStrings
@@ -22,6 +21,12 @@ import useStartOrder from "../../../../hooks/orders/useStartOrder";
 import { useQueryClient } from "react-query";
 import queryKeys from "../../../../config/queryKeys";
 import useAddInChat from "../../../../hooks/chat/useAddInChat";
+import BoxCircularProgress from "../../../../shared/components/BoxCircularProgress";
+import alertSeverity from "../../../../config/alertSeverity";
+import SnackAlert from "../../../../shared/components/SnackAlert";
+import smoothScrollTop from "../../../../shared/functions/smoothScrollTop";
+import useJobPosted from "../../../../hooks/jobs/useJobPosted";
+
 const styles = (theme) => ({
   // blogContentWrapper: {
   //   marginLeft: theme.spacing(1),
@@ -48,12 +53,24 @@ const styles = (theme) => ({
 
 function JobPostedSingle(props) {
   const { classes, jobId } = props;
-  const { data: job, isLoading, isError } = useJob(jobId);
-  const { mutate, isSuccess, isError: orderError } = useStartOrder();
+  const {
+    data: job,
+    isLoading: isJobLoading,
+    isError: isJobError
+  } = useJobPosted(jobId);
+  const [snackOpen, setSnackOpen] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
+  const [snackSeverity, setSnackSeverity] = useState();
+  const {
+    mutate: mutateStartOrder,
+    isSuccess: orderStarted,
+    isError: orderError
+  } = useStartOrder();
+
   let selectedBid = null;
   const history = useHistory();
 
-  const allowedChats = useQueryClient().getQueryData(queryKeys.chatUsers);
+  //const allowedChats = useQueryClient().getQueryData(queryKeys.chatUsers);
   const [chatUserId, setChatUserId] = useState();
 
   const {
@@ -62,14 +79,30 @@ function JobPostedSingle(props) {
     isError: isChatMtError
   } = useAddInChat();
 
+  useEffect(smoothScrollTop, [smoothScrollTop]);
+
   const startOrder = () => {
     const order = {
       job_bid_id: selectedBid.id,
       job_id: job.id
     };
 
-    mutate(order);
+    mutateStartOrder(order);
   };
+
+  useEffect(() => {
+    if (orderStarted) {
+      setSnackMessage("Order has been started successfully!");
+      setSnackSeverity(alertSeverity.success);
+      setSnackOpen(true);
+    } else if (orderError) {
+      setSnackMessage(
+        "An error occured while starting order! Please try again!"
+      );
+      setSnackSeverity(alertSeverity.error);
+      setSnackOpen(true);
+    }
+  }, [orderError, orderStarted]);
 
   useEffect(() => {
     if (isChatMtSuccess) {
@@ -82,8 +115,15 @@ function JobPostedSingle(props) {
   return (
     <Box display="flex" justifyContent="center">
       <Grid container spacing={3} justifyContent="center" alignItems="center">
-        {isLoading ? (
-          <span>Loading...</span>
+        {snackOpen && (
+          <SnackAlert message={snackMessage} severity={snackSeverity} />
+        )}
+        {isJobLoading ? (
+          <BoxCircularProgress />
+        ) : isJobError ? (
+          <span>
+            An error occured while loading job. Please try reloading the page!
+          </span>
         ) : (
           <>
             <Grid item xs={8}>
