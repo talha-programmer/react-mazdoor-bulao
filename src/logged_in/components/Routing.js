@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Switch } from "react-router-dom";
 import { withStyles } from "@material-ui/core";
@@ -17,6 +17,8 @@ import BuyingOrderSingle from "./buyingZone/buyingOrderSingle/BuyingOrderSingle"
 import Chat from "./chat/Chat";
 import CreateWorkerProfile from "./sellingZone/workerProfile/CreateWorkerProfile";
 import WorkerProfile from "./sellingZone/workerProfile/WorkerProfile";
+import BoxCircularProgress from "../../shared/components/BoxCircularProgress";
+import CreateUserProfile from "./userProfile/CreateUserProfile";
 const styles = (theme) => ({
   wrapper: {
     margin: theme.spacing(1),
@@ -67,14 +69,17 @@ function Routing(props) {
     selectBids,
     selectBuyingOrders,
     selectSellingOrders,
-    selectChat
+    selectChat,
+    selectWorkerProfile
   } = props;
   useLocationBlocker();
+
+  const [loading, setLoading] = useState(true);
 
   const {
     data: jobsPosted,
     isLoading: isJobsLoading,
-    isError
+    isError: isJobsError
   } = usePostedJobs();
 
   const {
@@ -82,6 +87,12 @@ function Routing(props) {
     isLoading: isOrdersLoading,
     isError: isOrdersError
   } = useBuyingOrders();
+
+  useEffect(() => {
+    if (!isJobsLoading && !isOrdersLoading) {
+      setLoading(false);
+    }
+  }, [isJobsLoading, isOrdersLoading]);
 
   return (
     <div className={classes.wrapper}>
@@ -154,10 +165,16 @@ function Routing(props) {
           selectChat={selectChat}
         />
 
+        <PropsRoute
+          path="/user/create_user_profile"
+          component={CreateUserProfile}
+        />
+
         <PropsRoute path="/user/worker_profile" component={WorkerProfile} />
         <PropsRoute
           path="/user/create_worker_profile"
           component={CreateWorkerProfile}
+          selectWorkerProfile={selectWorkerProfile}
         />
 
         <PropsRoute
@@ -188,6 +205,11 @@ Routing.propTypes = {
   isAccountActivated: PropTypes.bool.isRequired,
   selectDashboard: PropTypes.func.isRequired,
   selectJobsPosted: PropTypes.func.isRequired,
+  selectBids: PropTypes.func.isRequired,
+  selectBuyingOrders: PropTypes.func.isRequired,
+  selectSellingOrders: PropTypes.func.isRequired,
+  selectChat: PropTypes.func.isRequired,
+  selectWorkerProfile: PropTypes.func.isRequired,
   openAddBalanceDialog: PropTypes.func.isRequired
 };
 
