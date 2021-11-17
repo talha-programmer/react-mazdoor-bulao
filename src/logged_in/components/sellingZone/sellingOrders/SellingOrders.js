@@ -15,6 +15,7 @@ import usePostedJobs from "../../../../hooks/user/usePostedJobs";
 import { jobStatusStrings } from "../../../../config/enums/jobStatus";
 import { useHistory } from "react-router";
 import useSellingOrders from "../../../../hooks/orders/useSellingOrders";
+import BoxCircularProgress from "../../../../shared/components/BoxCircularProgress";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -51,7 +52,7 @@ function SellingOrders(props) {
     <Box display="flex" justifyContent="center">
       <Grid container spacing={3} justifyContent="center" alignItems="center">
         {isLoading ? (
-          <span>Loading...</span>
+          <BoxCircularProgress />
         ) : (
           sellingOrders.map((order) => (
             <Grid item xs={8}>

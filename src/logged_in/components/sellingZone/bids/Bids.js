@@ -13,6 +13,7 @@ import {
 import format from "date-fns/format";
 import useBids from "../../../../hooks/bids/useBids";
 import { bidStatusStrings } from "../../../../config/enums/bidStatus";
+import BoxCircularProgress from "../../../../shared/components/BoxCircularProgress";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -58,7 +59,7 @@ function Bids(props) {
     <Box display="flex" justifyContent="center">
       <Grid container spacing={3} justifyContent="center" alignItems="center">
         {loading ? (
-          <span>Loading...</span>
+          <BoxCircularProgress />
         ) : (
           bids.map((bid) => (
             <Grid item xs={8}>
