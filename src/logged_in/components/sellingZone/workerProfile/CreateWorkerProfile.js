@@ -9,16 +9,14 @@ import {
   Button
 } from "@material-ui/core";
 
-import Checkbox from "@material-ui/icons/CheckBox";
-
-import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import { Autocomplete } from "@material-ui/lab";
 
-import ButtonCircularProgress from "../../../../shared/components/ButtonCircularProgress";
 import useSaveWorkerProfile from "../../../../hooks/workerProfile/useSaveWorkerProfile";
 import useJobCategories from "../../../../hooks/jobs/useJobCategories";
 import useWorkerProfile from "../../../../hooks/workerProfile/useWorkerProfile";
+import BoxCircularProgress from "../../../../shared/components/BoxCircularProgress";
+import alertSeverity from "../../../../config/alertSeverity";
+import SnackAlert from "../../../../shared/components/SnackAlert";
 
 const styles = (theme) => ({
   card: {
@@ -26,9 +24,6 @@ const styles = (theme) => ({
     padding: 20
   }
 });
-
-const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 function CreateWorkerProfile(props) {
   //const { classes } = props;
@@ -38,7 +33,16 @@ function CreateWorkerProfile(props) {
   const [selectedSkills, setselectedSkills] = useState(
     workerProfile?.skills.map((skill) => skill.id).toString()
   );
-  const { mutate, isSuccess, isError } = useSaveWorkerProfile();
+
+  const [snackOpen, setSnackOpen] = useState(false);
+  const [snackSeverity, setSnackSeverity] = useState();
+  const [snackMessage, setSnackMessage] = useState("");
+  const {
+    mutate,
+    isSuccess,
+    isError,
+    isLoading: isSaveProfileLoading
+  } = useSaveWorkerProfile();
 
   // Job categories are used here as worker skills
   const { data: workerSkills, isLoading } = useJobCategories();
@@ -55,12 +59,35 @@ function CreateWorkerProfile(props) {
     mutate(newJob);
   };
 
+  useEffect(() => {
+    if (isSuccess) {
+      setSnackMessage("Profile saved successfully!");
+      setSnackSeverity(alertSeverity.success);
+      setSnackOpen(true);
+    } else if (isError) {
+      setSnackMessage(
+        "An error occured while saving the profile! Please try again!"
+      );
+      setSnackSeverity(alertSeverity.error);
+      setSnackOpen(true);
+    }
+  }, [isError, isSuccess]);
+
   return (
     <Box display="flex" justifyContent="center">
       {isLoading ? (
-        <div>loading...</div>
+        <BoxCircularProgress />
       ) : (
         <Grid container spacing={3} justifyContent="center" alignItems="center">
+          {snackOpen && (
+            <SnackAlert
+              message={snackMessage}
+              severity={snackSeverity}
+              handleClose={() => {
+                setSnackOpen(false);
+              }}
+            />
+          )}
           <Grid item xs={9}>
             <TextField
               variant="outlined"
@@ -84,17 +111,7 @@ function CreateWorkerProfile(props) {
               getOptionLabel={(option) => option.name}
               filterSelectedOptions
               renderOption={(option, props) => {
-                return (
-                  <li {...props}>
-                    {/* <Checkbox
-                      //icon={<CheckBoxIcon fontSize="small" />}
-                      //checkedIcon={<CheckBoxIcon fontSize="small" />}
-                      style={{ marginRight: 8 }}
-                      checked={props.selected}
-                    /> */}
-                    {option.name}
-                  </li>
-                );
+                return <li {...props}>{option.name}</li>;
               }}
               renderInput={(params) => (
                 <TextField
@@ -116,7 +133,7 @@ function CreateWorkerProfile(props) {
               fullWidth
               variant="contained"
               color="secondary"
-              // disabled={isLoading}
+              disabled={isSaveProfileLoading}
               size="large"
               onClick={onSubmit}
               style={{
