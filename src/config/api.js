@@ -6,6 +6,7 @@ function api() {
     register: home + "/register",
     logout: home + "/logout",
     user: home + "/user",
+    storeUserProfile: home + "/user/store_user_profile",
     bids: home + "/user/bids",
     appliedJobs: home + "/user/applied_jobs",
     postedJobs: home + "/user/posted_jobs",
