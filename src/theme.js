@@ -5,7 +5,8 @@ const primary = "#b3294e";
 const secondary = "#4829B2";
 const black = "#343a40";
 const darkBlack = "rgb(36, 40, 44)";
-const background = "#f5f5f5";
+const backgroundDark = "#f5f5f5";
+const background = "#fbfbfb";
 const warningLight = "rgba(253, 200, 69, .3)";
 const warningMain = "rgba(253, 200, 69, .5)";
 const warningDark = "rgba(253, 200, 69, .7)";
@@ -121,6 +122,17 @@ const theme = createTheme({
   },
   typography: {
     useNextVariants: true
+  },
+  colors: {
+    primary: primary,
+    secondary: secondary,
+    background: background,
+    backgroundDark: backgroundDark,
+    black: black,
+    darkBlack: darkBlack,
+    warningLight: warningLight,
+    warningMain: warningMain,
+    warningDark: warningDark
   }
 });
 
