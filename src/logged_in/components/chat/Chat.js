@@ -18,6 +18,7 @@ import { useQueryClient } from "react-query";
 import queryKeys from "../../../config/queryKeys";
 import useSendMessage from "../../../hooks/chat/useSendMessage";
 import { format } from "date-fns";
+import BoxCircularProgress from "../../../shared/components/BoxCircularProgress";
 
 const useStyles = makeStyles({
   table: {
@@ -78,7 +79,7 @@ const MessageArea = ({ userId }) => {
     <>
       <List className={classes.messageArea} scroll="paper">
         {isLoading ? (
-          <span>Loading...</span>
+          <BoxCircularProgress />
         ) : (
           <>
             {chat &&
@@ -141,14 +142,16 @@ const Chat = (props) => {
   }, [dataChatUsers, isUsersFetched]);
 
   const sendMessage = () => {
-    const messageText = messageRef.current.value;
+    let messageText = messageRef.current.value;
+    messageText = messageText.trim();
+    if (messageText !== "" && selectedUserId > 0) {
+      const message = {
+        message_text: messageText.trim(),
+        to: selectedUserId
+      };
 
-    const message = {
-      message_text: messageText,
-      to: selectedUserId
-    };
-
-    mutate(message);
+      mutate(message);
+    }
   };
 
   useEffect(() => {
@@ -168,6 +171,13 @@ const Chat = (props) => {
       setChatUsers(chat);
     } else {
       setChatUsers(Object.values(dataChatUsers));
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    // Send message when enter key is pressed
+    if (e.key === "Enter") {
+      sendMessage();
     }
   };
 
@@ -194,7 +204,7 @@ const Chat = (props) => {
           <Divider />
 
           {isUsersLoading ? (
-            <span>Loading...</span>
+            <BoxCircularProgress />
           ) : (
             <List className={classes.chatUsers}>
               {isUsersFetched &&
@@ -209,7 +219,10 @@ const Chat = (props) => {
                     selected={selectedUserId === user.id}
                   >
                     <ListItemIcon>
-                      <Avatar alt={user.name} />
+                      <Avatar
+                        src={user?.profile_image?.image_thumbnail_url}
+                        alt={user.name}
+                      />
                     </ListItemIcon>
                     <ListItemText primary={user.name}></ListItemText>
                   </ListItem>
@@ -226,6 +239,7 @@ const Chat = (props) => {
                 label="Type Something"
                 inputRef={messageRef}
                 fullWidth
+                onKeyPress={handleKeyPress}
               />
             </Grid>
             <Grid xs={1} align="right">
