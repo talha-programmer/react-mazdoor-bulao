@@ -1,4 +1,4 @@
-import React, { memo, useContext } from "react";
+import React, { memo, useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import {
@@ -8,7 +8,14 @@ import {
   Button,
   Hidden,
   IconButton,
-  withStyles
+  withStyles,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Avatar,
+  ListItemIcon,
+  Divider,
+  Grid
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import HowToRegIcon from "@material-ui/icons/HowToReg";
@@ -17,6 +24,12 @@ import NavigationDrawer from "../../../shared/components/NavigationDrawer";
 import sharedMenuItems from "../../../config/sharedMenuItems";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import { AuthContext } from "../../../context/AuthContext";
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import LogoutIcon from "@material-ui/icons/ExitToApp";
+import SettingsIcon from "@material-ui/icons/Settings";
+import MessagePopperButton from "./MessagePopperButton";
+import useRecentChat from "../../../hooks/chat/useRecentChat";
+
 const styles = (theme) => ({
   appBar: {
     boxShadow: theme.shadows[6],
@@ -36,6 +49,12 @@ const styles = (theme) => ({
   },
   noDecoration: {
     textDecoration: "none !important"
+  },
+  avatar: {
+    width: 32,
+    height: 32,
+    marginLeft: -0.5,
+    marginRight: 1
   }
 });
 
@@ -49,6 +68,18 @@ function NavBar(props) {
     mobileDrawerOpen,
     selectedTab
   } = props;
+
+  const { token, user } = useContext(AuthContext);
+
+  const [recentMessages, setRecentMessages] = useState([]);
+
+  const { data, isSuccess: recentMessagesLoaded } = useRecentChat();
+
+  useEffect(() => {
+    if (recentMessagesLoaded && data?.length > 0) {
+      setRecentMessages(data);
+    }
+  }, [data, recentMessagesLoaded]);
 
   function DisplayMenuItem({ item }) {
     if (item.link) {
@@ -82,7 +113,125 @@ function NavBar(props) {
     );
   }
 
-  const { token } = useContext(AuthContext);
+  function DisplayProfileMenu() {
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+    return (
+      <>
+        <Tooltip title="Account settings">
+          <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }}>
+            <Avatar src={user?.profile_image?.image_thumbnail_url} />
+            <KeyboardArrowDownIcon />
+          </IconButton>
+        </Tooltip>
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          onClick={handleClose}
+          style={{
+            marginTop: 40,
+            marginLeft: -30,
+            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))"
+          }}
+          PaperProps={{
+            elevation: 0
+          }}
+          transformOrigin={{ horizontal: "right", vertical: "top" }}
+          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        >
+          <Typography variant="h6" style={{ marginLeft: 10 }}>
+            {user?.name}
+          </Typography>
+          <MenuItem>
+            <Avatar style={{ width: 32, height: 32 }} /> My account
+          </MenuItem>
+          <Divider />
+          {/* <MenuItem>
+            <ListItemIcon>
+              <PersonAddIcon fontSize="small" />
+            </ListItemIcon>
+            Add another account
+          </MenuItem> */}
+          <MenuItem>
+            <ListItemIcon>
+              <SettingsIcon fontSize="small" />
+            </ListItemIcon>
+            Settings
+          </MenuItem>
+          <Link to="/logout" className={classes.noDecoration}>
+            <MenuItem>
+              <ListItemIcon>
+                <LogoutIcon fontSize="small" />
+              </ListItemIcon>
+              <Typography variant="body1" color="textPrimary">
+                Logout
+              </Typography>
+            </MenuItem>
+          </Link>
+        </Menu>
+      </>
+    );
+  }
+
+  function DisplayDropdownMenuItem({ item }) {
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+
+    return (
+      <>
+        <Button
+          id="demo-customized-button"
+          aria-controls="demo-customized-menu"
+          aria-haspopup="true"
+          aria-expanded={open ? "true" : undefined}
+          //variant="contained"
+          disableElevation
+          onClick={handleClick}
+          color="secondary"
+        >
+          {item.name} <KeyboardArrowDownIcon />
+        </Button>
+        <Menu
+          MenuListProps={{
+            "aria-labelledby": "demo-customized-button"
+          }}
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          style={{
+            marginTop: 40
+          }}
+        >
+          {item?.dropdownItems?.map((dropdownItem) => (
+            //return <DisplayMenuItem item={dropdownItem} />;
+            <MenuItem onClick={handleClose} disableRipple>
+              <Link
+                key={dropdownItem.name}
+                to={dropdownItem.link}
+                className={classes.noDecoration}
+                //onClick={handleMobileDrawerClose}
+              >
+                {dropdownItem.name}
+              </Link>
+            </MenuItem>
+          ))}
+        </Menu>
+      </>
+    );
+  }
 
   let menuItems = null;
   let leftSideItems = null;
@@ -109,6 +258,41 @@ function NavBar(props) {
     {
       name: "Logout",
       link: "/logout"
+    }
+  ];
+
+  const dropdownMenuItems = [
+    {
+      name: "Buying Zone",
+      dropdown: true,
+      dropdownItems: [
+        {
+          name: "Create Job",
+          link: "/user/jobs_posted/create"
+        },
+        {
+          name: "Jobs Posted",
+          link: "/user/jobs_posted"
+        },
+        {
+          name: "Buying Orders",
+          link: "/user/buying_orders"
+        }
+      ]
+    },
+    {
+      name: "Selling Zone",
+      dropdown: true,
+      dropdownItems: [
+        {
+          name: "Bids Posted",
+          link: "/user/bids"
+        },
+        {
+          name: "Selling Orders",
+          link: "/user/selling_orders"
+        }
+      ]
     }
   ];
 
@@ -142,11 +326,20 @@ function NavBar(props) {
               >
                 Bulao
               </Typography>
+            </div>
+            <div>
               <Hidden smDown>
-                {sharedMenuItems.map((item) => {
+                {sharedMenuItems?.map((item) => {
                   return <DisplayMenuItem item={item} />;
                 })}
               </Hidden>
+              {token && (
+                <Hidden smDown>
+                  {dropdownMenuItems?.map((item) => {
+                    return <DisplayDropdownMenuItem item={item} />;
+                  })}
+                </Hidden>
+              )}
             </div>
             <div>
               <Hidden mdUp>
@@ -159,11 +352,24 @@ function NavBar(props) {
                 </IconButton>
               </Hidden>
 
-              <Hidden smDown>
-                {leftSideItems.map((item) => {
-                  return <DisplayMenuItem item={item} />;
-                })}
-              </Hidden>
+              {token ? (
+                <Hidden smDown>
+                  <Grid container spacing={2}>
+                    <Grid item>
+                      <MessagePopperButton messages={recentMessages} />
+                    </Grid>
+                    <Grid item>
+                      <DisplayProfileMenu />
+                    </Grid>
+                  </Grid>
+                </Hidden>
+              ) : (
+                <Hidden smDown>
+                  {leftSideItems?.map((item) => {
+                    return <DisplayMenuItem item={item} />;
+                  })}
+                </Hidden>
+              )}
             </div>
           </Toolbar>
         </AppBar>
