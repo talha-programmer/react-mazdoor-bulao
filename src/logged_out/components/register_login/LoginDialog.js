@@ -79,17 +79,17 @@ function LoginDialog(props) {
           Cookies.set("loginToken", data.login_token, { expires: 1 }); // expires in 1 day
           setToken(data.login_token);
           queryClient.invalidateQueries(queryKeys.user);
-          history.push("/user/dashboard");
+          history.push("/");
         }
       })
       .catch((error) => {
-        const errors = error.response.data;
+        const errors = error?.response?.data;
 
         let errorStatus = "";
-        if (errors.invalidUsername) {
+        if (errors?.invalidUsername) {
           errorStatus += "|invalidUsername";
         }
-        if (errors.invalidPassword) {
+        if (errors?.invalidPassword) {
           errorStatus += "|invalidPassword";
         }
         setStatus(status + errorStatus);
