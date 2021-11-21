@@ -25,6 +25,7 @@ function api() {
     chatUsers: home + "/chat_users",
     addInChat: home + "/chat/add_in_chat",
     chatWithUser: home + "/chat/chat_with",
+    recentChat: home + "/chat/recent_chat",
     sendMessage: home + "/chat/send_message",
     sendReview: home + "/send_review",
     orderReviews: home + "/order_reviews"
