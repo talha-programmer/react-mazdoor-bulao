@@ -43,6 +43,7 @@ import Balance from "./Balance";
 import NavigationDrawer from "../../../shared/components/NavigationDrawer";
 import sharedMenuItems from "../../../config/sharedMenuItems";
 import { AuthContext } from "../../../context/AuthContext";
+import NavBarLogout from "../../../logged_out/components/navigation/NavBar";
 const styles = (theme) => ({
   appBar: {
     boxShadow: theme.shadows[6],
@@ -327,169 +328,171 @@ function NavBar(props) {
     }
   ];
   return (
-    <Fragment>
-      <AppBar position="sticky" className={classes.appBar}>
-        <Toolbar className={classes.appBarToolbar}>
-          <Box display="flex" alignItems="center">
-            <Hidden smUp>
-              <Box mr={1}>
-                <IconButton
-                  aria-label="Open Navigation"
-                  onClick={openMobileDrawer}
-                  color="primary"
-                >
-                  <MenuIcon />
-                </IconButton>
-              </Box>
-            </Hidden>
-            <Hidden xsDown>
-              <Typography
-                variant="h4"
-                className={classes.brandText}
-                display="inline"
-                color="primary"
-              >
-                Mazdoor
-              </Typography>
-              <Typography
-                variant="h4"
-                className={classes.brandText}
-                display="inline"
-                color="secondary"
-              >
-                Bulao
-              </Typography>
-              <Hidden smDown>
-                {sharedMenuItems.map((element) => {
-                  if (element.link) {
-                    return (
-                      <Link
-                        key={element.name}
-                        to={element.link}
-                        className={classes.noDecoration}
-                      >
-                        <Button
-                          color="secondary"
-                          size="large"
-                          classes={{ text: classes.menuButtonText }}
-                        >
-                          {element.name}
-                        </Button>
-                      </Link>
-                    );
-                  }
-                  return null;
-                })}
-              </Hidden>
-            </Hidden>
-          </Box>
-          <Box
-            display="flex"
-            justifyContent="flex-end"
-            alignItems="center"
-            width="100%"
-          >
-            {isWidthUp("sm", width) && (
-              <Box mr={3}>
-                <Balance
-                  balance={2573}
-                  openAddBalanceDialog={openAddBalanceDialog}
-                />
-              </Box>
-            )}
-            <MessagePopperButton messages={messages} />
-            <ListItem
-              disableGutters
-              className={classNames(classes.iconListItem, classes.smBordered)}
-            >
-              <Avatar
-                alt="profile picture"
-                src={loggedInUser?.profile_image?.image_thumbnail_url}
-                className={classNames(classes.accountAvatar)}
-              />
-              {isWidthUp("sm", width) && (
-                <ListItemText
-                  className={classes.username}
-                  primary={
-                    <Typography color="textPrimary">
-                      {loggedInUser?.username}
-                    </Typography>
-                  }
-                />
-              )}
-            </ListItem>
-          </Box>
-          <IconButton
-            onClick={openDrawer}
-            color="primary"
-            aria-label="Open Sidedrawer"
-          >
-            <SupervisorAccountIcon />
-          </IconButton>
-          <SideDrawer open={isSideDrawerOpen} onClose={closeDrawer} />
-        </Toolbar>
-      </AppBar>
-      <Hidden xsDown>
-        <Drawer //  both drawers can be combined into one for performance
-          variant="permanent"
-          classes={{
-            paper: classes.drawerPaper
-          }}
-          open={false}
-        >
-          <List>
-            {menuItems.map((element, index) => (
-              <Link
-                to={element.link}
-                className={classes.menuLink}
-                onClick={element.onClick}
-                key={index}
-                ref={(node) => {
-                  links.current[index] = node;
-                }}
-              >
-                <Tooltip
-                  title={element.name}
-                  placement="right"
-                  key={element.name}
-                >
-                  <ListItem
-                    selected={selectedTab === element.name}
-                    button
-                    divider={index !== menuItems.length - 1}
-                    className={classes.permanentDrawerListItem}
-                    onClick={() => {
-                      links.current[index].click();
-                    }}
-                    aria-label={
-                      element.name === "Logout"
-                        ? "Logout"
-                        : `Go to ${element.name}`
-                    }
-                  >
-                    <ListItemIcon className={classes.justifyCenter}>
-                      {element.icon.desktop}
-                    </ListItemIcon>
-                  </ListItem>
-                </Tooltip>
-              </Link>
-            ))}
-          </List>
-        </Drawer>
-      </Hidden>
-      <NavigationDrawer
-        menuItems={menuItems.map((element) => ({
-          link: element.link,
-          name: element.name,
-          icon: element.icon.mobile,
-          onClick: element.onClick
-        }))}
-        anchor="left"
-        open={isMobileOpen}
-        selectedItem={selectedTab}
-        onClose={closeMobileDrawer}
-      />
-    </Fragment>
+    <NavBarLogout />
+
+    // <Fragment>
+    //   <AppBar position="sticky" className={classes.appBar}>
+    //     <Toolbar className={classes.appBarToolbar}>
+    //       <Box display="flex" alignItems="center">
+    //         <Hidden smUp>
+    //           <Box mr={1}>
+    //             <IconButton
+    //               aria-label="Open Navigation"
+    //               onClick={openMobileDrawer}
+    //               color="primary"
+    //             >
+    //               <MenuIcon />
+    //             </IconButton>
+    //           </Box>
+    //         </Hidden>
+    //         <Hidden xsDown>
+    //           <Typography
+    //             variant="h4"
+    //             className={classes.brandText}
+    //             display="inline"
+    //             color="primary"
+    //           >
+    //             Mazdoor
+    //           </Typography>
+    //           <Typography
+    //             variant="h4"
+    //             className={classes.brandText}
+    //             display="inline"
+    //             color="secondary"
+    //           >
+    //             Bulao
+    //           </Typography>
+    //           <Hidden smDown>
+    //             {sharedMenuItems.map((element) => {
+    //               if (element.link) {
+    //                 return (
+    //                   <Link
+    //                     key={element.name}
+    //                     to={element.link}
+    //                     className={classes.noDecoration}
+    //                   >
+    //                     <Button
+    //                       color="secondary"
+    //                       size="large"
+    //                       classes={{ text: classes.menuButtonText }}
+    //                     >
+    //                       {element.name}
+    //                     </Button>
+    //                   </Link>
+    //                 );
+    //               }
+    //               return null;
+    //             })}
+    //           </Hidden>
+    //         </Hidden>
+    //       </Box>
+    //       <Box
+    //         display="flex"
+    //         justifyContent="flex-end"
+    //         alignItems="center"
+    //         width="100%"
+    //       >
+    //         {isWidthUp("sm", width) && (
+    //           <Box mr={3}>
+    //             <Balance
+    //               balance={2573}
+    //               openAddBalanceDialog={openAddBalanceDialog}
+    //             />
+    //           </Box>
+    //         )}
+    //         <MessagePopperButton messages={messages} />
+    //         <ListItem
+    //           disableGutters
+    //           className={classNames(classes.iconListItem, classes.smBordered)}
+    //         >
+    //           <Avatar
+    //             alt="profile picture"
+    //             src={loggedInUser?.profile_image?.image_thumbnail_url}
+    //             className={classNames(classes.accountAvatar)}
+    //           />
+    //           {isWidthUp("sm", width) && (
+    //             <ListItemText
+    //               className={classes.username}
+    //               primary={
+    //                 <Typography color="textPrimary">
+    //                   {loggedInUser?.username}
+    //                 </Typography>
+    //               }
+    //             />
+    //           )}
+    //         </ListItem>
+    //       </Box>
+    //       <IconButton
+    //         onClick={openDrawer}
+    //         color="primary"
+    //         aria-label="Open Sidedrawer"
+    //       >
+    //         <SupervisorAccountIcon />
+    //       </IconButton>
+    //       <SideDrawer open={isSideDrawerOpen} onClose={closeDrawer} />
+    //     </Toolbar>
+    //   </AppBar>
+    //   <Hidden xsDown>
+    //     <Drawer //  both drawers can be combined into one for performance
+    //       variant="permanent"
+    //       classes={{
+    //         paper: classes.drawerPaper
+    //       }}
+    //       open={false}
+    //     >
+    //       <List>
+    //         {menuItems.map((element, index) => (
+    //           <Link
+    //             to={element.link}
+    //             className={classes.menuLink}
+    //             onClick={element.onClick}
+    //             key={index}
+    //             ref={(node) => {
+    //               links.current[index] = node;
+    //             }}
+    //           >
+    //             <Tooltip
+    //               title={element.name}
+    //               placement="right"
+    //               key={element.name}
+    //             >
+    //               <ListItem
+    //                 selected={selectedTab === element.name}
+    //                 button
+    //                 divider={index !== menuItems.length - 1}
+    //                 className={classes.permanentDrawerListItem}
+    //                 onClick={() => {
+    //                   links.current[index].click();
+    //                 }}
+    //                 aria-label={
+    //                   element.name === "Logout"
+    //                     ? "Logout"
+    //                     : `Go to ${element.name}`
+    //                 }
+    //               >
+    //                 <ListItemIcon className={classes.justifyCenter}>
+    //                   {element.icon.desktop}
+    //                 </ListItemIcon>
+    //               </ListItem>
+    //             </Tooltip>
+    //           </Link>
+    //         ))}
+    //       </List>
+    //     </Drawer>
+    //   </Hidden>
+    //   <NavigationDrawer
+    //     menuItems={menuItems.map((element) => ({
+    //       link: element.link,
+    //       name: element.name,
+    //       icon: element.icon.mobile,
+    //       onClick: element.onClick
+    //     }))}
+    //     anchor="left"
+    //     open={isMobileOpen}
+    //     selectedItem={selectedTab}
+    //     onClose={closeMobileDrawer}
+    //   />
+    // </Fragment>
   );
 }
 
