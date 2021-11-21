@@ -8,32 +8,27 @@ import {
   withStyles,
   Typography,
   Card,
-  Button
+  Button,
+  TableContainer,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  IconButton
 } from "@material-ui/core";
 import format from "date-fns/format";
 import usePostedJobs from "../../../../hooks/user/usePostedJobs";
 import { jobStatusStrings } from "../../../../config/enums/jobStatus";
 import { useHistory } from "react-router";
 import BoxCircularProgress from "../../../../shared/components/BoxCircularProgress";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import DetailsIcon from "@material-ui/icons/OpenInNew";
+import { Link } from "react-router-dom";
 
 const styles = (theme) => ({
-  // blogContentWrapper: {
-  //   marginLeft: theme.spacing(1),
-  //   marginRight: theme.spacing(1),
-  //   [theme.breakpoints.up("sm")]: {
-  //     marginLeft: theme.spacing(4),
-  //     marginRight: theme.spacing(4)
-  //   },
-  //   maxWidth: 1280,
-  //   width: "100%"
-  // },
-  // wrapper: {
-  //   minHeight: "60vh"
-  // },
-  // noDecoration: {
-  //   textDecoration: "none !important"
-  // }import useAppliedJobs from '../../../hooks/user/useAppliedJobs';
-
   card: {
     boxShadow: theme.shadows[2],
     padding: 20
@@ -47,39 +42,81 @@ function JobsPosted(props) {
 
   useEffect(selectJobsPosted, [selectJobsPosted]);
 
+  function DisplayTable() {
+    return (
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Job Title</TableCell>
+              <TableCell>Date Posted</TableCell>
+              <TableCell>Budget</TableCell>
+              <TableCell>Estimated Time</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {postedJobs.map((job) => (
+              <TableRow key={job.id}>
+                <TableCell component="th" scope="row">
+                  <Link
+                    to={`/user/jobs_posted/${job.url}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    {job.title}
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  {format(new Date(job.created_at), "PPP", {
+                    awareOfUnicodeTokens: true
+                  })}
+                </TableCell>
+                <TableCell>RS {job.budget}</TableCell>
+                <TableCell>{job.deadline} days</TableCell>
+                <TableCell>{jobStatusStrings[job.status]}</TableCell>
+                <TableCell>
+                  <IconButton
+                    aria-label="View Details"
+                    onClick={() => {
+                      history.push(`/user/jobs_posted/${job.url}`);
+                    }}
+                  >
+                    <DetailsIcon color="action" />
+                  </IconButton>
+
+                  <IconButton
+                    aria-label="Edit Job"
+                    onClick={() => {
+                      history.push(`/user/jobs_posted/${job.url}/edit`, {
+                        job: job
+                      });
+                    }}
+                  >
+                    <EditIcon color="secondary" />
+                  </IconButton>
+
+                  {/* <IconButton aria-label="Delete Job" onClick={() => {}}>
+                    <DeleteIcon color="error" />
+                  </IconButton> */}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
+  }
+
   return (
     <Box display="flex" justifyContent="center">
       <Grid container spacing={3} justifyContent="center" alignItems="center">
         {isLoading ? (
           <BoxCircularProgress />
         ) : (
-          postedJobs.map((job) => (
-            <Grid item xs={8}>
-              <Card className={classes.card}>
-                <Typography variant="h5">{job.title}</Typography>
-                <Typography variant="body2">
-                  {format(new Date(job.created_at), "PPP", {
-                    awareOfUnicodeTokens: true
-                  })}
-                </Typography>
-                <Typography variant="body2">Budget: RS {job.budget}</Typography>
-                <Typography variant="body2">
-                  Deadline {job.deadline} days
-                </Typography>
-                <Typography variant="body2">
-                  Job Status: {jobStatusStrings[job.status]}
-                </Typography>
-                <Typography variant="body2">{job.details}</Typography>
-                <Button
-                  onClick={() => {
-                    history.push(`/user/jobs_posted/${job.url}`);
-                  }}
-                >
-                  Job Details
-                </Button>
-              </Card>
-            </Grid>
-          ))
+          <Grid item xs={10}>
+            <DisplayTable />
+          </Grid>
         )}
       </Grid>
     </Box>
