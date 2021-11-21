@@ -18,6 +18,7 @@ import BoxCircularProgress from "../../../../shared/components/BoxCircularProgre
 import SnackAlert from "../../../../shared/components/SnackAlert";
 import alertSeverity from "../../../../config/alertSeverity";
 import ReactImageUploadComponent from "react-images-upload";
+import { useHistory } from "react-router";
 
 const styles = (theme) => ({
   card: {
@@ -36,8 +37,9 @@ function CreateJob(props) {
   const deadline = useRef();
   const location = useRef();
   const [selectedCategories, setSelectedCategories] = useState(
-    job?.categories.map((category) => category.id).toString()
+    job?.categories?.map((category) => category.id).toString()
   );
+  const history = useHistory();
 
   // Used it to reload the form. Every react component reloads
   // when its key changes
@@ -57,7 +59,7 @@ function CreateJob(props) {
   let defaultImages = [];
 
   if (job?.id) {
-    job?.images.forEach((image) => {
+    job?.images?.forEach((image) => {
       defaultImages.push(image.image_url);
     });
   }
@@ -93,6 +95,7 @@ function CreateJob(props) {
   const clearForm = () => {
     // Just need to change, value doesn't matter. It will reload the form
     setFormKey(formKey + "x");
+    history.goBack();
   };
 
   useEffect(() => {
