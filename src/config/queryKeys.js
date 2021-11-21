@@ -14,6 +14,7 @@ function queryKeys() {
     buyingOrders: "buyingOrders",
     sellingOrders: "sellingOrders",
     chatUsers: "chatUsers",
+    recentChat: "recentChat",
     chatWithUser: "chatWithUser",
     orderReviews: "orderReviews"
   };
