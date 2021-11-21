@@ -8,7 +8,8 @@ import {
   withStyles,
   Typography,
   Card,
-  Button
+  Button,
+  Avatar
 } from "@material-ui/core";
 import format from "date-fns/format";
 import { jobStatusStrings } from "../../../../config/enums/jobStatus";
@@ -26,6 +27,10 @@ import alertSeverity from "../../../../config/alertSeverity";
 import SnackAlert from "../../../../shared/components/SnackAlert";
 import smoothScrollTop from "../../../../shared/functions/smoothScrollTop";
 import useJobPosted from "../../../../hooks/jobs/useJobPosted";
+import useGlobalClasses from "../../../../hooks/style/useGlobalClasses";
+import ReactImageGallery from "react-image-gallery";
+import { formatDistance, subDays } from "date-fns";
+import { LocationOn } from "@material-ui/icons";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -48,6 +53,12 @@ const styles = (theme) => ({
   card: {
     boxShadow: theme.shadows[2],
     padding: 20
+  },
+  categoryName: {
+    borderRadius: 50,
+    padding: "4px 10px 4px 10px",
+    backgroundColor: "#f2f2f2",
+    marginRight: 10
   }
 });
 
@@ -69,6 +80,7 @@ function JobPostedSingle(props) {
 
   let selectedBid = null;
   const history = useHistory();
+  const globalClasses = useGlobalClasses();
 
   //const allowedChats = useQueryClient().getQueryData(queryKeys.chatUsers);
   const [chatUserId, setChatUserId] = useState();
@@ -80,6 +92,16 @@ function JobPostedSingle(props) {
   } = useAddInChat();
 
   useEffect(smoothScrollTop, [smoothScrollTop]);
+
+  let images = [];
+
+  job?.images?.forEach((image) => {
+    const singleImage = {
+      original: image.image_url,
+      thumbnail: image.image_thumbnail_url
+    };
+    images.push(singleImage);
+  });
 
   const startOrder = () => {
     const order = {
@@ -127,30 +149,62 @@ function JobPostedSingle(props) {
         ) : (
           <>
             <Grid item xs={8}>
+              {images.length > 0 && (
+                <>
+                  <ReactImageGallery items={images} />
+                  <br />
+                </>
+              )}
               <Card className={classes.card}>
-                <Typography variant="h5">{job.title}</Typography>
-                <Typography variant="body2">
-                  {format(new Date(job.created_at), "PPP", {
-                    awareOfUnicodeTokens: true
-                  })}
+                <Typography variant="h5" className={globalClasses.mb_10}>
+                  {job.title}
                 </Typography>
-                <Typography variant="body2">Budget: RS {job.budget}</Typography>
-                <Typography variant="body2">
-                  Deadline {job.deadline} days
+
+                <Typography variant="subtitle1" className={globalClasses.mb_10}>
+                  Est. Budget: RS {job.budget} - Posted:{" "}
+                  {formatDistance(
+                    subDays(new Date(job.created_at), 0),
+                    new Date(),
+                    { addSuffix: true }
+                  )}
+                  {" - Est. time: "} {job.deadline} days
                 </Typography>
-                <Typography variant="body2">
-                  Job Status: {jobStatusStrings[job.status]}
+
+                <Typography variant="subtitle2" className={globalClasses.mb_10}>
+                  Bids: {job?.no_of_bids}
                 </Typography>
-                <Typography variant="body2">{job.details}</Typography>
-                <Button
-                  onClick={() => {
-                    history.push(`/user/jobs_posted/${job.url}/edit`, {
-                      job: job
-                    });
-                  }}
+
+                <Typography variant="subtitle2" className={globalClasses.mb_10}>
+                  <LocationOn />
+                  {job.location}
+                </Typography>
+
+                <Typography variant="h6" className={globalClasses.mb_5}>
+                  Details
+                </Typography>
+                <Typography variant="body1" className={globalClasses.mb_10}>
+                  {job.details}
+                </Typography>
+
+                <Grid
+                  container
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
                 >
-                  Edit Job
-                </Button>
+                  <Grid item>
+                    <Typography variant="h6" className={globalClasses.mb_5}>
+                      Skills Required
+                    </Typography>
+                    <Typography variant="body1" className={globalClasses.mb_20}>
+                      {job?.categories?.map((category) => (
+                        <span className={classes.categoryName}>
+                          {category.name}
+                        </span>
+                      ))}
+                    </Typography>
+                  </Grid>
+                </Grid>
               </Card>
             </Grid>
             <Grid item xs={8}>
