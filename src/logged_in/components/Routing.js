@@ -33,21 +33,21 @@ const styles = (theme) => ({
     [theme.breakpoints.up("sm")]: {
       marginTop: theme.spacing(6),
       marginBottom: theme.spacing(6),
-      width: "90%",
+      width: "100%",
       marginLeft: "auto",
       marginRight: "auto"
     },
     [theme.breakpoints.up("md")]: {
       marginTop: theme.spacing(6),
       marginBottom: theme.spacing(6),
-      width: "82.5%",
+      width: "100%",
       marginLeft: "auto",
       marginRight: "auto"
     },
     [theme.breakpoints.up("lg")]: {
       marginTop: theme.spacing(6),
       marginBottom: theme.spacing(6),
-      width: "70%",
+      width: "90%",
       marginLeft: "auto",
       marginRight: "auto"
     }
