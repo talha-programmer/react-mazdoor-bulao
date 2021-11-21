@@ -80,6 +80,7 @@ function CreateBid(props) {
               label="Details"
               autoFocus
               multiline
+              rows={4}
               maxRows={4}
               autoComplete="off"
               type="text"
