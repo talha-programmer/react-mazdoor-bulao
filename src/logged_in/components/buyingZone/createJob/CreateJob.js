@@ -7,7 +7,8 @@ import {
   withStyles,
   TextField,
   Button,
-  InputAdornment
+  InputAdornment,
+  Typography
 } from "@material-ui/core";
 
 import { Autocomplete } from "@material-ui/lab";
@@ -19,6 +20,11 @@ import SnackAlert from "../../../../shared/components/SnackAlert";
 import alertSeverity from "../../../../config/alertSeverity";
 import ReactImageUploadComponent from "react-images-upload";
 import { useHistory } from "react-router";
+// import parse from "autosuggest-highlight/parse";
+// import throttle from "lodash/throttle";
+import LocationOnIcon from "@material-ui/icons/LocationOn";
+import { usePlacesWidget } from "react-google-autocomplete";
+import AutocompletePlaces from "react-google-autocomplete";
 
 const styles = (theme) => ({
   card: {
@@ -35,7 +41,6 @@ function CreateJob(props) {
   const details = useRef();
   const budget = useRef();
   const deadline = useRef();
-  const location = useRef();
   const [selectedCategories, setSelectedCategories] = useState(
     job?.categories?.map((category) => category.id).toString()
   );
@@ -56,6 +61,10 @@ function CreateJob(props) {
   const [snackOpen, setSnackOpen] = useState(false);
   const [snackSeverity, setSnackSeverity] = useState();
   const [images, setImages] = useState();
+
+  const [city, setCity] = useState();
+  const [area, setArea] = useState();
+
   let defaultImages = [];
 
   if (job?.id) {
@@ -72,8 +81,12 @@ function CreateJob(props) {
       newJob.append("details", details.current.value);
       newJob.append("budget", budget.current.value);
       newJob.append("deadline", deadline.current.value);
-      newJob.append("location", location.current.value);
       newJob.append("categories", selectedCategories);
+      newJob.append("city", city);
+
+      if (area) {
+        newJob.append("area", area);
+      }
 
       if (job?.id) {
         newJob.append("job_id", job.id);
@@ -95,7 +108,7 @@ function CreateJob(props) {
   const clearForm = () => {
     // Just need to change, value doesn't matter. It will reload the form
     setFormKey(formKey + "x");
-    history.goBack();
+    history.push("/user/jobs_posted");
   };
 
   useEffect(() => {
@@ -113,6 +126,27 @@ function CreateJob(props) {
     }
   }, [isJobSaveFailed, isJobSaved]);
 
+  function setLocation(placeSelected) {
+    let locality,
+      sublocality = null;
+    let place = placeSelected.address_components.filter((item) => {
+      return (
+        item.types.includes("sublocality") || item.types.includes("locality")
+      );
+    });
+
+    place.forEach((item) => {
+      if (item.types.includes("sublocality")) {
+        sublocality = item.long_name;
+      } else if (item.types.includes("locality")) {
+        locality = item.long_name;
+      }
+    });
+
+    setCity(locality);
+    setArea(sublocality);
+  }
+
   return (
     <Box display="flex" justifyContent="center">
       {isLoading ? (
@@ -128,7 +162,7 @@ function CreateJob(props) {
               }}
             />
           )}
-          <Grid item xs={9}>
+          <Grid item xs={7}>
             <form ref={formRef} key={formKey}>
               <ReactImageUploadComponent
                 withIcon={true}
@@ -228,20 +262,26 @@ function CreateJob(props) {
                     defaultValue={job?.budget}
                   />
                 </Grid>
+
                 <Grid item>
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    label="Location"
-                    autoComplete="off"
-                    type="text"
-                    FormHelperTextProps={{ error: true }}
-                    inputRef={location}
+                  <AutocompletePlaces
+                    apiKey={process.env.REACT_APP_PLACES_API_KEY}
+                    style={{
+                      width: "100%",
+                      height: "55px",
+                      fontSize: 14,
+                      paddingLeft: 5
+                    }}
+                    onPlaceSelected={(place) => {
+                      setLocation(place);
+                    }}
+                    options={{
+                      types: ["(regions)"],
+                      componentRestrictions: { country: "pk" }
+                    }}
                     defaultValue={job?.location}
                   />
                 </Grid>
-
                 <Grid item>
                   <TextField
                     variant="outlined"

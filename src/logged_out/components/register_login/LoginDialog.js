@@ -80,6 +80,7 @@ function LoginDialog(props) {
           setToken(data.login_token);
           queryClient.invalidateQueries(queryKeys.user);
           history.push("/");
+          onClose();
         }
       })
       .catch((error) => {

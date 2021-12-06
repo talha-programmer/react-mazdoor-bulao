@@ -10,6 +10,8 @@ function api() {
     bids: home + "/user/bids",
     appliedJobs: home + "/user/applied_jobs",
     postedJobs: home + "/user/posted_jobs",
+    markJobAsCompleted: home + "/jobs/mark_as_completed",
+    updateJobStatus: home + "/jobs/update_job_status",
     storeWorkerProfile: home + "/user/store_worker_profile",
     workerProfile: home + "/user/worker_profile",
     jobs: home + "/jobs",

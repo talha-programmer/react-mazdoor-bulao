@@ -1,6 +1,6 @@
 import { withStyles } from "@material-ui/core";
 
-const styles = theme => ({
+const styles = (theme) => ({
   "@global": {
     /**
      * Disable the focus outline, which is default on some browsers like
@@ -88,6 +88,12 @@ const styles = theme => ({
       [theme.breakpoints.down("xs")]: {
         paddingTop: `${theme.spacing(14)}px !important`
       }
+    },
+    ".read-more-button": {
+      display: "inline-block",
+      marginLeft: "3px",
+      color: "#286da8",
+      cursor: "pointer"
     }
   }
 });

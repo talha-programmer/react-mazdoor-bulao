@@ -22,29 +22,37 @@ const styles = (theme) => ({
   }
 });
 
-function OrderConfirmDialog(props) {
+function ReviewDialog(props) {
   const { order, open, setOpen } = props;
 
   const {
-    mutate: mutateCompleteOrder,
-    isSuccess: isSuccessOrder,
-    isError: isErrorOrder
-  } = useCompleteBuyingOrder();
+    mutate: mutateSendReview,
+    isSuccess: isSuccessReview,
+    isError: isErrorReview
+  } = useSendReview();
+
+  const [rating, setRating] = useState(null);
+  const reviewText = useRef();
+
+  useEffect(() => {
+    if (isSuccessReview) {
+      setOpen(false);
+    }
+  }, [isSuccessReview, setOpen]);
 
   const onSubmit = (e) => {
     e.preventDefault();
-
-    const orderToSend = {
-      order_id: order.id
-    };
-    mutateCompleteOrder(orderToSend);
-  };
-
-  useEffect(() => {
-    if (isSuccessOrder) {
-      setOpen(false);
+    if (rating > 0) {
+      const review = {
+        rating: rating,
+        review_text: reviewText.current.value,
+        order_id: order.id,
+        review_type: reviewTypesCodes.FROM_BUYER_TO_WORKER,
+        given_to: order.worker_id
+      };
+      mutateSendReview(review);
     }
-  }, [isSuccessOrder, setOpen]);
+  };
 
   return (
     <>
@@ -52,12 +60,29 @@ function OrderConfirmDialog(props) {
         open={open}
         onClose={() => setOpen(false)}
         onFormSubmit={onSubmit}
-        headline="Complete Order"
+        headline="Rate Order"
         content={
           <>
-            <Typography variant="h6" style={{ marginBottom: 10 }}>
-              This action will mark the current order as complete.
-            </Typography>
+            <Typography variant="h6">Rate this order</Typography>
+
+            <Rating
+              value={rating}
+              onChange={(event, newValue) => {
+                setRating(newValue);
+              }}
+            />
+
+            <TextField
+              variant="outlined"
+              margin="normal"
+              multiline
+              maxRows={3}
+              fullWidth
+              label="Write a Review"
+              autoComplete="off"
+              type="text"
+              inputRef={reviewText}
+            />
           </>
         }
         actions={
@@ -95,10 +120,10 @@ function OrderConfirmDialog(props) {
   );
 }
 
-OrderConfirmDialog.propTypes = {
+ReviewDialog.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
 export default withWidth()(
-  withStyles(styles, { withTheme: true })(OrderConfirmDialog)
+  withStyles(styles, { withTheme: true })(ReviewDialog)
 );

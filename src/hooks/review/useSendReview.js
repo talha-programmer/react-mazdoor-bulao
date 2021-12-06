@@ -7,11 +7,20 @@ function useSendReview() {
   const queryClient = useQueryClient();
   return useMutation(
     (review) =>
-      axios.post(api.sendReview, review).then((result) => result.data),
+      axios.post(api.sendReview, review).then((result) => {
+        queryClient.invalidateQueries([
+          queryKeys.buyingOrders,
+          review?.order_id
+        ]);
+        queryClient.invalidateQueries([
+          queryKeys.sellingOrders,
+          review?.order_id
+        ]);
+        return result.data;
+      }),
     {
       onSuccess: () => {
         // Invalidate and refetch
-        //queryClient.invalidateQueries(queryKeys.jobs);
       }
     }
   );

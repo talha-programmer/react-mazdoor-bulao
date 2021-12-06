@@ -30,6 +30,7 @@ import { Rating } from "@material-ui/lab";
 import { reviewTypesStrings } from "../../../../config/enums/reviewTypes";
 import BoxCircularProgress from "../../../../shared/components/BoxCircularProgress";
 import smoothScrollTop from "../../../../shared/functions/smoothScrollTop";
+import ReviewDialog from "../buyingOrders/ReviewDialog";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -59,29 +60,19 @@ function BuyingOrderSingle(props) {
   const { classes } = props;
   const orderId = props.location?.state?.orderId;
   const { data: order, isLoading, isError } = useOrder(orderId);
-  const { mutate, isSuccess, isError: orderError } = useStartOrder();
-  let selectedBid = null;
   const history = useHistory();
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
 
   const {
     data: orderReviews,
     isLoading: isReviewsLoading,
-    isError: isReviewsError
+    isError: isReviewsError,
+    isFetched: reviewsFetched
   } = useOrderReviews(orderId);
 
   useEffect(smoothScrollTop, [smoothScrollTop]);
-
-  // const startOrder = () => {
-  //   const order = {
-  //     job_bid_id: selectedBid.id,
-  //     job_id: order.id
-  //   };
-
-  //   mutate(order);
-  // };
 
   return (
     <Box display="flex" justifyContent="center">
@@ -92,42 +83,48 @@ function BuyingOrderSingle(props) {
           <>
             <Grid item xs={8}>
               <Card className={classes.card}>
-                <Typography variant="h5">
-                  Worker: {order.worker?.name}
+                <Typography variant="h5">Order Details</Typography>
+                <Typography variant="body1">
+                  Worker: {order.worker.name}
                 </Typography>
-                <Typography variant="body2">
+                <Typography variant="body1">
                   Order Status: {orderStatusStrings[order.status]}
                 </Typography>
-                <Typography variant="body2">
+                <Typography variant="body1">
                   Starting Time:{" "}
                   {format(new Date(order.starting_time), "PPP", {
                     awareOfUnicodeTokens: true
                   })}
                 </Typography>
                 {order.ending_time && (
-                  <Typography variant="body2">
+                  <Typography variant="body1">
                     Ending Time:{" "}
                     {format(new Date(order.ending_time), "PPP", {
                       awareOfUnicodeTokens: true
                     })}
                   </Typography>
                 )}
-                <Typography variant="body2">
-                  Bid: {order.bid.details}
-                </Typography>
-                <Typography variant="body2"></Typography>
-                <Typography variant="body2">
-                  Job: {order.job.details}
-                </Typography>
+                <Typography variant="h5">Bid Details</Typography>
+                <Typography variant="body1">{order.bid.details}</Typography>
+                <Typography variant="h5">Job Details</Typography>
+                <Typography variant="h6">{order.job.title}</Typography>
+                <Typography variant="body1">{order.job.details}</Typography>
 
                 <Button
                   onClick={() => {
-                    setSelectedOrder(order);
                     setDialogOpen(true);
                   }}
                   disabled={order.status === orderStatusCodes.COMPLETED}
                 >
                   Mark as Complete
+                </Button>
+                <Button
+                  onClick={() => {
+                    setReviewDialogOpen(true);
+                  }}
+                  disabled={order.buyer_reviewed}
+                >
+                  Rate this Order
                 </Button>
               </Card>
             </Grid>
@@ -157,9 +154,16 @@ function BuyingOrderSingle(props) {
         )}
         {dialogOpen && (
           <OrderConfirmDialog
-            order={selectedOrder}
+            order={order}
             open={dialogOpen}
             setOpen={setDialogOpen}
+          />
+        )}
+        {reviewDialogOpen && (
+          <ReviewDialog
+            order={order}
+            open={reviewDialogOpen}
+            setOpen={setReviewDialogOpen}
           />
         )}
       </Grid>

@@ -93,7 +93,8 @@ function RegisterDialog(props) {
         if (result.data.user) {
           Cookies.set("loginToken", data.login_token, { expires: 1 });
           setToken(data.login_token);
-          history.push("/user/dashboard");
+          history.push("/");
+          onClose();
         }
       })
       .catch((error) => {

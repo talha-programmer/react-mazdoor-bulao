@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import {
@@ -6,9 +6,6 @@ import {
   Box,
   withWidth,
   withStyles,
-  Typography,
-  Card,
-  Button,
   TableContainer,
   Paper,
   Table,
@@ -16,11 +13,16 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  IconButton
+  IconButton,
+  TextField,
+  MenuItem
 } from "@material-ui/core";
 import format from "date-fns/format";
 import usePostedJobs from "../../../../hooks/user/usePostedJobs";
-import { jobStatusStrings } from "../../../../config/enums/jobStatus";
+import {
+  jobStatusCodes,
+  jobStatusStrings
+} from "../../../../config/enums/jobStatus";
 import { useHistory } from "react-router";
 import BoxCircularProgress from "../../../../shared/components/BoxCircularProgress";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -37,10 +39,39 @@ const styles = (theme) => ({
 
 function JobsPosted(props) {
   const { classes, selectJobsPosted } = props;
-  const { data: postedJobs, isLoading, isError } = usePostedJobs();
+  const { data, isLoading, isError, isFetched } = usePostedJobs();
   const history = useHistory();
+  const [postedJobs, setPostedJobs] = useState();
+
+  const [selectedJobStatus, setSelectedJobStatus] = useState(-1);
+  let allJobStatusOptions = [];
+
+  useEffect(() => {
+    if (isFetched) {
+      setPostedJobs(data);
+    }
+  }, [data, isFetched]);
+
+  Object.keys(jobStatusStrings).forEach((key) => {
+    const option = {
+      value: key,
+      label: jobStatusStrings[key]
+    };
+    allJobStatusOptions.push(option);
+  });
 
   useEffect(selectJobsPosted, [selectJobsPosted]);
+
+  useEffect(() => {
+    if (selectedJobStatus == -1) {
+      setPostedJobs(data);
+    } else {
+      let jobs = data.filter((job) => {
+        return job.status == selectedJobStatus;
+      });
+      setPostedJobs(jobs);
+    }
+  }, [data, selectedJobStatus]);
 
   function DisplayTable() {
     return (
@@ -57,7 +88,7 @@ function JobsPosted(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {postedJobs.map((job) => (
+            {postedJobs?.map((job) => (
               <TableRow key={job.id}>
                 <TableCell component="th" scope="row">
                   <Link
@@ -68,7 +99,7 @@ function JobsPosted(props) {
                   </Link>
                 </TableCell>
                 <TableCell>
-                  {format(new Date(job.created_at), "PPP", {
+                  {format(new Date(job.created_at), "do MMM, yyyy", {
                     awareOfUnicodeTokens: true
                   })}
                 </TableCell>
@@ -87,6 +118,7 @@ function JobsPosted(props) {
 
                   <IconButton
                     aria-label="Edit Job"
+                    disabled={job.status === jobStatusCodes.JOB_COMPLETED}
                     onClick={() => {
                       history.push(`/user/jobs_posted/${job.url}/edit`, {
                         job: job
@@ -115,6 +147,34 @@ function JobsPosted(props) {
           <BoxCircularProgress />
         ) : (
           <Grid item xs={10}>
+            <Grid
+              container
+              direction="row-reverse"
+              style={{ marginBottom: 10 }}
+            >
+              <Grid item xs={4}>
+                <TextField
+                  select
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  defaultValue={-1}
+                  onChange={(event) => {
+                    setSelectedJobStatus(event.target.value);
+                  }}
+                >
+                  <MenuItem key={-1} value={-1}>
+                    All Jobs
+                  </MenuItem>
+                  {allJobStatusOptions.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+            </Grid>
+
             <DisplayTable />
           </Grid>
         )}

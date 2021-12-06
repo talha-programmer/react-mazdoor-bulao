@@ -9,10 +9,14 @@ import {
   Typography,
   Card,
   Button,
-  Avatar
+  Avatar,
+  Divider
 } from "@material-ui/core";
 import format from "date-fns/format";
-import { jobStatusStrings } from "../../../../config/enums/jobStatus";
+import {
+  jobStatusCodes,
+  jobStatusStrings
+} from "../../../../config/enums/jobStatus";
 import {
   bidStatusCodes,
   bidStatusStrings
@@ -31,6 +35,8 @@ import useGlobalClasses from "../../../../hooks/style/useGlobalClasses";
 import ReactImageGallery from "react-image-gallery";
 import { formatDistance, subDays } from "date-fns";
 import { LocationOn } from "@material-ui/icons";
+import ChangeStatusDialog from "./ChangeStatusDialog";
+import ReadMoreReact from "read-more-react";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -59,6 +65,12 @@ const styles = (theme) => ({
     padding: "4px 10px 4px 10px",
     backgroundColor: "#f2f2f2",
     marginRight: 10
+  },
+  bidDetails: {
+    "& > *": {
+      marginTop: 5,
+      marginBottom: 5
+    }
   }
 });
 
@@ -69,6 +81,9 @@ function JobPostedSingle(props) {
     isLoading: isJobLoading,
     isError: isJobError
   } = useJobPosted(jobId);
+
+  const [openStatusDialog, setOpenStatusDialog] = useState(false);
+
   const [snackOpen, setSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
   const [snackSeverity, setSnackSeverity] = useState();
@@ -82,7 +97,6 @@ function JobPostedSingle(props) {
   const history = useHistory();
   const globalClasses = useGlobalClasses();
 
-  //const allowedChats = useQueryClient().getQueryData(queryKeys.chatUsers);
   const [chatUserId, setChatUserId] = useState();
 
   const {
@@ -155,6 +169,41 @@ function JobPostedSingle(props) {
                   <br />
                 </>
               )}
+              <Grid
+                container
+                direction="row"
+                justifyContent="flex-end"
+                style={{ marginBottom: 20 }}
+                spacing={2}
+              >
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="Secondary"
+                    onClick={() => {
+                      history.push(`/user/jobs_posted/${job.url}/edit`, {
+                        job: job
+                      });
+                    }}
+                    disabled={job.status == jobStatusCodes.JOB_COMPLETED}
+                  >
+                    Edit this Job
+                  </Button>
+                </Grid>
+
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="Secondary"
+                    onClick={() => {
+                      setOpenStatusDialog(true);
+                    }}
+                    disabled={job.status === jobStatusCodes.JOB_COMPLETED}
+                  >
+                    Change Status
+                  </Button>
+                </Grid>
+              </Grid>
               <Card className={classes.card}>
                 <Typography variant="h5" className={globalClasses.mb_10}>
                   {job.title}
@@ -172,6 +221,9 @@ function JobPostedSingle(props) {
 
                 <Typography variant="subtitle2" className={globalClasses.mb_10}>
                   Bids: {job?.no_of_bids}
+                </Typography>
+                <Typography variant="subtitle2" className={globalClasses.mb_10}>
+                  Job Status: {jobStatusStrings[job?.status]}
                 </Typography>
 
                 <Typography variant="subtitle2" className={globalClasses.mb_10}>
@@ -208,53 +260,121 @@ function JobPostedSingle(props) {
               </Card>
             </Grid>
             <Grid item xs={8}>
-              <Typography variant="h2">Bids</Typography>
+              <Typography variant="h3">Bids</Typography>
             </Grid>
-            {job.bids?.map((bid) => (
-              <Grid item xs={8}>
-                <Card className={classes.card}>
-                  <Typography variant="h5">
-                    Posted By: {bid.offered_by?.name}
-                  </Typography>
-                  <Typography variant="body2">
-                    {format(new Date(bid.created_at), "PPP", {
-                      awareOfUnicodeTokens: true
-                    })}
-                  </Typography>
-                  <Typography variant="body2">
-                    Offered Amount: RS {bid.offered_amount}
-                  </Typography>
-                  <Typography variant="body2">
-                    Completion Time: {bid.completion_time} days
-                  </Typography>
-                  <Typography variant="body2">
-                    Bid Status: {bidStatusStrings[bid.status]}
-                  </Typography>
-                  <Typography variant="body2">{bid.details}</Typography>
-                  <Button
-                    onClick={() => {
-                      let chatId = bid.offered_by.id;
-                      setChatUserId(chatId);
-                      mutateAddInChat(chatId);
-                    }}
-                  >
-                    Open Chat
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      selectedBid = bid;
-                      startOrder();
-                    }}
-                    disabled={bid.status === bidStatusCodes.ACCEPTED}
-                  >
-                    {bid.status === bidStatusCodes.ACCEPTED
-                      ? "Hired"
-                      : "Hire This Person"}
-                  </Button>
-                </Card>
+            <Grid item xs={8}>
+              <Grid container justifyContent="center" spacing={3}>
+                {job.bids?.map((bid) => (
+                  <>
+                    <Grid item xs={6}>
+                      <Card
+                        className={[classes.card, classes.bidDetails].join(" ")}
+                      >
+                        <Typography
+                          variant="subtitle2"
+                          style={{
+                            fontSize: "1.2em",
+                            lineHeight: 1.2,
+                            marginBottom: 10
+                          }}
+                        >
+                          <ReadMoreReact
+                            className={classes.readMore}
+                            text={bid.details}
+                            readMoreText={"more"}
+                          />
+                        </Typography>
+                        <Divider />
+                        <Typography variant="body1">
+                          <i>Posted By:</i>{" "}
+                          <span style={{ float: "right" }}>
+                            {bid.offered_by?.name}
+                          </span>
+                        </Typography>
+                        <Divider />
+                        <Typography variant="body1">
+                          <i>Offered On: </i>
+                          <span style={{ float: "right" }}>
+                            {format(new Date(bid.created_at), "PPP", {
+                              awareOfUnicodeTokens: true
+                            })}
+                          </span>
+                        </Typography>
+                        <Divider />
+                        <Typography variant="body1">
+                          <i>Offered Amount:</i>{" "}
+                          <span style={{ float: "right" }}>
+                            RS {bid.offered_amount}
+                          </span>
+                        </Typography>
+                        <Divider />
+                        <Typography variant="body1">
+                          <i>Completion Time:</i>{" "}
+                          <span style={{ float: "right" }}>
+                            {bid.completion_time} days
+                          </span>
+                        </Typography>
+                        <Divider />
+
+                        <Typography variant="body1">
+                          <i>Bid Status:</i>{" "}
+                          <span style={{ float: "right" }}>
+                            {bidStatusStrings[bid.status]}
+                          </span>
+                        </Typography>
+                        <Divider />
+
+                        <Button
+                          variant="contained"
+                          onClick={() => {
+                            let chatId = bid.offered_by.id;
+                            setChatUserId(chatId);
+                            mutateAddInChat(chatId);
+                          }}
+                        >
+                          Open Chat
+                        </Button>
+                        {!bid.status === bidStatusCodes.ACCEPTED && (
+                          <Button
+                            color="secondary"
+                            variant="contained"
+                            style={{ float: "right" }}
+                            onClick={() => {
+                              selectedBid = bid;
+                              startOrder();
+                            }}
+                          >
+                            Hire This Person
+                          </Button>
+                        )}
+                        {bid?.order && (
+                          <Button
+                            color="secondary"
+                            variant="contained"
+                            style={{ float: "right" }}
+                            onClick={() => {
+                              history.push("/user/buying_orders/single_order", {
+                                orderId: bid.order.id
+                              });
+                            }}
+                          >
+                            Order Details
+                          </Button>
+                        )}
+                      </Card>
+                    </Grid>
+                  </>
+                ))}
               </Grid>
-            ))}
+            </Grid>
           </>
+        )}
+        {openStatusDialog && (
+          <ChangeStatusDialog
+            open={openStatusDialog}
+            setOpen={setOpenStatusDialog}
+            job={job}
+          />
         )}
       </Grid>
     </Box>

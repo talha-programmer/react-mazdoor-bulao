@@ -7,11 +7,13 @@ function useCompleteBuyingOrder() {
   const queryClient = useQueryClient();
   return useMutation(
     (order) =>
-      axios.post(api.completeBuyingOrder, order).then((result) => result.data),
+      axios.post(api.completeBuyingOrder, order).then((result) => {
+        queryClient.invalidateQueries([queryKeys.buyingOrders, order.id]);
+        return result.data;
+      }),
     {
       onSuccess: () => {
         // Invalidate and refetch
-        queryClient.invalidateQueries(queryKeys.buyingOrders);
       }
     }
   );
