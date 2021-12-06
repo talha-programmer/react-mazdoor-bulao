@@ -20,10 +20,6 @@ import SnackAlert from "../../../../shared/components/SnackAlert";
 import alertSeverity from "../../../../config/alertSeverity";
 import ReactImageUploadComponent from "react-images-upload";
 import { useHistory } from "react-router";
-// import parse from "autosuggest-highlight/parse";
-// import throttle from "lodash/throttle";
-import LocationOnIcon from "@material-ui/icons/LocationOn";
-import { usePlacesWidget } from "react-google-autocomplete";
 import AutocompletePlaces from "react-google-autocomplete";
 
 const styles = (theme) => ({
@@ -34,7 +30,6 @@ const styles = (theme) => ({
 });
 
 function CreateJob(props) {
-  //const { classes } = props;
   const job = props.location?.state?.job;
   const formRef = useRef();
   const title = useRef();
