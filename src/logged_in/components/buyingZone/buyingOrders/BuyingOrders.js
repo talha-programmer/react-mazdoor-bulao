@@ -218,63 +218,6 @@ function BuyingOrders(props) {
 
             <DisplayTable />
           </>
-          // buyingOrders.map((order) => (
-          //   <Grid item xs={8}>
-          //     <Card className={classes.card}>
-          //       <Typography variant="h5">
-          //         Worker: {order.worker?.name}
-          //       </Typography>
-          //       <Typography variant="body2">
-          //         Order Status: {orderStatusStrings[order.status]}
-          //       </Typography>
-          //       <Typography variant="body2">
-          //         Starting Time:{" "}
-          //         {format(new Date(order.starting_time), "PPP", {
-          //           awareOfUnicodeTokens: true
-          //         })}
-          //       </Typography>
-          //       {order.ending_time && (
-          //         <Typography variant="body2">
-          //           Ending Time:{" "}
-          //           {format(new Date(order.ending_time), "PPP", {
-          //             awareOfUnicodeTokens: true
-          //           })}
-          //         </Typography>
-          //       )}
-          //       <Typography variant="body2">
-          //         Bid: {order.bid.details}
-          //       </Typography>
-          //       <Typography variant="body2"></Typography>
-          //       <Typography variant="body2">
-          //         Job: {order.job.details}
-          //       </Typography>
-
-          //       {/* <Button
-          //         onClick={() => {
-          //           // const orderToSend = {
-          //           //   order_id: order.id
-          //           // };
-          //           // mutateCompleteOrder(orderToSend);
-          //           setSelectedOrder(order);
-          //           setDialogOpen(true);
-          //         }}
-          //         disabled={order.status === orderStatusCodes.COMPLETED}
-          //       >
-          //         Mark as Complete
-          //       </Button> */}
-
-          //       <Button
-          //         onClick={() => {
-          //           history.push("/user/buying_orders/single_order", {
-          //             orderId: order.id
-          //           });
-          //         }}
-          //       >
-          //         Details
-          //       </Button>
-          //     </Card>
-          //   </Grid>
-          // ))
         )}
         {/* {dialogOpen && (
           <OrderConfirmDialog

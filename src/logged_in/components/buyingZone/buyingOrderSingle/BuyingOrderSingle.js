@@ -27,7 +27,10 @@ import {
 import useOrderReviews from "../../../../hooks/review/useOrderReviews";
 import OrderConfirmDialog from "../buyingOrders/OrderConfirmDialog";
 import { Rating } from "@material-ui/lab";
-import { reviewTypesStrings } from "../../../../config/enums/reviewTypes";
+import {
+  reviewTypesCodes,
+  reviewTypesStrings
+} from "../../../../config/enums/reviewTypes";
 import BoxCircularProgress from "../../../../shared/components/BoxCircularProgress";
 import smoothScrollTop from "../../../../shared/functions/smoothScrollTop";
 import ReviewDialog from "../buyingOrders/ReviewDialog";
@@ -73,6 +76,28 @@ function BuyingOrderSingle(props) {
   } = useOrderReviews(orderId);
 
   useEffect(smoothScrollTop, [smoothScrollTop]);
+
+  const [buyerReview, setBuyerReview] = useState();
+  const [workerReview, setWorkerReview] = useState();
+
+  useEffect(() => {
+    if (reviewsFetched) {
+      let buyerReview = orderReviews.filter((review) => {
+        return review.review_type == reviewTypesCodes.FROM_BUYER_TO_WORKER;
+      });
+      if (buyerReview.length > 0) {
+        buyerReview = buyerReview[0];
+        setBuyerReview(buyerReview);
+      }
+      let workerReview = orderReviews.filter((review) => {
+        return review.review_type == reviewTypesCodes.FROM_WORKER_TO_BUYER;
+      });
+      if (buyerReview.length > 0) {
+        workerReview = workerReview[0];
+        setWorkerReview(workerReview);
+      }
+    }
+  }, [orderReviews, reviewsFetched]);
 
   return (
     <Box display="flex" justifyContent="center">
@@ -130,26 +155,39 @@ function BuyingOrderSingle(props) {
             </Grid>
 
             <Grid item xs={8}>
-              <Typography variant="h2">Reviews</Typography>
+              <Typography variant="h3">Reviews</Typography>
             </Grid>
 
-            {!isReviewsLoading &&
-              orderReviews.map((review) => (
-                <Grid item xs={8}>
-                  <Card className={classes.card}>
-                    <Typography variant="body2">
-                      Given By: {review?.given_by?.name}
-                    </Typography>
-                    <Typography variant="body2">
-                      {review?.review_text}
-                    </Typography>
-                    <Typography variant="body2">
-                      Review Type: {reviewTypesStrings[review?.review_type]}
-                    </Typography>
-                    <Rating value={review.rating} disabled={true} />
-                  </Card>
-                </Grid>
-              ))}
+            {buyerReview && (
+              <Grid item xs={8}>
+                <Card className={classes.card}>
+                  <Typography variant="h5">Buyer Review</Typography>
+                  <Typography variant="body2">
+                    Given By: {buyerReview?.given_by?.name}
+                  </Typography>
+                  <Typography variant="body2">
+                    {buyerReview?.review_text}
+                  </Typography>
+
+                  <Rating value={buyerReview.rating} disabled={true} />
+                </Card>
+              </Grid>
+            )}
+            {workerReview && (
+              <Grid item xs={8}>
+                <Card className={classes.card}>
+                  <Typography variant="h5">Worker Review</Typography>
+                  <Typography variant="body2">
+                    Given By: {workerReview?.given_by?.name}
+                  </Typography>
+                  <Typography variant="body2">
+                    {workerReview?.review_text}
+                  </Typography>
+
+                  <Rating value={workerReview.rating} disabled={true} />
+                </Card>
+              </Grid>
+            )}
           </>
         )}
         {dialogOpen && (

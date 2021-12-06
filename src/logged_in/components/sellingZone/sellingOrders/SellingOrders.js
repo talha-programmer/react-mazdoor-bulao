@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import {
@@ -8,14 +8,26 @@ import {
   withStyles,
   Typography,
   Card,
-  Button
+  Button,
+  TableContainer,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  IconButton,
+  TextField,
+  MenuItem
 } from "@material-ui/core";
 import format from "date-fns/format";
-import usePostedJobs from "../../../../hooks/user/usePostedJobs";
-import { jobStatusStrings } from "../../../../config/enums/jobStatus";
 import { useHistory } from "react-router";
 import useSellingOrders from "../../../../hooks/orders/useSellingOrders";
 import BoxCircularProgress from "../../../../shared/components/BoxCircularProgress";
+import shortenString from "../../../../shared/functions/shortenString";
+import { orderStatusStrings } from "../../../../config/enums/orderStatus";
+import DetailsIcon from "@material-ui/icons/OpenInNew";
+import { Link } from "react-router-dom";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -43,10 +55,116 @@ const styles = (theme) => ({
 
 function SellingOrders(props) {
   const { classes, selectSellingOrders } = props;
-  const { data: sellingOrders, isLoading, isError } = useSellingOrders();
+  const { data, isLoading, isError, isFetched } = useSellingOrders();
   const history = useHistory();
 
   useEffect(selectSellingOrders, [selectSellingOrders]);
+
+  const [sellingOrders, setSellingOrders] = useState();
+  const [selectedOrderStatus, setSelectedOrderStatus] = useState(-1);
+  let allOrderStatusOptions = [];
+
+  useEffect(() => {
+    if (isFetched) {
+      setSellingOrders(data);
+    }
+  }, [data, isFetched]);
+
+  Object.keys(orderStatusStrings).forEach((key) => {
+    const option = {
+      value: key,
+      label: orderStatusStrings[key]
+    };
+    allOrderStatusOptions.push(option);
+  });
+
+  useEffect(() => {
+    if (selectedOrderStatus == -1) {
+      setSellingOrders(data);
+    } else {
+      let orders = data.filter((order) => {
+        return order.status == selectedOrderStatus;
+      });
+      setSellingOrders(orders);
+    }
+  }, [data, selectedOrderStatus]);
+
+  function DisplayTable() {
+    return (
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Job</TableCell>
+              <TableCell>Bid</TableCell>
+              <TableCell>Buyer</TableCell>
+              <TableCell>Date Started</TableCell>
+              <TableCell>Date Ended</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {sellingOrders?.map((order) => (
+              <TableRow key={order.id}>
+                <TableCell component="th" scope="row">
+                  <Link
+                    to={`/user/jobs_posted/${order.job.url}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    {shortenString(order.job.title, 40)}
+                  </Link>
+                </TableCell>
+                <TableCell>{shortenString(order.bid.details, 40)}</TableCell>
+                <TableCell>{order.buyer.name}</TableCell>
+
+                <TableCell>
+                  {format(new Date(order.starting_time), "do MMM, yyyy", {
+                    awareOfUnicodeTokens: true
+                  })}
+                </TableCell>
+                <TableCell>
+                  {order.ending_time &&
+                    format(new Date(order.ending_time), "do MMM, yyyy", {
+                      awareOfUnicodeTokens: true
+                    })}
+                </TableCell>
+                <TableCell>{orderStatusStrings[order.status]}</TableCell>
+                <TableCell>
+                  <IconButton
+                    aria-label="View Details"
+                    onClick={() => {
+                      history.push("/user/selling_orders/single_order", {
+                        orderId: order.id
+                      });
+                    }}
+                  >
+                    <DetailsIcon color="action" />
+                  </IconButton>
+
+                  {/* <IconButton
+                    aria-label="Edit Order"
+                    disabled={job.status === orderStatusCodes.JOB_COMPLETED}
+                    onClick={() => {
+                      history.push(`/user/jobs_posted/${job.url}/edit`, {
+                        job: job
+                      });
+                    }}
+                  >
+                    <EditIcon color="secondary" />
+                  </IconButton> */}
+
+                  {/* <IconButton aria-label="Delete Job" onClick={() => {}}>
+                    <DeleteIcon color="error" />
+                  </IconButton> */}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
+  }
 
   return (
     <Box display="flex" justifyContent="center">
@@ -54,34 +172,37 @@ function SellingOrders(props) {
         {isLoading ? (
           <BoxCircularProgress />
         ) : (
-          sellingOrders.map((order) => (
-            <Grid item xs={8}>
-              <Card className={classes.card}>
-                <Typography variant="h5">Buyer: {order.buyer.name}</Typography>
-                <Typography variant="body2">
-                  Starting Time:
-                  {format(new Date(order.starting_time), "PPP", {
-                    awareOfUnicodeTokens: true
-                  })}
-                </Typography>
-                <Typography variant="body2">
-                  Bid: {order.bid.details}
-                </Typography>
-                <Typography variant="body2"></Typography>
-                <Typography variant="body2">
-                  Job: {order.job.details}
-                </Typography>
-
-                {/* <Button
-                  onClick={() => {
-                    history.push(`/user/jobs_posted/${job.url}`);
+          <>
+            <Grid
+              container
+              direction="row-reverse"
+              style={{ marginBottom: 10 }}
+            >
+              <Grid item xs={4}>
+                <TextField
+                  select
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  defaultValue={-1}
+                  onChange={(event) => {
+                    setSelectedOrderStatus(event.target.value);
                   }}
                 >
-                  Job Details
-                </Button> */}
-              </Card>
+                  <MenuItem key={-1} value={-1}>
+                    All Orders
+                  </MenuItem>
+                  {allOrderStatusOptions.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
             </Grid>
-          ))
+
+            <DisplayTable />
+          </>
         )}
       </Grid>
     </Box>
