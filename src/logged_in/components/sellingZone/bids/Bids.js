@@ -8,12 +8,19 @@ import {
   withStyles,
   Typography,
   Card,
-  Button
+  Button,
+  Divider,
+  Container
 } from "@material-ui/core";
 import format from "date-fns/format";
 import useBids from "../../../../hooks/bids/useBids";
-import { bidStatusStrings } from "../../../../config/enums/bidStatus";
+import {
+  bidStatusCodes,
+  bidStatusStrings
+} from "../../../../config/enums/bidStatus";
 import BoxCircularProgress from "../../../../shared/components/BoxCircularProgress";
+import ReadMoreReact from "read-more-react";
+import { useHistory } from "react-router-dom";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -31,11 +38,17 @@ const styles = (theme) => ({
   // },
   // noDecoration: {
   //   textDecoration: "none !important"
-  // }import useAppliedJobs from '../../../hooks/user/useAppliedJobs';
+  // }
 
   card: {
     boxShadow: theme.shadows[2],
     padding: 20
+  },
+  bidDetails: {
+    "& > *": {
+      marginTop: 5,
+      marginBottom: 5
+    }
   }
 });
 
@@ -45,6 +58,7 @@ function Bids(props) {
   //const [openBidDialog, setOpenBidDialog] = useState(false);
   const [bids, setBids] = useState();
   const [loading, setLoading] = useState(true);
+  const history = useHistory();
 
   useEffect(selectBids, [selectBids]);
 
@@ -57,34 +71,102 @@ function Bids(props) {
 
   return (
     <Box display="flex" justifyContent="center">
-      <Grid container spacing={3} justifyContent="center" alignItems="center">
-        {loading ? (
-          <BoxCircularProgress />
-        ) : (
-          bids.map((bid) => (
-            <Grid item xs={8}>
-              <Card className={classes.card}>
-                <Typography variant="h5">Job Title: {bid.job.title}</Typography>
-                <Typography variant="body2">
-                  {format(new Date(bid.created_at), "PPP", {
-                    awareOfUnicodeTokens: true
-                  })}
-                </Typography>
-                <Typography variant="body2">
-                  Offered Amount: RS {bid.offered_amount}
-                </Typography>
-                <Typography variant="body2">
-                  Completion Time {bid.completion_time} days
-                </Typography>
-                <Typography variant="body2">
-                  Bid Status: {bidStatusStrings[bid.status]}
-                </Typography>
-                <Typography variant="body2">{bid.details}</Typography>
-              </Card>
+      <Container maxWidth="md">
+        <Typography style={{ marginBottom: 30 }} variant="h4">
+          Bids Created by You
+        </Typography>
+        <Grid container spacing={3} justifyContent="center" alignItems="center">
+          {loading ? (
+            <BoxCircularProgress />
+          ) : (
+            <Grid item xs={12}>
+              <Grid container justifyContent="center" spacing={3}>
+                {bids.map((bid) => (
+                  <>
+                    <Grid item xs={6}>
+                      <Card
+                        className={[classes.card, classes.bidDetails].join(" ")}
+                      >
+                        <Typography
+                          variant="subtitle2"
+                          style={{
+                            fontSize: "1.2em",
+                            lineHeight: 1.2,
+                            marginBottom: 10
+                          }}
+                        >
+                          <ReadMoreReact
+                            className={classes.readMore}
+                            text={bid.details}
+                            readMoreText={"more"}
+                          />
+                        </Typography>
+                        <Divider />
+                        <Typography variant="body1">
+                          <i>Offered On: </i>
+                          <span style={{ float: "right" }}>
+                            {format(new Date(bid.created_at), "PPP", {
+                              awareOfUnicodeTokens: true
+                            })}
+                          </span>
+                        </Typography>
+                        <Divider />
+                        <Typography variant="body1">
+                          <i>Offered Amount:</i>{" "}
+                          <span style={{ float: "right" }}>
+                            RS {bid.offered_amount}
+                          </span>
+                        </Typography>
+                        <Divider />
+                        <Typography variant="body1">
+                          <i>Completion Time:</i>{" "}
+                          <span style={{ float: "right" }}>
+                            {bid.completion_time} days
+                          </span>
+                        </Typography>
+                        <Divider />
+
+                        <Typography variant="body1">
+                          <i>Bid Status:</i>{" "}
+                          <span style={{ float: "right" }}>
+                            {bidStatusStrings[bid.status]}
+                          </span>
+                        </Typography>
+                        <Divider />
+                        <Button
+                          variant="contained"
+                          onClick={() => {
+                            //let chatId = bid.offered_by.id;
+                            history.push("/jobs/single_job", {
+                              jobId: bid.job.id
+                            });
+                          }}
+                        >
+                          Job Details
+                        </Button>
+
+                        <Button
+                          color="secondary"
+                          variant="contained"
+                          style={{ float: "right" }}
+                          onClick={() => {
+                            history.push("/user/selling_orders/single_order", {
+                              orderId: bid?.order.id
+                            });
+                          }}
+                          disabled={!bid.order}
+                        >
+                          Order Details
+                        </Button>
+                      </Card>
+                    </Grid>
+                  </>
+                ))}
+              </Grid>
             </Grid>
-          ))
-        )}
-      </Grid>
+          )}
+        </Grid>
+      </Container>
     </Box>
   );
 }

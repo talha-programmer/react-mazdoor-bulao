@@ -19,6 +19,7 @@ import queryKeys from "../../../config/queryKeys";
 import useSendMessage from "../../../hooks/chat/useSendMessage";
 import { format } from "date-fns";
 import BoxCircularProgress from "../../../shared/components/BoxCircularProgress";
+import { Container } from "@material-ui/core";
 
 const useStyles = makeStyles({
   table: {
@@ -182,14 +183,10 @@ const Chat = (props) => {
   };
 
   return (
-    <div>
-      <Grid container>
-        <Grid item xs={12}>
-          <Typography variant="h5" className="header-message">
-            Chat
-          </Typography>
-        </Grid>
-      </Grid>
+    <Container maxWidth="md">
+      <Typography style={{ marginBottom: 30 }} variant="h4">
+        Chat
+      </Typography>
       <Grid container component={Paper} className={classes.chatSection}>
         <Grid item xs={3} className={classes.borderRight500}>
           <Grid item xs={12} style={{ padding: "10px" }}>
@@ -250,7 +247,7 @@ const Chat = (props) => {
           </Grid>
         </Grid>
       </Grid>
-    </div>
+    </Container>
   );
 };
 

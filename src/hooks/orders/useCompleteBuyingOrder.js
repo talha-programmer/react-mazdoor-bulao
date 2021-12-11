@@ -8,7 +8,7 @@ function useCompleteBuyingOrder() {
   return useMutation(
     (order) =>
       axios.post(api.completeBuyingOrder, order).then((result) => {
-        queryClient.invalidateQueries([queryKeys.buyingOrders, order.id]);
+        queryClient.invalidateQueries([queryKeys.singleOrder, order.id]);
         return result.data;
       }),
     {

@@ -15,6 +15,7 @@ function api() {
     storeWorkerProfile: home + "/user/store_worker_profile",
     workerProfile: home + "/user/worker_profile",
     jobs: home + "/jobs",
+    cities: home + "/jobs/cities",
     jobCategories: home + "/job_categories",
     storeJob: home + "/store_job",
     storeBid: home + "/store_job_bid",

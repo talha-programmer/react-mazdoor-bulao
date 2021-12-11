@@ -1,6 +1,6 @@
 import React, { memo, useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -29,6 +29,7 @@ import LogoutIcon from "@material-ui/icons/ExitToApp";
 import SettingsIcon from "@material-ui/icons/Settings";
 import MessagePopperButton from "./MessagePopperButton";
 import useRecentChat from "../../../hooks/chat/useRecentChat";
+import PersonIcon from "@material-ui/icons/Person";
 
 const styles = (theme) => ({
   appBar: {
@@ -68,6 +69,8 @@ function NavBar(props) {
     mobileDrawerOpen,
     selectedTab
   } = props;
+
+  const history = useHistory();
 
   const { token, user } = useContext(AuthContext);
 
@@ -149,16 +152,23 @@ function NavBar(props) {
           <Typography variant="h6" style={{ marginLeft: 10 }}>
             {user?.name}
           </Typography>
-          <MenuItem>
-            <Avatar style={{ width: 32, height: 32 }} /> My account
-          </MenuItem>
-          <Divider />
+          <Divider style={{ marginBottom: 10 }} />
           {/* <MenuItem>
             <ListItemIcon>
               <PersonAddIcon fontSize="small" />
             </ListItemIcon>
             Add another account
           </MenuItem> */}
+          <MenuItem
+            onClick={() => {
+              history.push("/user/user_profile");
+            }}
+          >
+            <ListItemIcon>
+              <PersonIcon fontSize="small" />
+            </ListItemIcon>
+            Profile
+          </MenuItem>
           <MenuItem>
             <ListItemIcon>
               <SettingsIcon fontSize="small" />

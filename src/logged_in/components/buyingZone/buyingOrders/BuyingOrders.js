@@ -18,7 +18,8 @@ import {
   TableBody,
   IconButton,
   TextField,
-  MenuItem
+  MenuItem,
+  Container
 } from "@material-ui/core";
 import format from "date-fns/format";
 import { useHistory } from "react-router";
@@ -161,7 +162,7 @@ function BuyingOrders(props) {
                     aria-label="Edit Order"
                     disabled={job.status === orderStatusCodes.JOB_COMPLETED}
                     onClick={() => {
-                      history.push(`/user/jobs_posted/${job.url}/edit`, {
+                      history.push(`/user/jobs_posted/single_job/edit`, {
                         job: job
                       });
                     }}
@@ -183,50 +184,57 @@ function BuyingOrders(props) {
 
   return (
     <Box display="flex" justifyContent="center">
-      <Grid container spacing={3} justifyContent="center" alignItems="center">
-        {isLoading ? (
-          <BoxCircularProgress />
-        ) : (
-          <>
-            <Grid
-              container
-              direction="row-reverse"
-              style={{ marginBottom: 10 }}
-            >
-              <Grid item xs={4}>
-                <TextField
-                  select
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  defaultValue={-1}
-                  onChange={(event) => {
-                    setSelectedOrderStatus(event.target.value);
-                  }}
-                >
-                  <MenuItem key={-1} value={-1}>
-                    All Orders
-                  </MenuItem>
-                  {allOrderStatusOptions.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-            </Grid>
+      <Container maxWidth="md">
+        <Grid
+          container
+          justifyContent="space-between"
+          alignItems="center"
+          spacing={2}
+          style={{ marginBottom: 30 }}
+        >
+          <Grid item xs={6}>
+            <Typography variant="h4">Buying Orders</Typography>
+          </Grid>
 
-            <DisplayTable />
-          </>
-        )}
-        {/* {dialogOpen && (
+          <Grid item xs={4}>
+            <TextField
+              select
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              defaultValue={-1}
+              onChange={(event) => {
+                setSelectedOrderStatus(event.target.value);
+              }}
+            >
+              <MenuItem key={-1} value={-1}>
+                All Orders
+              </MenuItem>
+              {allOrderStatusOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+        </Grid>
+        <Grid container spacing={3} justifyContent="center" alignItems="center">
+          {isLoading ? (
+            <BoxCircularProgress />
+          ) : (
+            <>
+              <DisplayTable />
+            </>
+          )}
+          {/* {dialogOpen && (
           <OrderConfirmDialog
             order={selectedOrder}
             open={dialogOpen}
             setOpen={setDialogOpen}
           />
         )} */}
-      </Grid>
+        </Grid>
+      </Container>
     </Box>
   );
 }

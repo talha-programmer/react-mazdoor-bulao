@@ -10,7 +10,7 @@ import {
   Box,
   withStyles,
   withWidth,
-  isWidthUp,
+  isWidthUp
 } from "@material-ui/core";
 import WaveBorder from "../../../shared/components/WaveBorder";
 import ZoomImage from "../../../shared/components/ZoomImage";
@@ -19,20 +19,20 @@ const styles = (theme) => ({
   extraLargeButtonLabel: {
     fontSize: theme.typography.body1.fontSize,
     [theme.breakpoints.up("sm")]: {
-      fontSize: theme.typography.h6.fontSize,
-    },
+      fontSize: theme.typography.h6.fontSize
+    }
   },
   extraLargeButton: {
     paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(1.5),
     [theme.breakpoints.up("xs")]: {
       paddingTop: theme.spacing(1),
-      paddingBottom: theme.spacing(1),
+      paddingBottom: theme.spacing(1)
     },
     [theme.breakpoints.up("lg")]: {
       paddingTop: theme.spacing(2),
-      paddingBottom: theme.spacing(2),
-    },
+      paddingBottom: theme.spacing(2)
+    }
   },
   card: {
     boxShadow: theme.shadows[4],
@@ -40,62 +40,62 @@ const styles = (theme) => ({
     marginRight: theme.spacing(2),
     [theme.breakpoints.up("xs")]: {
       paddingTop: theme.spacing(3),
-      paddingBottom: theme.spacing(3),
+      paddingBottom: theme.spacing(3)
     },
     [theme.breakpoints.up("sm")]: {
       paddingTop: theme.spacing(5),
       paddingBottom: theme.spacing(5),
       paddingLeft: theme.spacing(4),
-      paddingRight: theme.spacing(4),
+      paddingRight: theme.spacing(4)
     },
     [theme.breakpoints.up("md")]: {
       paddingTop: theme.spacing(5.5),
       paddingBottom: theme.spacing(5.5),
       paddingLeft: theme.spacing(5),
-      paddingRight: theme.spacing(5),
+      paddingRight: theme.spacing(5)
     },
     [theme.breakpoints.up("lg")]: {
       paddingTop: theme.spacing(6),
       paddingBottom: theme.spacing(6),
       paddingLeft: theme.spacing(6),
-      paddingRight: theme.spacing(6),
+      paddingRight: theme.spacing(6)
     },
     [theme.breakpoints.down("lg")]: {
-      width: "auto",
-    },
+      width: "auto"
+    }
   },
   wrapper: {
     position: "relative",
     backgroundColor: theme.palette.secondary.main,
-    paddingBottom: theme.spacing(2),
+    paddingBottom: theme.spacing(2)
   },
   image: {
     maxWidth: "100%",
     verticalAlign: "middle",
     borderRadius: theme.shape.borderRadius,
-    boxShadow: theme.shadows[4],
+    boxShadow: theme.shadows[4]
   },
   container: {
     marginTop: theme.spacing(6),
     marginBottom: theme.spacing(12),
     [theme.breakpoints.down("md")]: {
-      marginBottom: theme.spacing(9),
+      marginBottom: theme.spacing(9)
     },
     [theme.breakpoints.down("sm")]: {
-      marginBottom: theme.spacing(6),
+      marginBottom: theme.spacing(6)
     },
     [theme.breakpoints.down("sm")]: {
-      marginBottom: theme.spacing(3),
-    },
+      marginBottom: theme.spacing(3)
+    }
   },
   containerFix: {
     [theme.breakpoints.up("md")]: {
-      maxWidth: "none !important",
-    },
+      maxWidth: "none !important"
+    }
   },
   waveBorder: {
-    paddingTop: theme.spacing(4),
-  },
+    paddingTop: theme.spacing(4)
+  }
 });
 
 function HeadSection(props) {
@@ -123,8 +123,7 @@ function HeadSection(props) {
                         <Typography
                           variant={isWidthUp("lg", width) ? "h3" : "h4"}
                         >
-                          Free Template for building a SaaS app using
-                          Material-UI
+                          Find Electrical, Plumbing, Masonary and Other Jobs
                         </Typography>
                       </Box>
                       <div>
@@ -133,8 +132,9 @@ function HeadSection(props) {
                             variant={isWidthUp("lg", width) ? "h6" : "body1"}
                             color="textSecondary"
                           >
-                            Lorem ipsum dolor sit amet, consetetur sadipscing
-                            elitr, sed diam nonumy eirmod tempor invidunt
+                            MazdoorBulao is a platform to connect Buyers with
+                            Workers. Workers can find jobs and Buyers can hire
+                            them.
                           </Typography>
                         </Box>
                         <Button
@@ -143,9 +143,9 @@ function HeadSection(props) {
                           fullWidth
                           className={classes.extraLargeButton}
                           classes={{ label: classes.extraLargeButtonLabel }}
-                          href="https://github.com/dunky11/react-saas-template"
+                          href="/jobs"
                         >
-                          Download from GitHub
+                          Go To Jobs Section
                         </Button>
                       </div>
                     </Box>
@@ -155,7 +155,7 @@ function HeadSection(props) {
                       <ZoomImage
                         src={`${process.env.PUBLIC_URL}/images/logged_out/headerImage.jpg`}
                         className={classes.image}
-                        alt="header example"
+                        alt="Header Image"
                       />
                     </Grid>
                   </Hidden>
@@ -167,7 +167,7 @@ function HeadSection(props) {
       </div>
       <WaveBorder
         upperColor={theme.palette.secondary.main}
-        lowerColor="#FFFFFF"
+        lowerColor={theme.colors.background}
         className={classes.waveBorder}
         animationNegativeDelay={2}
       />
@@ -178,7 +178,7 @@ function HeadSection(props) {
 HeadSection.propTypes = {
   classes: PropTypes.object,
   width: PropTypes.string,
-  theme: PropTypes.object,
+  theme: PropTypes.object
 };
 
 export default withWidth()(

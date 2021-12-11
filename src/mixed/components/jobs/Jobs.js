@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import {
@@ -8,7 +8,9 @@ import {
   withStyles,
   Typography,
   Card,
-  Button
+  Button,
+  Container,
+  TextField
 } from "@material-ui/core";
 import format from "date-fns/format";
 import { useHistory } from "react-router-dom";
@@ -19,6 +21,9 @@ import { LocationOn } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import shortenString from "../../../shared/functions/shortenString";
 import useGlobalClasses from "../../../hooks/style/useGlobalClasses";
+import { Autocomplete } from "@material-ui/lab";
+import useJobCategories from "../../../hooks/jobs/useJobCategories";
+import useJobs from "../../../hooks/jobs/useJobs";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -62,68 +67,123 @@ function Jobs(props) {
   const queryClient = useQueryClient();
   const currentDate = new Date();
   const globalClasses = useGlobalClasses();
+  const { data: jobCategories } = useJobCategories();
+  const [selectedCategories, setSelectedCategories] = useState();
 
+  const { mutate, data, isError, isLoading } = useJobs();
+  const [jobs, setJobs] = useState();
   // We have fetched jobs already in Routing. That's why accessing
   // them with queryClient
-  let jobs = queryClient.getQueryData(queryKeys.jobs);
+  //let jobs = queryClient.getQueryData(queryKeys.jobs);
 
   useEffect(selectJobs, [selectJobs]);
 
+  useEffect(() => {
+    const filters = new FormData();
+    if (selectedCategories) {
+      filters.append("categories", selectedCategories);
+    }
+    mutate(filters);
+  }, [mutate, selectedCategories]);
+
+  useEffect(() => {
+    setJobs(data);
+  }, [data]);
+
   const openJobDetails = (job) => {
-    history.push(`/jobs/${job.url}`);
+    history.push(`/jobs/single_job`, { jobId: job.id });
   };
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      className={classNames("lg-p-top")}
-    >
-      <Grid container spacing={3} justifyContent="center" alignItems="center">
-        {!Array.isArray(jobs) || jobs.length === 0 ? (
-          <span>No jobs to display</span>
-        ) : (
-          jobs.map((job) => (
-            <Grid item xs={8}>
-              <Card
-                className={classes.card}
-                onClick={() => openJobDetails(job)}
-              >
-                <Typography variant="h5" className={globalClasses.mb_10}>
-                  {job.title}
-                </Typography>
-                <Typography variant="subtitle1" className={globalClasses.mb_10}>
-                  Est. Budget: RS {job.budget} - Posted:{" "}
-                  {formatDistance(
-                    subDays(new Date(job.created_at), 0),
-                    currentDate,
-                    { addSuffix: true }
-                  )}
-                  {" - Est. time: "} {job.deadline} days
-                </Typography>
+    <Box display="flex" justifyContent="center" className="lg-p-top bg-light">
+      <Container maxWidth="md">
+        <Grid
+          container
+          justifyContent="space-between"
+          style={{ marginBottom: 30 }}
+        >
+          <Grid item xs={6}>
+            <Typography variant="h4">Jobs</Typography>
+          </Grid>
 
-                <Typography variant="body1" className={globalClasses.mb_5}>
-                  {shortenString(job.details)}
-                </Typography>
+          <Grid item xs={6}>
+            <Autocomplete
+              multiple
+              required
+              options={jobCategories}
+              disableCloseOnSelect
+              getOptionLabel={(option) => option.name}
+              filterSelectedOptions
+              renderOption={(option, props) => {
+                return <li {...props}>{option.name}</li>;
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Categories"
+                  placeholder="Categories"
+                  variant="outlined"
+                />
+              )}
+              onChange={(event, newValue) => {
+                // Get only ids of selected categories
+                setSelectedCategories(
+                  newValue.map((category) => category.id).toString()
+                );
+              }}
+            />
+          </Grid>
+        </Grid>
 
-                <Typography variant="body1" className={globalClasses.mb_10}>
-                  {job?.categories?.map((category) => (
-                    <span className={classes.categoryName}>
-                      {category.name}
-                    </span>
-                  ))}
-                </Typography>
+        <Grid container spacing={3} justifyContent="center" alignItems="center">
+          {!Array.isArray(jobs) || jobs?.length === 0 ? (
+            <span>No jobs to display</span>
+          ) : (
+            jobs.map((job) => (
+              <Grid item xs={12}>
+                <Card
+                  className={classes.card}
+                  onClick={() => openJobDetails(job)}
+                >
+                  <Typography variant="h5" className={globalClasses.mb_10}>
+                    {job.title}
+                  </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    className={globalClasses.mb_10}
+                  >
+                    Est. Budget: RS {job.budget} - Posted:{" "}
+                    {formatDistance(
+                      subDays(new Date(job.created_at), 0),
+                      currentDate,
+                      { addSuffix: true }
+                    )}
+                    {" - Est. time: "} {job.deadline} days
+                  </Typography>
 
-                <Typography variant="body2">
-                  Posted By: {job.posted_by.name}{" "}
-                  <LocationOn style={{ fontSize: 18 }} />
-                  {job.location}
-                </Typography>
-              </Card>
-            </Grid>
-          ))
-        )}
-      </Grid>
+                  <Typography variant="body1" className={globalClasses.mb_5}>
+                    {shortenString(job.details)}
+                  </Typography>
+
+                  <Typography variant="body1" className={globalClasses.mb_10}>
+                    {job?.categories?.map((category) => (
+                      <span className={classes.categoryName}>
+                        {category.name}
+                      </span>
+                    ))}
+                  </Typography>
+
+                  <Typography variant="body2">
+                    Posted By: {job.posted_by.name}{" "}
+                    <LocationOn style={{ fontSize: 18 }} />
+                    {job.location}
+                  </Typography>
+                </Card>
+              </Grid>
+            ))
+          )}
+        </Grid>
+      </Container>
     </Box>
   );
 }

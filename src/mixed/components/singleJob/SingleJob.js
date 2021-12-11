@@ -4,6 +4,7 @@ import {
   Avatar,
   Box,
   Card,
+  Container,
   List,
   ListItem,
   ListItemIcon,
@@ -41,11 +42,20 @@ const styles = (theme) => ({
   }
 });
 
-const SingleJob = ({ jobId, classes }) => {
+const SingleJob = (props) => {
+  const jobId = props.location?.state?.jobId;
+  const { classes } = props;
   const { data: job, isLoading, isError } = useJob(jobId);
   const { data: appliedJobs } = useAppliedJobs();
   const [openBidDialog, setOpenBidDialog] = useState(false);
   const globalClasses = useGlobalClasses();
+  const [alreadyApplied, setAlreadyApplied] = useState(false);
+
+  useEffect(() => {
+    if (appliedJobs && job?.id in appliedJobs) {
+      setAlreadyApplied(true);
+    }
+  }, [appliedJobs, job]);
 
   let images = [];
 
@@ -60,40 +70,39 @@ const SingleJob = ({ jobId, classes }) => {
   useEffect(smoothScrollTop, [smoothScrollTop]);
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      className={classNames("lg-p-top")}
-    >
-      <Grid container spacing={3} justifyContent="center" alignItems="center">
-        {isLoading ? (
-          <BoxCircularProgress />
-        ) : isError ? (
-          <span>Error Occurred</span>
-        ) : (
-          <>
-            <Grid item xs={8}>
-              {images.length > 0 && (
-                <>
-                  <ReactImageGallery items={images} />
-                  <br />
-                </>
-              )}
-              <Card className={classes.card}>
-                <Grid
-                  container
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Grid item>
-                    <Typography variant="h5" className={globalClasses.mb_10}>
-                      {job.title}
-                    </Typography>
-                  </Grid>
+    <Box display="flex" justifyContent="center" className="lg-p-top bg-light">
+      <Container maxWidth="md">
+        <Typography style={{ marginBottom: 30 }} variant="h4">
+          Job Details
+        </Typography>
+        <Grid container spacing={3} justifyContent="center" alignItems="center">
+          {isLoading ? (
+            <BoxCircularProgress />
+          ) : isError ? (
+            <span>Error Occurred</span>
+          ) : (
+            <>
+              <Grid item xs={12}>
+                {images.length > 0 && (
+                  <>
+                    <ReactImageGallery items={images} />
+                    <br />
+                  </>
+                )}
+                <Card className={classes.card}>
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Grid item>
+                      <Typography variant="h5" className={globalClasses.mb_10}>
+                        {job.title}
+                      </Typography>
+                    </Grid>
 
-                  <Grid item>
-                    {appliedJobs && !(job.id in appliedJobs) && (
+                    <Grid item>
                       <Button
                         variant="contained"
                         color="secondary"
@@ -101,103 +110,116 @@ const SingleJob = ({ jobId, classes }) => {
                         onClick={() => {
                           setOpenBidDialog(true);
                         }}
+                        disabled={alreadyApplied}
                       >
-                        Bid on this job
+                        {alreadyApplied ? "Already Applied" : "Bid on this job"}
                       </Button>
+                    </Grid>
+                  </Grid>
+
+                  <Typography
+                    variant="subtitle1"
+                    className={globalClasses.mb_10}
+                  >
+                    Est. Budget: RS {job.budget} - Posted:{" "}
+                    {formatDistance(
+                      subDays(new Date(job.created_at), 0),
+                      new Date(),
+                      { addSuffix: true }
                     )}
-                  </Grid>
-                </Grid>
+                    {" - Est. time: "} {job.deadline} days
+                  </Typography>
 
-                <Typography variant="subtitle1" className={globalClasses.mb_10}>
-                  Est. Budget: RS {job.budget} - Posted:{" "}
-                  {formatDistance(
-                    subDays(new Date(job.created_at), 0),
-                    new Date(),
-                    { addSuffix: true }
-                  )}
-                  {" - Est. time: "} {job.deadline} days
-                </Typography>
+                  <Typography
+                    variant="subtitle2"
+                    className={globalClasses.mb_10}
+                  >
+                    Bids: {job?.no_of_bids}
+                  </Typography>
 
-                <Typography variant="subtitle2" className={globalClasses.mb_10}>
-                  Bids: {job?.no_of_bids}
-                </Typography>
+                  <Typography
+                    variant="subtitle2"
+                    className={globalClasses.mb_10}
+                  >
+                    <LocationOn />
+                    {job.location}
+                  </Typography>
 
-                <Typography variant="subtitle2" className={globalClasses.mb_10}>
-                  <LocationOn />
-                  {job.location}
-                </Typography>
+                  <Typography variant="h6" className={globalClasses.mb_5}>
+                    Details
+                  </Typography>
+                  <Typography variant="body1" className={globalClasses.mb_10}>
+                    {job.details}
+                  </Typography>
 
-                <Typography variant="h6" className={globalClasses.mb_5}>
-                  Details
-                </Typography>
-                <Typography variant="body1" className={globalClasses.mb_10}>
-                  {job.details}
-                </Typography>
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Grid item>
+                      <Typography variant="h6" className={globalClasses.mb_5}>
+                        Skills Required
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        className={globalClasses.mb_20}
+                      >
+                        {job?.categories?.map((category) => (
+                          <span className={classes.categoryName}>
+                            {category.name}
+                          </span>
+                        ))}
+                      </Typography>
+                    </Grid>
 
-                <Grid
-                  container
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Grid item>
-                    <Typography variant="h6" className={globalClasses.mb_5}>
-                      Skills Required
-                    </Typography>
-                    <Typography variant="body1" className={globalClasses.mb_20}>
-                      {job?.categories?.map((category) => (
-                        <span className={classes.categoryName}>
-                          {category.name}
-                        </span>
-                      ))}
-                    </Typography>
-                  </Grid>
+                    <Grid item>
+                      <Typography variant="h6" className={globalClasses.mb_5}>
+                        Posted By
+                      </Typography>
 
-                  <Grid item>
-                    <Typography variant="h6" className={globalClasses.mb_5}>
-                      Posted By
-                    </Typography>
-
-                    <Grid container spacing={2}>
-                      <Grid item>
-                        <Avatar
-                          style={{ height: 65, width: 65 }}
-                          src={
-                            job.posted_by?.profile_image?.image_thumbnail_url
-                          }
-                          alt={job.posted_by?.name}
-                        />
-                      </Grid>
-                      <Grid item>
-                        <Typography variant="body1">
-                          {job.posted_by.name} <br />
-                          {job.posted_by.phone_number && (
-                            <>
-                              Ph. No: +{job?.posted_by?.phone_number} <br />
-                            </>
-                          )}
-                          <Rating
-                            value={job?.buyer_profile.rating}
-                            precision={0.5}
-                            disabled={true}
+                      <Grid container spacing={2}>
+                        <Grid item>
+                          <Avatar
+                            style={{ height: 65, width: 65 }}
+                            src={
+                              job.posted_by?.profile_image?.image_thumbnail_url
+                            }
+                            alt={job.posted_by?.name}
                           />
-                        </Typography>
+                        </Grid>
+                        <Grid item>
+                          <Typography variant="body1">
+                            {job.posted_by.name} <br />
+                            {job.posted_by.phone_number && (
+                              <>
+                                Ph. No: +{job?.posted_by?.phone_number} <br />
+                              </>
+                            )}
+                            <Rating
+                              value={job?.buyer_profile.rating}
+                              precision={0.5}
+                              disabled={true}
+                            />
+                          </Typography>
+                        </Grid>
                       </Grid>
                     </Grid>
                   </Grid>
-                </Grid>
-              </Card>
-            </Grid>
-          </>
-        )}
-        {openBidDialog && (
-          <CreateBid
-            job={job}
-            open={openBidDialog}
-            setOpen={setOpenBidDialog}
-          />
-        )}
-      </Grid>
+                </Card>
+              </Grid>
+            </>
+          )}
+          {openBidDialog && (
+            <CreateBid
+              job={job}
+              open={openBidDialog}
+              setOpen={setOpenBidDialog}
+            />
+          )}
+        </Grid>
+      </Container>
     </Box>
   );
 };

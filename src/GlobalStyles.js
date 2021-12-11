@@ -89,11 +89,17 @@ const styles = (theme) => ({
         paddingTop: `${theme.spacing(14)}px !important`
       }
     },
+    ".bg-light": {
+      backgroundColor: theme.colors.background
+    },
     ".read-more-button": {
       display: "inline-block",
       marginLeft: "3px",
       color: "#286da8",
       cursor: "pointer"
+    },
+    ".MuiListItemIcon-root": {
+      minWidth: 40
     }
   }
 });

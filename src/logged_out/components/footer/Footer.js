@@ -17,7 +17,7 @@ import WaveBorder from "../../../shared/components/WaveBorder";
 import transitions from "@material-ui/core/styles/transitions";
 import ColoredButton from "../../../shared/components/ColoredButton";
 
-const styles = theme => ({
+const styles = (theme) => ({
   footerInner: {
     backgroundColor: theme.palette.common.darkBlack,
     paddingTop: theme.spacing(8),
@@ -156,9 +156,9 @@ const socialIcons = [
 function Footer(props) {
   const { classes, theme, width } = props;
   return (
-    <footer className="lg-p-top">
+    <footer className="lg-p-top bg-light">
       <WaveBorder
-        upperColor="#FFFFFF"
+        upperColor={theme.colors.background}
         lowerColor={theme.palette.common.darkBlack}
         animationNegativeDelay={4}
       />

@@ -6,25 +6,13 @@ import Home from "./home/Home";
 //import useLocationBlocker from "../../shared/functions/useLocationBlocker";
 import Logout from "../../logged_in/components/logout/Logout";
 import Jobs from "../../mixed/components/jobs/Jobs";
-import useJobs from "../../hooks/jobs/useJobs";
 import SingleJob from "../../mixed/components/singleJob/SingleJob";
 
 function Routing(props) {
   const { selectHome, selectJobs } = props;
-  const { data: jobs, isLoading } = useJobs();
   return (
     <Switch>
-      {!isLoading &&
-        Array.isArray(jobs) &&
-        jobs.map((job) => (
-          <PropsRoute
-            path={`/jobs/${job.url}`}
-            component={SingleJob}
-            jobId={job.id}
-            title={job.title}
-            key={job.url}
-          />
-        ))}
+      <PropsRoute path={`/jobs/single_job`} component={SingleJob} />
       <PropsRoute exact path="/jobs" component={Jobs} selectJobs={selectJobs} />
       <PropsRoute path="/logout" component={Logout} />
       <PropsRoute path="/" component={Home} selectHome={selectHome} />

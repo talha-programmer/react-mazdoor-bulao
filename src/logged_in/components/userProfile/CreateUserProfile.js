@@ -84,7 +84,7 @@ function CreateUserProfile(props) {
             }}
           />
         )}
-        <Grid item xs={9}>
+        <Grid item xs={6}>
           <ReactImageUploadComponent
             withIcon={true}
             withPreview={true}
@@ -120,7 +120,6 @@ function CreateUserProfile(props) {
           <TextField
             variant="outlined"
             margin="normal"
-            required
             fullWidth
             label="Location"
             autoComplete="off"

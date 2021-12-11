@@ -48,14 +48,14 @@ function RegisterDialog(props) {
     history,
     theme,
     onClose,
-    openTermsDialog,
+    //openTermsDialog,
     status,
     classes
   } = props;
   const [isLoading, setIsLoading] = useState(false);
-  const [hasTermsOfServiceError, setHasTermsOfServiceError] = useState(false);
+  //const [hasTermsOfServiceError, setHasTermsOfServiceError] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const registerTermsCheckbox = useRef();
+  //const registerTermsCheckbox = useRef();
   const registerPassword = useRef();
   const registerPasswordRepeat = useRef();
   const registerFullName = useRef();
@@ -64,10 +64,10 @@ function RegisterDialog(props) {
   const { setToken } = useContext(AuthContext);
 
   const register = useCallback(() => {
-    if (!registerTermsCheckbox.current.checked) {
-      setHasTermsOfServiceError(true);
-      return;
-    }
+    // if (!registerTermsCheckbox.current.checked) {
+    //   setHasTermsOfServiceError(true);
+    //   return;
+    // }
     if (
       registerPassword.current.value !== registerPasswordRepeat.current.value
     ) {
@@ -114,20 +114,7 @@ function RegisterDialog(props) {
 
     setStatus("");
     setIsLoading(true);
-  }, [
-    setIsLoading,
-    setStatus,
-    setHasTermsOfServiceError,
-    registerPassword,
-    registerPasswordRepeat,
-    registerTermsCheckbox,
-    registerUsername,
-    registerFullName,
-    registerEmail,
-    history,
-    status,
-    setToken
-  ]);
+  }, [setStatus, status, setToken, history, onClose]);
 
   return (
     <FormDialog
@@ -293,7 +280,7 @@ function RegisterDialog(props) {
             isVisible={isPasswordVisible}
             onVisibilityChange={setIsPasswordVisible}
           />
-          <FormControlLabel
+          {/* <FormControlLabel
             style={{ marginRight: 0 }}
             control={
               <Checkbox
@@ -339,7 +326,7 @@ function RegisterDialog(props) {
               In order to create an account, you have to accept our terms of
               service.
             </FormHelperText>
-          )}
+          )} */}
           {status.includes("accountCreated") && (
             <HighlightedInformation>
               We have created your account. Please click on the link in the

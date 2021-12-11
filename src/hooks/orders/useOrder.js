@@ -16,7 +16,7 @@ function useOrder(orderId) {
     }
   }
 
-  return useQuery([queryKeys.jobs, orderId], getJob);
+  return useQuery([queryKeys.singleOrder, orderId], getJob);
 }
 
 export default useOrder;

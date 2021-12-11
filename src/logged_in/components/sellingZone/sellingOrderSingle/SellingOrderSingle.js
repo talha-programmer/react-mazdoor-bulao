@@ -26,7 +26,7 @@ import {
   orderStatusStrings
 } from "../../../../config/enums/orderStatus";
 import useOrderReviews from "../../../../hooks/review/useOrderReviews";
-import OrderConfirmDialog from "../buyingOrders/OrderConfirmDialog";
+import OrderConfirmDialog from "./OrderConfirmDialog";
 import { Rating } from "@material-ui/lab";
 import {
   reviewTypesCodes,
@@ -34,7 +34,7 @@ import {
 } from "../../../../config/enums/reviewTypes";
 import BoxCircularProgress from "../../../../shared/components/BoxCircularProgress";
 import smoothScrollTop from "../../../../shared/functions/smoothScrollTop";
-import ReviewDialog from "../buyingOrders/ReviewDialog";
+import ReviewDialog from "./ReviewDialog";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -60,7 +60,7 @@ const styles = (theme) => ({
   }
 });
 
-function BuyingOrderSingle(props) {
+function SellingOrderSingle(props) {
   const { classes } = props;
   const orderId = props.location?.state?.orderId;
   const { data: order, isLoading, isError } = useOrder(orderId);
@@ -111,7 +111,7 @@ function BuyingOrderSingle(props) {
           style={{ marginBottom: 30 }}
         >
           <Grid item xs={6}>
-            <Typography variant="h4">Buying Order</Typography>
+            <Typography variant="h4">Selling Order</Typography>
           </Grid>
 
           <Grid item xs={6}>
@@ -127,11 +127,11 @@ function BuyingOrderSingle(props) {
                     variant="contained"
                     color="Secondary"
                     onClick={() => {
-                      setReviewDialogOpen(true);
+                      setDialogOpen(true);
                     }}
-                    disabled={order.buyer_reviewed}
+                    disabled={order?.status === orderStatusCodes.COMPLETED}
                   >
-                    Rate this Order
+                    Mark as Complete
                   </Button>
                 </Grid>
 
@@ -140,11 +140,11 @@ function BuyingOrderSingle(props) {
                     variant="contained"
                     color="Secondary"
                     onClick={() => {
-                      setDialogOpen(true);
+                      setReviewDialogOpen(true);
                     }}
-                    disabled={order.status === orderStatusCodes.COMPLETED}
+                    disabled={order?.buyer_reviewed}
                   >
-                    Mark As Complete
+                    Rate this Order
                   </Button>
                 </Grid>
               </Grid>
@@ -160,7 +160,7 @@ function BuyingOrderSingle(props) {
                 <Card className={classes.card}>
                   <Typography variant="h5">Order Details</Typography>
                   <Typography variant="body1">
-                    Worker: {order.worker.name}
+                    Buyer: {order.buyer.name}
                   </Typography>
                   <Typography variant="body1">
                     Order Status: {orderStatusStrings[order.status]}
@@ -241,10 +241,10 @@ function BuyingOrderSingle(props) {
   );
 }
 
-BuyingOrderSingle.propTypes = {
+SellingOrderSingle.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
 export default withWidth()(
-  withStyles(styles, { withTheme: true })(BuyingOrderSingle)
+  withStyles(styles, { withTheme: true })(SellingOrderSingle)
 );

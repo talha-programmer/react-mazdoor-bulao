@@ -3,6 +3,7 @@
 function queryKeys() {
   return {
     jobs: "jobs",
+    cities: "cities",
     jobCategories: "jobCategories",
     user: "user",
     userProfile: "userProfile",
@@ -13,6 +14,7 @@ function queryKeys() {
     bids: "bids",
     buyingOrders: "buyingOrders",
     sellingOrders: "sellingOrders",
+    singleOrder: "singleOrder",
     chatUsers: "chatUsers",
     recentChat: "recentChat",
     chatWithUser: "chatWithUser",

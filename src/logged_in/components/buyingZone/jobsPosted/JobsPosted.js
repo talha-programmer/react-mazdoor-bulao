@@ -15,7 +15,9 @@ import {
   TableBody,
   IconButton,
   TextField,
-  MenuItem
+  MenuItem,
+  Container,
+  Typography
 } from "@material-ui/core";
 import format from "date-fns/format";
 import usePostedJobs from "../../../../hooks/user/usePostedJobs";
@@ -23,7 +25,7 @@ import {
   jobStatusCodes,
   jobStatusStrings
 } from "../../../../config/enums/jobStatus";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import BoxCircularProgress from "../../../../shared/components/BoxCircularProgress";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -92,7 +94,12 @@ function JobsPosted(props) {
               <TableRow key={job.id}>
                 <TableCell component="th" scope="row">
                   <Link
-                    to={`/user/jobs_posted/${job.url}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      history.push("jobs_posted/single_job", {
+                        jobId: job.id
+                      });
+                    }}
                     style={{ textDecoration: "none" }}
                   >
                     {job.title}
@@ -110,7 +117,9 @@ function JobsPosted(props) {
                   <IconButton
                     aria-label="View Details"
                     onClick={() => {
-                      history.push(`/user/jobs_posted/${job.url}`);
+                      history.push("jobs_posted/single_job", {
+                        jobId: job.id
+                      });
                     }}
                   >
                     <DetailsIcon color="action" />
@@ -120,7 +129,7 @@ function JobsPosted(props) {
                     aria-label="Edit Job"
                     disabled={job.status === jobStatusCodes.JOB_COMPLETED}
                     onClick={() => {
-                      history.push(`/user/jobs_posted/${job.url}/edit`, {
+                      history.push(`/user/jobs_posted/single_job/edit`, {
                         job: job
                       });
                     }}
@@ -142,43 +151,51 @@ function JobsPosted(props) {
 
   return (
     <Box display="flex" justifyContent="center">
-      <Grid container spacing={3} justifyContent="center" alignItems="center">
-        {isLoading ? (
-          <BoxCircularProgress />
-        ) : (
-          <Grid item xs={10}>
-            <Grid
-              container
-              direction="row-reverse"
-              style={{ marginBottom: 10 }}
-            >
-              <Grid item xs={4}>
-                <TextField
-                  select
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  defaultValue={-1}
-                  onChange={(event) => {
-                    setSelectedJobStatus(event.target.value);
-                  }}
-                >
-                  <MenuItem key={-1} value={-1}>
-                    All Jobs
-                  </MenuItem>
-                  {allJobStatusOptions.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-            </Grid>
-
-            <DisplayTable />
+      <Container maxWidth="md">
+        <Grid
+          container
+          justifyContent="space-between"
+          alignItems="center"
+          spacing={2}
+          style={{ marginBottom: 30 }}
+        >
+          <Grid item xs={6}>
+            <Typography variant="h4">Jobs Posted</Typography>
           </Grid>
-        )}
-      </Grid>
+
+          <Grid item xs={4}>
+            <TextField
+              select
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              defaultValue={-1}
+              onChange={(event) => {
+                setSelectedJobStatus(event.target.value);
+              }}
+            >
+              <MenuItem key={-1} value={-1}>
+                All Jobs
+              </MenuItem>
+              {allJobStatusOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={3} justifyContent="center" alignItems="center">
+          {isLoading ? (
+            <BoxCircularProgress />
+          ) : (
+            <Grid item xs={12}>
+              <DisplayTable />
+            </Grid>
+          )}
+        </Grid>
+      </Container>
     </Box>
   );
 }

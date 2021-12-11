@@ -19,6 +19,8 @@ import CreateWorkerProfile from "./sellingZone/workerProfile/CreateWorkerProfile
 import WorkerProfile from "./sellingZone/workerProfile/WorkerProfile";
 import BoxCircularProgress from "../../shared/components/BoxCircularProgress";
 import CreateUserProfile from "./userProfile/CreateUserProfile";
+import SellingOrderSingle from "./sellingZone/sellingOrderSingle/SellingOrderSingle";
+import UserProfile from "./userProfile/UserProfile";
 const styles = (theme) => ({
   wrapper: {
     margin: theme.spacing(1),
@@ -97,17 +99,6 @@ function Routing(props) {
   return (
     <div className={classes.wrapper}>
       <Switch>
-        {!isOrdersLoading &&
-          buyingOrders.map((order) => {
-            return (
-              <PropsRoute
-                path={`/user/buying_orders/${order.url}`}
-                component={BuyingOrderSingle}
-                key={`${order.url}-buying-order`} // Changed key to became unique
-              />
-            );
-          })}
-
         <PropsRoute
           path="/user/buying_orders/single_order"
           component={BuyingOrderSingle}
@@ -118,36 +109,28 @@ function Routing(props) {
           component={BuyingOrders}
           selectBuyingOrders={selectBuyingOrders}
         />
+
+        <PropsRoute
+          path="/user/selling_orders/single_order"
+          component={SellingOrderSingle}
+        />
         <PropsRoute
           path="/user/selling_orders"
           component={SellingOrders}
           selectSellingOrders={selectSellingOrders}
         />
 
-        {!isJobsLoading &&
-          jobsPosted.map((job) => {
-            return (
-              <PropsRoute
-                path={`/user/jobs_posted/${job.url}/edit`}
-                component={CreateJob}
-                key={`${job.url}-job-edit`} // Changed key to became unique
-              />
-            );
-          })}
-        {!isJobsLoading &&
-          jobsPosted.map((job) => {
-            return (
-              <PropsRoute
-                path={`/user/jobs_posted/${job.url}`}
-                component={JobPostedSingle}
-                jobId={job.id}
-                title={job.title}
-                key={`${job.url}-job-posted`}
-              />
-            );
-          })}
+        <PropsRoute
+          path={`/user/jobs_posted/single_job/edit`}
+          component={CreateJob}
+        />
+        <PropsRoute
+          path="/user/jobs_posted/single_job"
+          component={JobPostedSingle}
+        />
 
         <PropsRoute path="/user/jobs_posted/create" component={CreateJob} />
+
         <PropsRoute
           path="/user/jobs_posted"
           component={JobsPosted}
@@ -169,6 +152,7 @@ function Routing(props) {
           path="/user/create_user_profile"
           component={CreateUserProfile}
         />
+        <PropsRoute path="/user/user_profile" component={UserProfile} />
 
         <PropsRoute path="/user/worker_profile" component={WorkerProfile} />
         <PropsRoute
@@ -177,7 +161,7 @@ function Routing(props) {
           selectWorkerProfile={selectWorkerProfile}
         />
 
-        <PropsRoute
+        {/* <PropsRoute
           path=""
           component={Dashboard}
           toggleAccountActivation={toggleAccountActivation}
@@ -188,7 +172,7 @@ function Routing(props) {
           setTargets={setTargets}
           isAccountActivated={isAccountActivated}
           selectDashboard={selectDashboard}
-        />
+        /> */}
       </Switch>
     </div>
   );

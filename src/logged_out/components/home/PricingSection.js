@@ -11,7 +11,7 @@ import {
 import PriceCard from "./PriceCard";
 import calculateSpacing from "./calculateSpacing";
 
-const styles = theme => ({
+const styles = (theme) => ({
   containerFix: {
     [theme.breakpoints.down("md")]: {
       paddingLeft: theme.spacing(6),
@@ -48,7 +48,7 @@ const styles = theme => ({
 function PricingSection(props) {
   const { width, classes } = props;
   return (
-    <div className="lg-p-top" style={{ backgroundColor: "#FFFFFF" }}>
+    <div className="lg-p-top bg-light">
       <Typography variant="h3" align="center" className="lg-mg-bottom">
         Pricing
       </Typography>
