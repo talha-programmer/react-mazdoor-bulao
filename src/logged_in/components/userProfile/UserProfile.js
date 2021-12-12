@@ -24,6 +24,8 @@ import ReactImageUploadComponent from "react-images-upload";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
 import { AuthContext } from "../../../context/AuthContext";
+import useUserProfile from "../../../hooks/user/useUserProfile";
+import { Rating } from "@material-ui/lab";
 
 const styles = (theme) => ({
   card: {
@@ -32,7 +34,7 @@ const styles = (theme) => ({
   }
 });
 
-function CreateUserProfile(props) {
+function UserProfile(props) {
   //const { classes } = props;
   const [snackOpen, setSnackOpen] = useState(false);
   const [snackSeverity, setSnackSeverity] = useState();
@@ -44,6 +46,8 @@ function CreateUserProfile(props) {
   const [imageKey, setImageKey] = useState("key");
 
   const { user, reloadUser } = useContext(AuthContext);
+  const { data: userProfile } = useUserProfile();
+
   const {
     mutate,
     isSuccess,
@@ -79,7 +83,7 @@ function CreateUserProfile(props) {
       setSnackSeverity(alertSeverity.error);
       setSnackOpen(true);
     }
-  }, [isError, isSuccess]);
+  }, [isError, isSuccess]); // Important: don't change
 
   return (
     <Box
@@ -128,39 +132,61 @@ function CreateUserProfile(props) {
                     {`${user.email}`}
                   </Typography>
                   <Typography color="textSecondary" variant="body2">
-                    {`${user?.location}`}
+                    {user?.location != "null" && user.location}
                   </Typography>
                 </Box>
               </CardContent>
             </Card>
 
-            <Card style={{ marginTop: 20 }}>
-              <CardHeader title="Buying History" />
+            <Card style={{ marginTop: 30 }}>
+              <CardHeader title="Usage History" />
               <Divider />
               <CardContent>
                 <Box
                   sx={{
-                    alignItems: "center",
+                    //alignItems: "center",
                     display: "flex",
                     flexDirection: "column"
                   }}
                 >
-                  <Avatar
-                    src={user.profile_image?.image_thumbnail_url}
-                    style={{
-                      height: 100,
-                      marginBottom: 2,
-                      width: 100
-                    }}
-                  />
-                  <Typography color="textPrimary" gutterBottom variant="h5">
-                    {user.name}
+                  <Typography color="textPrimary" variant="h6">
+                    As Buyer
                   </Typography>
-                  <Typography color="textSecondary" variant="body2">
-                    {`${user.email}`}
+                  <Typography variant="body1">
+                    Jobs Posted: {`${userProfile?.buyer_profile.jobs_posted}`}
                   </Typography>
-                  <Typography color="textSecondary" variant="body2">
-                    {`${user?.location}`}
+                  <Typography variant="body1" gutterBottom>
+                    Total Reviews:{" "}
+                    {`${userProfile?.buyer_profile.total_reviews}`}
+                  </Typography>
+                  <Typography variant="body1">
+                    <Rating
+                      value={userProfile.buyer_profile?.rating}
+                      disabled={true}
+                    />
+                  </Typography>
+
+                  <Typography
+                    color="textPrimary"
+                    style={{ marginTop: 10 }}
+                    variant="h6"
+                  >
+                    As Worker
+                  </Typography>
+                  <Typography variant="body1">
+                    Orders Completed:{" "}
+                    {`${userProfile?.worker_profile.orders_completed}`}
+                  </Typography>
+
+                  <Typography variant="body1">
+                    Total Reviews:{" "}
+                    {`${userProfile?.worker_profile.total_reviews}`}
+                  </Typography>
+                  <Typography variant="body1">
+                    <Rating
+                      value={userProfile.worker_profile?.rating}
+                      disabled={true}
+                    />
                   </Typography>
                 </Box>
               </CardContent>
@@ -336,10 +362,10 @@ function CreateUserProfile(props) {
   );
 }
 
-CreateUserProfile.propTypes = {
+UserProfile.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
 export default withWidth()(
-  withStyles(styles, { withTheme: true })(CreateUserProfile)
+  withStyles(styles, { withTheme: true })(UserProfile)
 );

@@ -24,6 +24,7 @@ import useGlobalClasses from "../../../hooks/style/useGlobalClasses";
 import { Autocomplete } from "@material-ui/lab";
 import useJobCategories from "../../../hooks/jobs/useJobCategories";
 import useJobs from "../../../hooks/jobs/useJobs";
+import useCities from "../../../hooks/jobs/useCities";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -72,9 +73,8 @@ function Jobs(props) {
 
   const { mutate, data, isError, isLoading } = useJobs();
   const [jobs, setJobs] = useState();
-  // We have fetched jobs already in Routing. That's why accessing
-  // them with queryClient
-  //let jobs = queryClient.getQueryData(queryKeys.jobs);
+  const { data: cities } = useCities();
+  const [selectedCity, setSelectedCity] = useState();
 
   useEffect(selectJobs, [selectJobs]);
 
@@ -83,8 +83,11 @@ function Jobs(props) {
     if (selectedCategories) {
       filters.append("categories", selectedCategories);
     }
+    if (selectedCity) {
+      filters.append("city", selectedCity);
+    }
     mutate(filters);
-  }, [mutate, selectedCategories]);
+  }, [mutate, selectedCategories, selectedCity]);
 
   useEffect(() => {
     setJobs(data);
@@ -102,15 +105,14 @@ function Jobs(props) {
           justifyContent="space-between"
           style={{ marginBottom: 30 }}
         >
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <Typography variant="h4">Jobs</Typography>
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <Autocomplete
               multiple
-              required
-              options={jobCategories}
+              options={jobCategories || []}
               disableCloseOnSelect
               getOptionLabel={(option) => option.name}
               filterSelectedOptions
@@ -118,18 +120,35 @@ function Jobs(props) {
                 return <li {...props}>{option.name}</li>;
               }}
               renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Categories"
-                  placeholder="Categories"
-                  variant="outlined"
-                />
+                <TextField {...params} label="Categories" variant="outlined" />
               )}
               onChange={(event, newValue) => {
                 // Get only ids of selected categories
                 setSelectedCategories(
                   newValue.map((category) => category.id).toString()
                 );
+              }}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <Autocomplete
+              options={cities || []}
+              disableCloseOnSelect
+              getOptionLabel={(option) => option}
+              filterSelectedOptions
+              renderOption={(option, props) => {
+                return <li {...props}>{option}</li>;
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="City"
+                  //placeholder="Categories"
+                  variant="outlined"
+                />
+              )}
+              onChange={(event, newValue) => {
+                setSelectedCity(newValue);
               }}
             />
           </Grid>

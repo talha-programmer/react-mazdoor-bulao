@@ -169,11 +169,15 @@ function NavBar(props) {
             </ListItemIcon>
             Profile
           </MenuItem>
-          <MenuItem>
+          <MenuItem
+            onClick={() => {
+              history.push("/user/worker_profile");
+            }}
+          >
             <ListItemIcon>
               <SettingsIcon fontSize="small" />
             </ListItemIcon>
-            Settings
+            Worker Profile
           </MenuItem>
           <Link to="/logout" className={classes.noDecoration}>
             <MenuItem>

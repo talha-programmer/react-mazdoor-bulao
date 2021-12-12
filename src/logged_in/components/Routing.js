@@ -147,11 +147,11 @@ function Routing(props) {
           component={Chat}
           selectChat={selectChat}
         />
-
+        {/* 
         <PropsRoute
           path="/user/create_user_profile"
           component={CreateUserProfile}
-        />
+        /> */}
         <PropsRoute path="/user/user_profile" component={UserProfile} />
 
         <PropsRoute path="/user/worker_profile" component={WorkerProfile} />

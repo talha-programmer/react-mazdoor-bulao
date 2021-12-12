@@ -24,6 +24,8 @@ import api from "../../../config/api";
 import { withRouter } from "react-router-dom";
 import Cookies from "js-cookie";
 import { AuthContext } from "../../../context/AuthContext";
+import { QueryClient, useQueryClient } from "react-query";
+import queryKeys from "../../../config/queryKeys";
 
 const styles = (theme) => ({
   link: {
@@ -62,6 +64,7 @@ function RegisterDialog(props) {
   const registerUsername = useRef();
   const registerEmail = useRef();
   const { setToken } = useContext(AuthContext);
+  const queryClient = useQueryClient();
 
   const register = useCallback(() => {
     // if (!registerTermsCheckbox.current.checked) {
@@ -91,14 +94,15 @@ function RegisterDialog(props) {
       .post(api.register, data)
       .then((result) => {
         if (result.data.user) {
-          Cookies.set("loginToken", data.login_token, { expires: 1 });
-          setToken(data.login_token);
+          Cookies.set("loginToken", result.data.login_token, { expires: 1 });
+          setToken(result.data.login_token);
+          queryClient.invalidateQueries(queryKeys.user);
           history.push("/");
           onClose();
         }
       })
       .catch((error) => {
-        const errors = error.response.data.errors;
+        const errors = error?.response?.data.errors;
 
         let errorStatus = "";
         if (errors.email) {
