@@ -30,6 +30,8 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import MessagePopperButton from "./MessagePopperButton";
 import useRecentChat from "../../../hooks/chat/useRecentChat";
 import PersonIcon from "@material-ui/icons/Person";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const styles = (theme) => ({
   appBar: {
@@ -322,6 +324,15 @@ function NavBar(props) {
     <div className={classes.root}>
       <>
         <AppBar position="fixed" className={classes.appBar}>
+          <ToastContainer
+            position="top-center"
+            autoClose={4000}
+            hideProgressBar={true}
+            newestOnTop={false}
+            closeOnClick
+            pauseOnFocusLoss
+            pauseOnHover
+          />
           <Toolbar className={classes.toolbar}>
             <div>
               <Typography
