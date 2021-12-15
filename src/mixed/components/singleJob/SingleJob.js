@@ -27,6 +27,8 @@ import { LocationOn, Phone, PhoneAndroidRounded } from "@material-ui/icons";
 import { formatDistance, subDays } from "date-fns";
 import useGlobalClasses from "../../../hooks/style/useGlobalClasses";
 import { Rating } from "@material-ui/lab";
+import { useContext } from "react";
+import { AuthContext } from "../../../context/AuthContext";
 
 const styles = (theme) => ({
   card: {
@@ -50,6 +52,7 @@ const SingleJob = (props) => {
   const [openBidDialog, setOpenBidDialog] = useState(false);
   const globalClasses = useGlobalClasses();
   const [alreadyApplied, setAlreadyApplied] = useState(false);
+  const { token } = useContext(AuthContext);
 
   useEffect(() => {
     if (appliedJobs && job?.id in appliedJobs) {
@@ -101,20 +104,23 @@ const SingleJob = (props) => {
                         {job.title}
                       </Typography>
                     </Grid>
-
-                    <Grid item>
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        size="large"
-                        onClick={() => {
-                          setOpenBidDialog(true);
-                        }}
-                        disabled={alreadyApplied}
-                      >
-                        {alreadyApplied ? "Already Applied" : "Bid on this job"}
-                      </Button>
-                    </Grid>
+                    {token && (
+                      <Grid item>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          size="large"
+                          onClick={() => {
+                            setOpenBidDialog(true);
+                          }}
+                          disabled={alreadyApplied}
+                        >
+                          {alreadyApplied
+                            ? "Already Applied"
+                            : "Bid on this job"}
+                        </Button>
+                      </Grid>
+                    )}
                   </Grid>
 
                   <Typography

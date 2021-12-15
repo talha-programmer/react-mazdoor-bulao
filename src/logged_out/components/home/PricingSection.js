@@ -6,10 +6,15 @@ import {
   Typography,
   isWidthUp,
   withWidth,
-  withStyles
+  withStyles,
+  Hidden,
+  Box,
+  Button,
+  Card
 } from "@material-ui/core";
 import PriceCard from "./PriceCard";
 import calculateSpacing from "./calculateSpacing";
+import ZoomImage from "../../../shared/components/ZoomImage";
 
 const styles = (theme) => ({
   containerFix: {
@@ -42,6 +47,78 @@ const styles = (theme) => ({
       marginRight: "auto",
       maxWidth: 360
     }
+  },
+  extraLargeButtonLabel: {
+    fontSize: theme.typography.body1.fontSize,
+    [theme.breakpoints.up("sm")]: {
+      fontSize: theme.typography.h6.fontSize
+    }
+  },
+  extraLargeButton: {
+    paddingTop: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1.5),
+    [theme.breakpoints.up("xs")]: {
+      paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1)
+    },
+    [theme.breakpoints.up("lg")]: {
+      paddingTop: theme.spacing(2),
+      paddingBottom: theme.spacing(2)
+    }
+  },
+  card: {
+    boxShadow: theme.shadows[4],
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up("xs")]: {
+      paddingTop: theme.spacing(3),
+      paddingBottom: theme.spacing(3)
+    },
+    [theme.breakpoints.up("sm")]: {
+      paddingTop: theme.spacing(5),
+      paddingBottom: theme.spacing(5),
+      paddingLeft: theme.spacing(4),
+      paddingRight: theme.spacing(4)
+    },
+    [theme.breakpoints.up("md")]: {
+      paddingTop: theme.spacing(5.5),
+      paddingBottom: theme.spacing(5.5),
+      paddingLeft: theme.spacing(5),
+      paddingRight: theme.spacing(5)
+    },
+    [theme.breakpoints.up("lg")]: {
+      paddingTop: theme.spacing(6),
+      paddingBottom: theme.spacing(6),
+      paddingLeft: theme.spacing(6),
+      paddingRight: theme.spacing(6)
+    },
+    [theme.breakpoints.down("lg")]: {
+      width: "auto"
+    }
+  },
+  wrapper: {
+    position: "relative",
+    //backgroundColor: theme.palette.secondary.main,
+    paddingBottom: theme.spacing(2)
+  },
+  image: {
+    maxWidth: "100%",
+    verticalAlign: "middle",
+    borderRadius: theme.shape.borderRadius,
+    boxShadow: theme.shadows[4]
+  },
+  container: {
+    marginTop: theme.spacing(6),
+    marginBottom: theme.spacing(12),
+    [theme.breakpoints.down("md")]: {
+      marginBottom: theme.spacing(9)
+    },
+    [theme.breakpoints.down("sm")]: {
+      marginBottom: theme.spacing(6)
+    },
+    [theme.breakpoints.down("sm")]: {
+      marginBottom: theme.spacing(3)
+    }
   }
 });
 
@@ -49,10 +126,70 @@ function PricingSection(props) {
   const { width, classes } = props;
   return (
     <div className="lg-p-top bg-light">
-      <Typography variant="h3" align="center" className="lg-mg-bottom">
-        Pricing
-      </Typography>
-      <div className={classNames("container-fluid", classes.containerFix)}>
+      <div className={classNames(classes.wrapper)}>
+        <div className={classNames("container-fluid", classes.x)}>
+          <Box display="flex" justifyContent="center" className="row">
+            <Card
+              className={classes.card}
+              data-aos-delay="200"
+              data-aos="zoom-in"
+            >
+              <div className={classNames(classes.containerFix, "container")}>
+                <Box justifyContent="space-between" className="row">
+                  <Grid item xs={12} md={5}>
+                    <Box
+                      display="flex"
+                      flexDirection="column"
+                      justifyContent="space-between"
+                      height="100%"
+                    >
+                      <Box mb={4}>
+                        <Typography
+                          variant={isWidthUp("lg", width) ? "h3" : "h4"}
+                        >
+                          Find Electrical, Plumbing, Masonary and Other Jobs
+                        </Typography>
+                      </Box>
+                      <div>
+                        <Box mb={2}>
+                          <Typography
+                            variant={isWidthUp("lg", width) ? "h6" : "body1"}
+                            color="textSecondary"
+                          >
+                            MazdoorBulao is a platform to connect Buyers with
+                            Workers. Workers can find jobs and Buyers can hire
+                            them.
+                          </Typography>
+                        </Box>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          fullWidth
+                          className={classes.extraLargeButton}
+                          classes={{ label: classes.extraLargeButtonLabel }}
+                          href="/jobs"
+                        >
+                          Go To Jobs Section
+                        </Button>
+                      </div>
+                    </Box>
+                  </Grid>
+                  <Hidden smDown>
+                    <Grid item md={6}>
+                      <ZoomImage
+                        src={`${process.env.PUBLIC_URL}/images/logged_out/headerImage.jpg`}
+                        className={classes.image}
+                        alt="Header Image"
+                      />
+                    </Grid>
+                  </Hidden>
+                </Box>
+              </div>
+            </Card>
+          </Box>
+        </div>
+      </div>
+      {/* <div className={classNames("container-fluid", classes.containerFix)}>
         <Grid
           container
           spacing={calculateSpacing(width)}
@@ -139,7 +276,7 @@ function PricingSection(props) {
             />
           </Grid>
         </Grid>
-      </div>
+      </div> */}
     </div>
   );
 }

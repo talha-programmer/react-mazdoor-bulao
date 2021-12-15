@@ -26,6 +26,7 @@ import { AuthContext } from "../../../../context/AuthContext";
 import useJobCategories from "../../../../hooks/jobs/useJobCategories";
 import alertSeverity from "../../../../config/alertSeverity";
 import SnackAlert from "../../../../shared/components/SnackAlert";
+import { toast } from "react-toastify";
 
 const styles = (theme) => ({
   card: {
@@ -46,9 +47,6 @@ const WorkerProfile = ({ classes }) => {
     workerProfile?.skills.map((skill) => skill.id).toString()
   );
 
-  const [snackOpen, setSnackOpen] = useState(false);
-  const [snackSeverity, setSnackSeverity] = useState();
-  const [snackMessage, setSnackMessage] = useState("");
   const {
     mutate,
     isSuccess,
@@ -73,15 +71,11 @@ const WorkerProfile = ({ classes }) => {
 
   useEffect(() => {
     if (isSuccess) {
-      setSnackMessage("Profile saved successfully!");
-      setSnackSeverity(alertSeverity.success);
-      setSnackOpen(true);
+      toast.success("Profile saved successfully!");
     } else if (isError) {
-      setSnackMessage(
+      toast.error(
         "An error occured while saving the profile! Please try again!"
       );
-      setSnackSeverity(alertSeverity.error);
-      setSnackOpen(true);
     }
   }, [isError, isSuccess]);
   return (
@@ -91,15 +85,6 @@ const WorkerProfile = ({ classes }) => {
       //className={classNames("lg-p-top")}
     >
       <Container maxWidth="md">
-        {snackOpen && (
-          <SnackAlert
-            message={snackMessage}
-            severity={snackSeverity}
-            handleClose={() => {
-              setSnackOpen(false);
-            }}
-          />
-        )}
         <Typography style={{ marginBottom: 30 }} variant="h4">
           Worker Profile
         </Typography>
@@ -230,9 +215,11 @@ const WorkerProfile = ({ classes }) => {
                 </Grid>
               </Grid>
 
-              <Grid item xs={12}>
-                <Typography variant="h4">Reviews</Typography>
-              </Grid>
+              {workerProfile.reviews.length > 0 && (
+                <Grid item xs={12}>
+                  <Typography variant="h4">Reviews</Typography>
+                </Grid>
+              )}
 
               {workerProfile?.reviews.map((review) => (
                 <Grid item xs={4}>

@@ -10,7 +10,6 @@ import {
   Grid
 } from "@material-ui/core";
 import FormDialog from "../../../../shared/components/FormDialog";
-import useCompleteBuyingOrder from "../../../../hooks/orders/useCompleteBuyingOrder";
 import { Rating } from "@material-ui/lab";
 import { reviewTypesCodes } from "../../../../config/enums/reviewTypes";
 import useSendReview from "../../../../hooks/review/useSendReview";
@@ -47,8 +46,8 @@ function ReviewDialog(props) {
         rating: rating,
         review_text: reviewText.current.value,
         order_id: order.id,
-        review_type: reviewTypesCodes.FROM_BUYER_TO_WORKER,
-        given_to: order.worker_id
+        review_type: reviewTypesCodes.FROM_WORKER_TO_BUYER,
+        given_to: order.buyer_id
       };
       mutateSendReview(review);
     }

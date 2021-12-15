@@ -10,10 +10,10 @@ import {
   Grid
 } from "@material-ui/core";
 import FormDialog from "../../../../shared/components/FormDialog";
-import useCompleteBuyingOrder from "../../../../hooks/orders/useCompleteBuyingOrder";
 import { Rating } from "@material-ui/lab";
 import { reviewTypesCodes } from "../../../../config/enums/reviewTypes";
 import useSendReview from "../../../../hooks/review/useSendReview";
+import useCompleteSellingOrder from "../../../../hooks/orders/useCompleteSellingOrder";
 
 const styles = (theme) => ({
   card: {
@@ -29,7 +29,7 @@ function OrderConfirmDialog(props) {
     mutate: mutateCompleteOrder,
     isSuccess: isSuccessOrder,
     isError: isErrorOrder
-  } = useCompleteBuyingOrder();
+  } = useCompleteSellingOrder();
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -56,7 +56,8 @@ function OrderConfirmDialog(props) {
         content={
           <>
             <Typography variant="h6" style={{ marginBottom: 10 }}>
-              This action will mark the current order as complete.
+              This order will be marked as completed from your side. The buyer
+              will confirm that, afterwards!
             </Typography>
           </>
         }

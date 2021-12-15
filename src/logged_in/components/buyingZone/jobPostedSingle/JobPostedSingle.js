@@ -38,6 +38,7 @@ import { formatDistance, subDays } from "date-fns";
 import { LocationOn } from "@material-ui/icons";
 import ChangeStatusDialog from "./ChangeStatusDialog";
 import ReadMoreReact from "read-more-react";
+import { toast } from "react-toastify";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -55,7 +56,7 @@ const styles = (theme) => ({
   // },
   // noDecoration: {
   //   textDecoration: "none !important"
-  // }
+  // }import { toast } from 'react-toastify';
 
   card: {
     boxShadow: theme.shadows[2],
@@ -87,9 +88,6 @@ function JobPostedSingle(props) {
 
   const [openStatusDialog, setOpenStatusDialog] = useState(false);
 
-  const [snackOpen, setSnackOpen] = useState(false);
-  const [snackMessage, setSnackMessage] = useState("");
-  const [snackSeverity, setSnackSeverity] = useState();
   const {
     mutate: mutateStartOrder,
     isSuccess: orderStarted,
@@ -131,15 +129,9 @@ function JobPostedSingle(props) {
 
   useEffect(() => {
     if (orderStarted) {
-      setSnackMessage("Order has been started successfully!");
-      setSnackSeverity(alertSeverity.success);
-      setSnackOpen(true);
+      toast.success("Order has been started successfully!");
     } else if (orderError) {
-      setSnackMessage(
-        "An error occured while starting order! Please try again!"
-      );
-      setSnackSeverity(alertSeverity.error);
-      setSnackOpen(true);
+      toast.error("An error occured while starting order! Please try again!");
     }
   }, [orderError, orderStarted]);
 
@@ -203,9 +195,6 @@ function JobPostedSingle(props) {
           </Grid>
         </Grid>
         <Grid container spacing={3} justifyContent="center" alignItems="center">
-          {snackOpen && (
-            <SnackAlert message={snackMessage} severity={snackSeverity} />
-          )}
           {isJobLoading ? (
             <BoxCircularProgress />
           ) : isJobError ? (
@@ -380,6 +369,9 @@ function JobPostedSingle(props) {
                                 selectedBid = bid;
                                 startOrder();
                               }}
+                              disabled={
+                                job.status == jobStatusCodes.JOB_COMPLETED
+                              }
                             >
                               Hire This Person
                             </Button>

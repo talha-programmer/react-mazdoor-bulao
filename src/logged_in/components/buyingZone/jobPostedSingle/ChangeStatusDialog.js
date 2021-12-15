@@ -14,6 +14,7 @@ import alertSeverity from "../../../../config/alertSeverity";
 import SnackAlert from "../../../../shared/components/SnackAlert";
 import { jobStatusStrings } from "../../../../config/enums/jobStatus";
 import useUpdateJobStatus from "../../../../hooks/jobs/useUpdateJobStatus";
+import { toast } from "react-toastify";
 
 const styles = (theme) => ({
   card: {
@@ -26,10 +27,6 @@ function ChangeStatusDialog(props) {
   const { job, open: dialogOpen, setOpen: setDialogOpen } = props;
   const [selectedOption, setSelectedOption] = useState();
   const { mutate, isSuccess, isError } = useUpdateJobStatus();
-
-  const [snackOpen, setSnackOpen] = useState(false);
-  const [snackMessage, setSnackMessage] = useState("");
-  const [snackSeverity, setSnackSeverity] = useState();
 
   const jobId = job.id;
   const onSubmit = (e) => {
@@ -44,17 +41,10 @@ function ChangeStatusDialog(props) {
 
   useEffect(() => {
     if (isSuccess) {
-      setSnackMessage("Job Status updated successfully!");
-      setSnackSeverity(alertSeverity.success);
-      setSnackOpen(true);
-      //setDialogOpen(false); //close the dialog
-      // TODO: close the dialog when bid is saved. Snack also close while doing that!
+      toast.success("Job Status updated successfully!");
+      setDialogOpen(false); //close the dialog
     } else if (isError) {
-      setSnackMessage(
-        "Error occured while updating job status! Please try again"
-      );
-      setSnackSeverity(alertSeverity.error);
-      setSnackOpen(true);
+      toast.error("Error occured while updating job status! Please try again");
     }
   }, [isError, isSuccess, setDialogOpen]);
 
@@ -70,9 +60,6 @@ function ChangeStatusDialog(props) {
 
   return (
     <>
-      {snackOpen && (
-        <SnackAlert message={snackMessage} severity={snackSeverity} />
-      )}
       <FormDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}

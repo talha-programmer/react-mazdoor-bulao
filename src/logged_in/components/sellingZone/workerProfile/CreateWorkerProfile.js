@@ -17,6 +17,7 @@ import useWorkerProfile from "../../../../hooks/workerProfile/useWorkerProfile";
 import BoxCircularProgress from "../../../../shared/components/BoxCircularProgress";
 import alertSeverity from "../../../../config/alertSeverity";
 import SnackAlert from "../../../../shared/components/SnackAlert";
+import { toast } from "react-toastify";
 
 const styles = (theme) => ({
   card: {
@@ -34,9 +35,6 @@ function CreateWorkerProfile(props) {
     workerProfile?.skills.map((skill) => skill.id).toString()
   );
 
-  const [snackOpen, setSnackOpen] = useState(false);
-  const [snackSeverity, setSnackSeverity] = useState();
-  const [snackMessage, setSnackMessage] = useState("");
   const {
     mutate,
     isSuccess,
@@ -61,15 +59,11 @@ function CreateWorkerProfile(props) {
 
   useEffect(() => {
     if (isSuccess) {
-      setSnackMessage("Profile saved successfully!");
-      setSnackSeverity(alertSeverity.success);
-      setSnackOpen(true);
+      toast.success("Profile saved successfully!");
     } else if (isError) {
-      setSnackMessage(
+      toast.error(
         "An error occured while saving the profile! Please try again!"
       );
-      setSnackSeverity(alertSeverity.error);
-      setSnackOpen(true);
     }
   }, [isError, isSuccess]);
 
@@ -79,15 +73,6 @@ function CreateWorkerProfile(props) {
         <BoxCircularProgress />
       ) : (
         <Grid container spacing={3} justifyContent="center" alignItems="center">
-          {snackOpen && (
-            <SnackAlert
-              message={snackMessage}
-              severity={snackSeverity}
-              handleClose={() => {
-                setSnackOpen(false);
-              }}
-            />
-          )}
           <Grid item xs={9}>
             <TextField
               variant="outlined"

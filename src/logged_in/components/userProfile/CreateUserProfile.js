@@ -16,6 +16,7 @@ import ReactImageUploadComponent from "react-images-upload";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
 import { AuthContext } from "../../../context/AuthContext";
+import { toast } from "react-toastify";
 
 const styles = (theme) => ({
   card: {
@@ -26,9 +27,6 @@ const styles = (theme) => ({
 
 function CreateUserProfile(props) {
   //const { classes } = props;
-  const [snackOpen, setSnackOpen] = useState(false);
-  const [snackSeverity, setSnackSeverity] = useState();
-  const [snackMessage, setSnackMessage] = useState("");
   const [profilePicture, setProfilePicture] = useState();
   const [phoneNumber, setPhoneNumber] = useState();
   const location = useRef();
@@ -56,16 +54,12 @@ function CreateUserProfile(props) {
 
   useEffect(() => {
     if (isSuccess) {
-      setSnackMessage("Profile saved successfully!");
-      setSnackSeverity(alertSeverity.success);
-      setSnackOpen(true);
+      toast.success("Profile saved successfully!");
       reloadUser();
     } else if (isError) {
-      setSnackMessage(
+      toast.error(
         "An error occured while saving the profile! Please try again!"
       );
-      setSnackSeverity(alertSeverity.error);
-      setSnackOpen(true);
     }
   }, [isError, isSuccess]);
 
@@ -75,15 +69,6 @@ function CreateUserProfile(props) {
         <BoxCircularProgress />
       ) : ( */}
       <Grid container spacing={3} justifyContent="center" alignItems="center">
-        {snackOpen && (
-          <SnackAlert
-            message={snackMessage}
-            severity={snackSeverity}
-            handleClose={() => {
-              setSnackOpen(false);
-            }}
-          />
-        )}
         <Grid item xs={6}>
           <ReactImageUploadComponent
             withIcon={true}

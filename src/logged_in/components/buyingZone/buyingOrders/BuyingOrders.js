@@ -125,7 +125,12 @@ function BuyingOrders(props) {
               <TableRow key={order.id}>
                 <TableCell component="th" scope="row">
                   <Link
-                    to={`/user/jobs_posted/${order.job.url}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      history.push("jobs_posted/single_job", {
+                        jobId: order.job.id
+                      });
+                    }}
                     style={{ textDecoration: "none" }}
                   >
                     {shortenString(order.job.title, 40)}

@@ -162,11 +162,11 @@ function LoginDialog(props) {
               onVisibilityChange={setIsPasswordVisible}
               isVisible={isPasswordVisible}
             />
-            <FormControlLabel
+            {/* <FormControlLabel
               className={classes.formControlLabel}
               control={<Checkbox color="primary" />}
               label={<Typography variant="body1">Remember me</Typography>}
-            />
+            /> */}
             {status.includes("verificationEmailSend") && (
               <HighlightedInformation>
                 We have send instructions on how to reset your password to your
@@ -188,7 +188,7 @@ function LoginDialog(props) {
               Login
               {isLoading && <ButtonCircularProgress />}
             </Button>
-            <Typography
+            {/* <Typography
               align="center"
               className={classNames(
                 classes.forgotPassword,
@@ -209,7 +209,7 @@ function LoginDialog(props) {
               }}
             >
               Forgot Password?
-            </Typography>
+            </Typography> */}
           </Fragment>
         }
       />

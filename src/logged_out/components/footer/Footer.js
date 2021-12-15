@@ -78,11 +78,11 @@ const styles = (theme) => ({
 const infos = [
   {
     icon: <PhoneIcon />,
-    description: "+1 555 123456"
+    description: "+92 1234567890"
   },
   {
     icon: <MailIcon />,
-    description: "support@company.com"
+    description: "support@mazdoorbulao.com"
   }
 ];
 
@@ -101,7 +101,7 @@ const socialIcons = [
       </svg>
     ),
     label: "Github",
-    href: "https://github.com/dunky11/react-saas-template"
+    href: "https://github.com/talha-programmer"
   },
   {
     icon: (
@@ -133,23 +133,7 @@ const socialIcons = [
       </svg>
     ),
     label: "LinkedIn",
-    href: "https://www.linkedin.com/"
-  },
-  {
-    icon: (
-      <svg
-        role="img"
-        width="24px"
-        height="24px"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <title>Twitter</title>
-        <path d="M23.954 4.569c-.885.389-1.83.654-2.825.775 1.014-.611 1.794-1.574 2.163-2.723-.951.555-2.005.959-3.127 1.184-.896-.959-2.173-1.559-3.591-1.559-2.717 0-4.92 2.203-4.92 4.917 0 .39.045.765.127 1.124C7.691 8.094 4.066 6.13 1.64 3.161c-.427.722-.666 1.561-.666 2.475 0 1.71.87 3.213 2.188 4.096-.807-.026-1.566-.248-2.228-.616v.061c0 2.385 1.693 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.314 0-.615-.03-.916-.086.631 1.953 2.445 3.377 4.604 3.417-1.68 1.319-3.809 2.105-6.102 2.105-.39 0-.779-.023-1.17-.067 2.189 1.394 4.768 2.209 7.557 2.209 9.054 0 13.999-7.496 13.999-13.986 0-.209 0-.42-.015-.63.961-.689 1.8-1.56 2.46-2.548l-.047-.02z" />
-      </svg>
-    ),
-    label: "Twitter",
-    href: "https://www.twitter.com/"
+    href: "https://www.linkedin.com/in/muhammad-talha-7a7238154/"
   }
 ];
 
@@ -164,70 +148,42 @@ function Footer(props) {
       />
       <div className={classes.footerInner}>
         <Grid container spacing={isWidthUp("md", width) ? 10 : 5}>
-          <Grid item xs={12} md={6} lg={4}>
-            <form>
-              <Box display="flex" flexDirection="column">
-                <Box mb={1}>
-                  <TextField
-                    variant="outlined"
-                    multiline
-                    placeholder="Get in touch with us"
-                    inputProps={{ "aria-label": "Get in Touch" }}
-                    InputProps={{
-                      className: classes.whiteBg
-                    }}
-                    rows={4}
-                    fullWidth
-                    required
-                  />
-                </Box>
-                <ColoredButton
-                  color={theme.palette.common.white}
-                  variant="outlined"
-                  type="submit"
-                >
-                  Send Message
-                </ColoredButton>
-              </Box>
-            </form>
-          </Grid>
-          <Hidden mdDown>
-            <Grid item xs={12} md={6} lg={4}>
-              <Box display="flex" justifyContent="center">
-                <div>
-                  {infos.map((info, index) => (
-                    <Box display="flex" mb={1} key={index}>
-                      <Box mr={2}>
-                        <IconButton
-                          className={classes.infoIcon}
-                          tabIndex={-1}
-                          disabled
-                        >
-                          {info.icon}
-                        </IconButton>
-                      </Box>
-                      <Box
-                        display="flex"
-                        flexDirection="column"
-                        justifyContent="center"
+          <Grid item xs={12} md={6}>
+            <Box display="flex" justifyContent="center">
+              <div>
+                {infos.map((info, index) => (
+                  <Box display="flex" mb={1} key={index}>
+                    <Box mr={2}>
+                      <IconButton
+                        className={classes.infoIcon}
+                        tabIndex={-1}
+                        disabled
                       >
-                        <Typography variant="h6" className="text-white">
-                          {info.description}
-                        </Typography>
-                      </Box>
+                        {info.icon}
+                      </IconButton>
                     </Box>
-                  ))}
-                </div>
-              </Box>
-            </Grid>
-          </Hidden>
-          <Grid item xs={12} md={6} lg={4}>
+                    <Box
+                      display="flex"
+                      flexDirection="column"
+                      justifyContent="center"
+                    >
+                      <Typography variant="h6" className="text-white">
+                        {info.description}
+                      </Typography>
+                    </Box>
+                  </Box>
+                ))}
+              </div>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
             <Typography variant="h6" paragraph className="text-white">
               About the Company
             </Typography>
             <Typography style={{ color: "#8f9296" }} paragraph>
-              Lorem ipsum dolor sit amet, consectateur adispicing elit. Fusce
-              euismod convallis velit, eu auctor lacus vehicula sit amet.
+              MazdoorBulao is an online platform to connect local labors
+              including Electricians, Plumbers, Masons etc. with Buyers in their
+              area
             </Typography>
             <Box display="flex">
               {socialIcons.map((socialIcon, index) => (

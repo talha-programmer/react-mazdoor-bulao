@@ -12,6 +12,7 @@ import FormDialog from "../../../../shared/components/FormDialog";
 import useSaveBid from "../../../../hooks/bids/useSaveBid";
 import alertSeverity from "../../../../config/alertSeverity";
 import SnackAlert from "../../../../shared/components/SnackAlert";
+import { toast } from "react-toastify";
 
 const styles = (theme) => ({
   card: {
@@ -26,10 +27,6 @@ function CreateBid(props) {
   const offeredAmount = useRef();
   const completionTime = useRef();
   const { mutate, isSuccess, isError } = useSaveBid();
-
-  const [snackOpen, setSnackOpen] = useState(false);
-  const [snackMessage, setSnackMessage] = useState("");
-  const [snackSeverity, setSnackSeverity] = useState();
 
   const jobId = job.id;
   const onSubmit = (e) => {
@@ -46,23 +43,16 @@ function CreateBid(props) {
 
   useEffect(() => {
     if (isSuccess) {
-      setSnackMessage("Bid created successfully!");
-      setSnackSeverity(alertSeverity.success);
-      setSnackOpen(true);
-      //setDialogOpen(false); //close the dialog
-      // TODO: close the dialog when bid is saved. Snack also close while doing that!
+      toast.success("Bid created successfully!");
+
+      setDialogOpen(false); //close the dialog
     } else if (isError) {
-      setSnackMessage("Error occured while creating bid! Please try again");
-      setSnackSeverity(alertSeverity.error);
-      setSnackOpen(true);
+      toast.error("Error occured while creating bid! Please try again");
     }
   }, [isError, isSuccess, setDialogOpen]);
 
   return (
     <>
-      {snackOpen && (
-        <SnackAlert message={snackMessage} severity={snackSeverity} />
-      )}
       <FormDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}

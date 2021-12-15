@@ -22,6 +22,7 @@ import alertSeverity from "../../../../config/alertSeverity";
 import ReactImageUploadComponent from "react-images-upload";
 import { useHistory } from "react-router";
 import AutocompletePlaces from "react-google-autocomplete";
+import { toast } from "react-toastify";
 
 const styles = (theme) => ({
   card: {
@@ -54,9 +55,6 @@ function CreateJob(props) {
   } = useSaveJob();
 
   const { data: jobCategories, isLoading } = useJobCategories();
-  const [snackMessage, setSnackMessage] = useState("");
-  const [snackOpen, setSnackOpen] = useState(false);
-  const [snackSeverity, setSnackSeverity] = useState();
   const [images, setImages] = useState();
 
   const [city, setCity] = useState();
@@ -110,16 +108,10 @@ function CreateJob(props) {
 
   useEffect(() => {
     if (isJobSaved) {
-      setSnackMessage("Job saved successfully!");
-      setSnackSeverity(alertSeverity.success);
-      setSnackOpen(true);
+      toast.success("Job saved successfully!");
       clearForm();
     } else if (isJobSaveFailed) {
-      setSnackMessage(
-        "An error occured while saving the job! Please try again!"
-      );
-      setSnackSeverity(alertSeverity.error);
-      setSnackOpen(true);
+      toast.error("An error occured while saving the job! Please try again!");
     }
   }, [isJobSaveFailed, isJobSaved]);
 
@@ -159,15 +151,6 @@ function CreateJob(props) {
             justifyContent="center"
             alignItems="center"
           >
-            {snackOpen && (
-              <SnackAlert
-                message={snackMessage}
-                severity={snackSeverity}
-                handleClose={() => {
-                  setSnackOpen(false);
-                }}
-              />
-            )}
             <Grid
               item
               xs={12}
