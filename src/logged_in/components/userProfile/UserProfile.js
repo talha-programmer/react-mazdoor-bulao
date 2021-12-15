@@ -26,6 +26,7 @@ import "react-phone-input-2/lib/material.css";
 import { AuthContext } from "../../../context/AuthContext";
 import useUserProfile from "../../../hooks/user/useUserProfile";
 import { Rating } from "@material-ui/lab";
+import { toast } from "react-toastify";
 
 const styles = (theme) => ({
   card: {
@@ -36,9 +37,6 @@ const styles = (theme) => ({
 
 function UserProfile(props) {
   //const { classes } = props;
-  const [snackOpen, setSnackOpen] = useState(false);
-  const [snackSeverity, setSnackSeverity] = useState();
-  const [snackMessage, setSnackMessage] = useState("");
   const [profilePicture, setProfilePicture] = useState();
   const [phoneNumber, setPhoneNumber] = useState();
   const location = useRef();
@@ -71,17 +69,14 @@ function UserProfile(props) {
 
   useEffect(() => {
     if (isSuccess) {
-      setSnackMessage("Profile saved successfully!");
-      setSnackSeverity(alertSeverity.success);
-      setSnackOpen(true);
+      toast.success("Profile saved successfully!");
+
       setImageKey(imageKey + "x");
       reloadUser();
     } else if (isError) {
-      setSnackMessage(
+      toast.error(
         "An error occured while saving the profile! Please try again!"
       );
-      setSnackSeverity(alertSeverity.error);
-      setSnackOpen(true);
     }
   }, [isError, isSuccess]); // Important: don't change
 
@@ -93,15 +88,6 @@ function UserProfile(props) {
       //   py: 8
       // }}
     >
-      {snackOpen && (
-        <SnackAlert
-          message={snackMessage}
-          severity={snackSeverity}
-          handleClose={() => {
-            setSnackOpen(false);
-          }}
-        />
-      )}
       <Container maxWidth="md">
         <Typography style={{ marginBottom: 30 }} variant="h4">
           Your Profile
@@ -161,7 +147,7 @@ function UserProfile(props) {
                   </Typography>
                   <Typography variant="body1">
                     <Rating
-                      value={userProfile.buyer_profile?.rating}
+                      value={userProfile?.buyer_profile?.rating}
                       disabled={true}
                     />
                   </Typography>
@@ -184,7 +170,7 @@ function UserProfile(props) {
                   </Typography>
                   <Typography variant="body1">
                     <Rating
-                      value={userProfile.worker_profile?.rating}
+                      value={userProfile?.worker_profile?.rating}
                       disabled={true}
                     />
                   </Typography>
@@ -276,7 +262,6 @@ function UserProfile(props) {
                         fullWidth
                         label="Location"
                         name="location"
-                        required
                         defaultValue={user?.location}
                         variant="outlined"
                         inputRef={location}
