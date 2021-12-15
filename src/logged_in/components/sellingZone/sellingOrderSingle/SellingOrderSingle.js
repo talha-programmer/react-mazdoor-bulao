@@ -129,9 +129,13 @@ function SellingOrderSingle(props) {
                     onClick={() => {
                       setDialogOpen(true);
                     }}
-                    disabled={order?.status === orderStatusCodes.COMPLETED}
+                    disabled={
+                      order?.status === orderStatusCodes.COMPLETED ||
+                      order?.status ===
+                        orderStatusCodes.REQUESTED_FOR_COMPLETION
+                    }
                   >
-                    Mark as Complete
+                    Request for completion
                   </Button>
                 </Grid>
 
@@ -142,7 +146,7 @@ function SellingOrderSingle(props) {
                     onClick={() => {
                       setReviewDialogOpen(true);
                     }}
-                    disabled={order?.buyer_reviewed}
+                    disabled={order?.worker_reviewed}
                   >
                     Rate this Order
                   </Button>
