@@ -9,13 +9,10 @@ function useSendReview() {
     (review) =>
       axios.post(api.sendReview, review).then((result) => {
         queryClient.invalidateQueries([
-          queryKeys.buyingOrders,
+          queryKeys.singleOrder,
           review?.order_id
         ]);
-        queryClient.invalidateQueries([
-          queryKeys.sellingOrders,
-          review?.order_id
-        ]);
+
         return result.data;
       }),
     {
