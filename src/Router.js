@@ -25,34 +25,34 @@ const Router = () => {
     Accept: "application/json"
   };
 
-  // window.Pusher = pusherJs;
+  window.Pusher = pusherJs;
 
-  // window.Echo = new Echo({
-  //   broadcaster: "pusher",
-  //   key: "2222",
-  //   wsHost: "localhost",
-  //   wsPort: 6001,
-  //   forceTLS: false,
-  //   disableStats: true,
-  //   //authEndPoint: "http://localhost:8000/broadcasting/auth"
-  //   authorizer: (channel, options) => {
-  //     return {
-  //       authorize: (socketId, callback) => {
-  //         axios
-  //           .post("http://localhost:8000/broadcasting/auth", {
-  //             socket_id: socketId,
-  //             channel_name: channel.name
-  //           })
-  //           .then((response) => {
-  //             callback(false, response.data);
-  //           })
-  //           .catch((error) => {
-  //             callback(true, error);
-  //           });
-  //       }
-  //     };
-  //   }
-  // });
+  window.Echo = new Echo({
+    broadcaster: "pusher",
+    key: "2222",
+    wsHost: "localhost",
+    wsPort: 6001,
+    forceTLS: false,
+    disableStats: true,
+    //authEndPoint: "http://localhost:8000/broadcasting/auth"
+    authorizer: (channel, options) => {
+      return {
+        authorize: (socketId, callback) => {
+          axios
+            .post("http://localhost:8000/broadcasting/auth", {
+              socket_id: socketId,
+              channel_name: channel.name
+            })
+            .then((response) => {
+              callback(false, response.data);
+            })
+            .catch((error) => {
+              callback(true, error);
+            });
+        }
+      };
+    }
+  });
 
   return (
     <BrowserRouter>

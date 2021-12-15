@@ -17,7 +17,7 @@ import useChatWithUser from "../../../hooks/chat/useChatWithUser";
 import { useQueryClient } from "react-query";
 import queryKeys from "../../../config/queryKeys";
 import useSendMessage from "../../../hooks/chat/useSendMessage";
-import { format } from "date-fns";
+import { format, formatDistance, formatRelative, subDays } from "date-fns";
 import BoxCircularProgress from "../../../shared/components/BoxCircularProgress";
 import { Container } from "@material-ui/core";
 
@@ -55,6 +55,7 @@ const MessageArea = ({ userId }) => {
   const loggedInUserId = queryClient.getQueryData(queryKeys.user)?.id;
   const classes = useStyles();
   const scrollRef = useRef();
+  const [displayDate, setDisplayDate] = useState(false);
 
   useEffect(() => {
     // Scroll to the last message whenever the chat updates
@@ -62,19 +63,6 @@ const MessageArea = ({ userId }) => {
       scrollRef.current.scrollIntoView({ behaviour: "smooth" });
     }
   }, [chat]);
-
-  // TODO Fix multiple times reloading of this code
-  // window.Echo.private(`chat.with.${loggedInUserId}`).listen(
-  //   "MessageReceived",
-  //   (e) => {
-  //     console.log("message received");
-  //     const message = e.message;
-  //     queryClient.setQueryData(
-  //       [queryKeys.chatWithUser, message?.from],
-  //       (oldData) => [...oldData, message]
-  //     );
-  //   }
-  // );
 
   return (
     <>
@@ -91,7 +79,12 @@ const MessageArea = ({ userId }) => {
                     align={message.from === loggedInUserId ? "right" : "left"}
                   >
                     <Grid item xs={12}>
-                      <div className={classes.singleMessage}>
+                      <div
+                        className={classes.singleMessage}
+                        onClick={() => {
+                          setDisplayDate(!displayDate);
+                        }}
+                      >
                         <ListItemText
                           primary={message.message_text}
                         ></ListItemText>
@@ -101,6 +94,15 @@ const MessageArea = ({ userId }) => {
                             "hh:mm a"
                           )}
                         ></ListItemText>
+                        {displayDate && (
+                          <Typography color="textSecondary" variant="caption">
+                            {formatDistance(
+                              subDays(new Date(message.created_at), 0),
+                              new Date(),
+                              { addSuffix: true }
+                            )}
+                          </Typography>
+                        )}
                       </div>
                     </Grid>
                   </Grid>
@@ -133,8 +135,23 @@ const Chat = (props) => {
     isSuccess: isMessageSuccess,
     isError: isMessageError
   } = useSendMessage();
+  const queryClient = useQueryClient();
+  const loggedInUserId = queryClient.getQueryData(queryKeys.user)?.id;
 
   useEffect(selectChat, [selectChat]);
+
+  useEffect(() => {
+    window.Echo.private(`chat.with.${loggedInUserId}`).listen(
+      "MessageReceived",
+      (e) => {
+        const message = e.message;
+        queryClient.setQueryData(
+          [queryKeys.chatWithUser, message?.from],
+          (oldData) => [...oldData, message]
+        );
+      }
+    );
+  }, []);
 
   useEffect(() => {
     if (isUsersFetched) {
