@@ -274,6 +274,7 @@ function CreateJob(props) {
                         componentRestrictions: { country: "pk" }
                       }}
                       defaultValue={job?.location}
+                      placeholder="Location"
                     />
                   </Grid>
                   <Grid item>

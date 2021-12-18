@@ -35,6 +35,7 @@ import {
 import BoxCircularProgress from "../../../../shared/components/BoxCircularProgress";
 import smoothScrollTop from "../../../../shared/functions/smoothScrollTop";
 import ReviewDialog from "../buyingOrders/ReviewDialog";
+import { formatDistance } from "date-fns";
 
 const styles = (theme) => ({
   // blogContentWrapper: {
@@ -52,7 +53,7 @@ const styles = (theme) => ({
   // },
   // noDecoration: {
   //   textDecoration: "none !important"
-  // }
+  // }import { formatDistance } from 'date-fns';
 
   card: {
     boxShadow: theme.shadows[2],
@@ -93,7 +94,7 @@ function BuyingOrderSingle(props) {
       let workerReview = orderReviews.filter((review) => {
         return review.review_type == reviewTypesCodes.FROM_WORKER_TO_BUYER;
       });
-      if (buyerReview.length > 0) {
+      if (workerReview.length > 0) {
         workerReview = workerReview[0];
         setWorkerReview(workerReview);
       }
@@ -158,7 +159,6 @@ function BuyingOrderSingle(props) {
             <>
               <Grid item xs={12}>
                 <Card className={classes.card}>
-                  <Typography variant="h5">Order Details</Typography>
                   <Typography variant="body1">
                     Worker: {order.worker.name}
                   </Typography>
@@ -179,11 +179,46 @@ function BuyingOrderSingle(props) {
                       })}
                     </Typography>
                   )}
-                  <Typography variant="h5">Bid Details</Typography>
+                  <Typography style={{ marginTop: 15 }} variant="h5">
+                    Bid
+                  </Typography>
+                  <Typography variant="body1">
+                    Amount: RS {order.bid.offered_amount}
+                  </Typography>
+                  <Typography variant="body1">
+                    Complete In: {order.bid.completion_time} days
+                  </Typography>
+                  <Typography variant="body1">
+                    Posted On:{" "}
+                    {format(new Date(order.bid.created_at), "PPP", {
+                      awareOfUnicodeTokens: true
+                    })}
+                  </Typography>
                   <Typography variant="body1">{order.bid.details}</Typography>
-                  <Typography variant="h5">Job Details</Typography>
+                  <Typography style={{ marginTop: 15 }} variant="h5">
+                    Job
+                  </Typography>
                   <Typography variant="h6">{order.job.title}</Typography>
                   <Typography variant="body1">{order.job.details}</Typography>
+                  <Button
+                    variant="contained"
+                    color="default"
+                    style={{ marginTop: 10 }}
+                    onClick={() => {
+                      history.push("/user/jobs_posted/single_job", {
+                        jobId: order.job.id
+                      });
+                    }}
+                  >
+                    Job Details
+                  </Button>
+                  {/* <Button
+                    variant="contained"
+                    color="Secondary"
+                    onClick={() => {}}
+                  >
+                    Open Chat
+                  </Button> */}
                 </Card>
               </Grid>
 
@@ -194,28 +229,36 @@ function BuyingOrderSingle(props) {
               )}
 
               {buyerReview && (
-                <Grid item xs={12}>
+                <Grid item xs={5}>
                   <Card className={classes.card}>
-                    <Typography variant="h5">Buyer Review</Typography>
-
+                    <Typography variant="h6">Your Review</Typography>
+                    <Typography color="textSecondary" variant="subtitle2">
+                      {`${formatDistance(
+                        new Date(buyerReview.created_at),
+                        new Date()
+                      )} ago`}
+                    </Typography>
+                    <Rating value={buyerReview.rating} disabled={true} />
                     <Typography variant="body2">
                       {buyerReview?.review_text}
                     </Typography>
-
-                    <Rating value={buyerReview.rating} disabled={true} />
                   </Card>
                 </Grid>
               )}
               {workerReview && (
-                <Grid item xs={12}>
+                <Grid item xs={5}>
                   <Card className={classes.card}>
-                    <Typography variant="h5">Worker Review</Typography>
-
+                    <Typography variant="h6">Worker Review</Typography>
+                    <Typography color="textSecondary" variant="subtitle2">
+                      {`${formatDistance(
+                        new Date(workerReview.created_at),
+                        new Date()
+                      )} ago`}
+                    </Typography>
+                    <Rating value={workerReview.rating} disabled={true} />
                     <Typography variant="body2">
                       {workerReview?.review_text}
                     </Typography>
-
-                    <Rating value={workerReview.rating} disabled={true} />
                   </Card>
                 </Grid>
               )}

@@ -27,6 +27,7 @@ import useJobCategories from "../../../../hooks/jobs/useJobCategories";
 import alertSeverity from "../../../../config/alertSeverity";
 import SnackAlert from "../../../../shared/components/SnackAlert";
 import { toast } from "react-toastify";
+import { formatDistance } from "date-fns";
 
 const styles = (theme) => ({
   card: {
@@ -129,7 +130,7 @@ const WorkerProfile = ({ classes }) => {
                           {user.location != "null" && user.location}
                         </Typography>
                         <Rating
-                          value={workerProfile.rating}
+                          value={workerProfile?.rating}
                           disabled={true}
                           precision={0.5}
                         />
@@ -226,6 +227,12 @@ const WorkerProfile = ({ classes }) => {
                   <Card className={classes.card}>
                     <Typography variant="h6">
                       By: {review?.given_by?.name}
+                    </Typography>
+                    <Typography color="textSecondary" variant="subtitle2">
+                      {`${formatDistance(
+                        new Date(review.created_at),
+                        new Date()
+                      )} ago`}
                     </Typography>
                     <Rating value={review.rating} disabled={true} />
                     <Typography variant="body2">

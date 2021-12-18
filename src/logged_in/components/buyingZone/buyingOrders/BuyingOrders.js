@@ -152,32 +152,17 @@ function BuyingOrders(props) {
                 </TableCell>
                 <TableCell>{orderStatusStrings[order.status]}</TableCell>
                 <TableCell>
-                  <IconButton
-                    aria-label="View Details"
+                  <Button
+                    color="secondary"
+                    variant="contained"
                     onClick={() => {
                       history.push("/user/buying_orders/single_order", {
                         orderId: order.id
                       });
                     }}
                   >
-                    <DetailsIcon color="action" />
-                  </IconButton>
-
-                  {/* <IconButton
-                    aria-label="Edit Order"
-                    disabled={job.status === orderStatusCodes.JOB_COMPLETED}
-                    onClick={() => {
-                      history.push(`/user/jobs_posted/single_job/edit`, {
-                        job: job
-                      });
-                    }}
-                  >
-                    <EditIcon color="secondary" />
-                  </IconButton> */}
-
-                  {/* <IconButton aria-label="Delete Job" onClick={() => {}}>
-                    <DeleteIcon color="error" />
-                  </IconButton> */}
+                    Details
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}

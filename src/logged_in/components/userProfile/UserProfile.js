@@ -81,13 +81,7 @@ function UserProfile(props) {
   }, [isError, isSuccess]); // Important: don't change
 
   return (
-    <Box
-      component="main"
-      // sx={{
-      //   flexGrow: 1,
-      //   py: 8
-      // }}
-    >
+    <Box component="main">
       <Container maxWidth="md">
         <Typography style={{ marginBottom: 30 }} variant="h4">
           Your Profile

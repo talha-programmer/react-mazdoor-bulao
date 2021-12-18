@@ -93,7 +93,7 @@ function SellingOrderSingle(props) {
       let workerReview = orderReviews.filter((review) => {
         return review.review_type == reviewTypesCodes.FROM_WORKER_TO_BUYER;
       });
-      if (buyerReview.length > 0) {
+      if (workerReview.length > 0) {
         workerReview = workerReview[0];
         setWorkerReview(workerReview);
       }
@@ -162,7 +162,6 @@ function SellingOrderSingle(props) {
             <>
               <Grid item xs={12}>
                 <Card className={classes.card}>
-                  <Typography variant="h5">Order Details</Typography>
                   <Typography variant="body1">
                     Buyer: {order.buyer.name}
                   </Typography>
@@ -183,11 +182,39 @@ function SellingOrderSingle(props) {
                       })}
                     </Typography>
                   )}
-                  <Typography variant="h5">Bid Details</Typography>
+                  <Typography style={{ marginTop: 15 }} variant="h5">
+                    Bid
+                  </Typography>
+                  <Typography variant="body1">
+                    Amount: RS {order.bid.offered_amount}
+                  </Typography>
+                  <Typography variant="body1">
+                    Complete In: {order.bid.completion_time} days
+                  </Typography>
+                  <Typography variant="body1">
+                    Posted On:{" "}
+                    {format(new Date(order.bid.created_at), "PPP", {
+                      awareOfUnicodeTokens: true
+                    })}
+                  </Typography>
                   <Typography variant="body1">{order.bid.details}</Typography>
-                  <Typography variant="h5">Job Details</Typography>
+                  <Typography style={{ marginTop: 15 }} variant="h5">
+                    Job
+                  </Typography>
                   <Typography variant="h6">{order.job.title}</Typography>
                   <Typography variant="body1">{order.job.details}</Typography>
+                  <Button
+                    variant="contained"
+                    color="default"
+                    style={{ marginTop: 10 }}
+                    onClick={() => {
+                      history.push("/jobs/single_job", {
+                        jobId: order.job.id
+                      });
+                    }}
+                  >
+                    Job Details
+                  </Button>
                 </Card>
               </Grid>
 
@@ -198,7 +225,7 @@ function SellingOrderSingle(props) {
               )}
 
               {buyerReview && (
-                <Grid item xs={12}>
+                <Grid item xs={5}>
                   <Card className={classes.card}>
                     <Typography variant="h5">Buyer Review</Typography>
 
@@ -211,9 +238,9 @@ function SellingOrderSingle(props) {
                 </Grid>
               )}
               {workerReview && (
-                <Grid item xs={12}>
+                <Grid item xs={5}>
                   <Card className={classes.card}>
-                    <Typography variant="h5">Worker Review</Typography>
+                    <Typography variant="h5">Your Review</Typography>
 
                     <Typography variant="body2">
                       {workerReview?.review_text}

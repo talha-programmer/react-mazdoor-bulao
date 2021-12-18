@@ -132,16 +132,17 @@ function SellingOrders(props) {
                 </TableCell>
                 <TableCell>{orderStatusStrings[order.status]}</TableCell>
                 <TableCell>
-                  <IconButton
-                    aria-label="View Details"
+                  <Button
+                    color="secondary"
+                    variant="contained"
                     onClick={() => {
                       history.push("/user/selling_orders/single_order", {
                         orderId: order.id
                       });
                     }}
                   >
-                    <DetailsIcon color="action" />
-                  </IconButton>
+                    Details
+                  </Button>
 
                   {/* <IconButton
                     aria-label="Edit Order"

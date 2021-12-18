@@ -136,7 +136,6 @@ function Bids(props) {
                         <Button
                           variant="contained"
                           onClick={() => {
-                            //let chatId = bid.offered_by.id;
                             history.push("/jobs/single_job", {
                               jobId: bid.job.id
                             });
