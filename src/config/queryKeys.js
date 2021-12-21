@@ -18,7 +18,8 @@ function queryKeys() {
     chatUsers: "chatUsers",
     recentChat: "recentChat",
     chatWithUser: "chatWithUser",
-    orderReviews: "orderReviews"
+    orderReviews: "orderReviews",
+    users: "users"
   };
 }
 

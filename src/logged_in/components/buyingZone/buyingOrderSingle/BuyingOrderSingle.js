@@ -112,7 +112,7 @@ function BuyingOrderSingle(props) {
           style={{ marginBottom: 30 }}
         >
           <Grid item xs={6}>
-            <Typography variant="h4">Buying Order</Typography>
+            <Typography variant="h4">Buyer Order</Typography>
           </Grid>
 
           <Grid item xs={6}>

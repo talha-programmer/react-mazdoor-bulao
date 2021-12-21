@@ -13,7 +13,8 @@ import {
   Checkbox,
   Typography,
   FormControlLabel,
-  withStyles
+  withStyles,
+  MenuItem
 } from "@material-ui/core";
 import FormDialog from "../../../shared/components/FormDialog";
 import HighlightedInformation from "../../../shared/components/HighlightedInformation";
@@ -22,11 +23,14 @@ import VisibilityPasswordTextField from "../../../shared/components/VisibilityPa
 import axios from "axios";
 import api from "../../../config/api";
 import { withRouter } from "react-router-dom";
-import Cookies from "js-cookie";
-import { AuthContext } from "../../../context/AuthContext";
 import { QueryClient, useQueryClient } from "react-query";
 import queryKeys from "../../../config/queryKeys";
-import { userTypesCodes } from "../../../config/enums/userTypes";
+import { toast } from "react-toastify";
+import {
+  userTypesArray,
+  userTypesCodes,
+  userTypesStrings
+} from "../../../config/enums/userTypes";
 
 const styles = (theme) => ({
   link: {
@@ -45,33 +49,27 @@ const styles = (theme) => ({
   }
 });
 
-function RegisterDialog(props) {
-  const {
-    setStatus,
-    history,
-    theme,
-    onClose,
-    //openTermsDialog,
-    status,
-    classes
-  } = props;
+function CreateUserDialog(props) {
+  console.log("reached");
+  const { history, theme, classes, open, setOpen } = props;
+
+  const [status, setStatus] = useState("");
+  //const [open, setOpen] = useState(isOpen);
   const [isLoading, setIsLoading] = useState(false);
-  //const [hasTermsOfServiceError, setHasTermsOfServiceError] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  //const registerTermsCheckbox = useRef();
   const registerPassword = useRef();
   const registerPasswordRepeat = useRef();
   const registerFullName = useRef();
   const registerUsername = useRef();
   const registerEmail = useRef();
-  const { setToken } = useContext(AuthContext);
   const queryClient = useQueryClient();
+  const [userType, setUserType] = useState();
+
+  const onClose = () => {
+    setOpen(false);
+  };
 
   const register = useCallback(() => {
-    // if (!registerTermsCheckbox.current.checked) {
-    //   setHasTermsOfServiceError(true);
-    //   return;
-    // }
     if (
       registerPassword.current.value !== registerPasswordRepeat.current.value
     ) {
@@ -82,28 +80,23 @@ function RegisterDialog(props) {
       setStatus(status + "|invalidUsername");
       return;
     }
+    console.log(userType);
 
     const data = {
       name: registerFullName.current.value,
       username: registerUsername.current.value,
       email: registerEmail.current.value,
       password: registerPassword.current.value,
-      password_confirmation: registerPasswordRepeat.current.value
+      password_confirmation: registerPasswordRepeat.current.value,
+      user_type: userType
     };
 
     axios
-      .post(api.register, data)
+      .post(api.saveUser, data)
       .then((result) => {
         if (result.data.user) {
-          Cookies.set("loginToken", result.data.login_token, { expires: 1 });
-          setToken(result.data.login_token);
-          queryClient.invalidateQueries(queryKeys.user);
-          const userType = result.data.user.user_type;
-          if (userType == userTypesCodes.ADMIN) {
-            history.push("/admin/users");
-          } else {
-            history.push("/");
-          }
+          queryClient.invalidateQueries(queryKeys.users);
+          toast.success("User saved successfully");
           onClose();
         }
       })
@@ -124,14 +117,14 @@ function RegisterDialog(props) {
 
     setStatus("");
     setIsLoading(true);
-  }, [setStatus, status, setToken, history, onClose]);
+  }, [setStatus, status, queryClient]);
 
   return (
     <FormDialog
       loading={isLoading}
       onClose={onClose}
-      open
-      headline="Register"
+      open={open}
+      headline="Create User"
       onFormSubmit={(e) => {
         e.preventDefault();
         register();
@@ -141,13 +134,32 @@ function RegisterDialog(props) {
       content={
         <Fragment>
           <TextField
+            fullWidth
+            variant="outlined"
+            margin="normal"
+            select
+            autoFocus
+            label="User Type"
+            required
+            //value={currency}
+            onChange={(event) => {
+              console.log(event.target.value);
+              setUserType(event.target.value);
+            }}
+          >
+            {userTypesArray.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
             error={status.includes("invalidName")}
             label="Full Name"
-            autoFocus
             autoComplete="off"
             type="text"
             onChange={() => {
@@ -290,59 +302,6 @@ function RegisterDialog(props) {
             isVisible={isPasswordVisible}
             onVisibilityChange={setIsPasswordVisible}
           />
-          {/* <FormControlLabel
-            style={{ marginRight: 0 }}
-            control={
-              <Checkbox
-                color="primary"
-                inputRef={registerTermsCheckbox}
-                onChange={() => {
-                  setHasTermsOfServiceError(false);
-                }}
-              />
-            }
-            label={
-              <Typography variant="body1">
-                I agree to the
-                <span
-                  className={classes.link}
-                  onClick={isLoading ? null : openTermsDialog}
-                  tabIndex={0}
-                  role="button"
-                  onKeyDown={(event) => {
-                    // For screenreaders listen to space and enter events
-                    if (
-                      (!isLoading && event.keyCode === 13) ||
-                      event.keyCode === 32
-                    ) {
-                      openTermsDialog();
-                    }
-                  }}
-                >
-                  {" "}
-                  terms of service
-                </span>
-              </Typography>
-            }
-          />
-          {hasTermsOfServiceError && (
-            <FormHelperText
-              error
-              style={{
-                display: "block",
-                marginTop: theme.spacing(-1)
-              }}
-            >
-              In order to create an account, you have to accept our terms of
-              service.
-            </FormHelperText>
-          )} */}
-          {status.includes("accountCreated") && (
-            <HighlightedInformation>
-              We have created your account. Please click on the link in the
-              email we have sent to you before logging in.
-            </HighlightedInformation>
-          )}
         </Fragment>
       }
       actions={
@@ -354,7 +313,7 @@ function RegisterDialog(props) {
           color="secondary"
           disabled={isLoading}
         >
-          Register
+          Save
           {isLoading && <ButtonCircularProgress />}
         </Button>
       }
@@ -362,15 +321,11 @@ function RegisterDialog(props) {
   );
 }
 
-RegisterDialog.propTypes = {
+CreateUserDialog.propTypes = {
   theme: PropTypes.object.isRequired,
-  onClose: PropTypes.func.isRequired,
-  openTermsDialog: PropTypes.func.isRequired,
-  status: PropTypes.string,
-  setStatus: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired
 };
 
 export default withRouter(
-  withStyles(styles, { withTheme: true })(RegisterDialog)
+  withStyles(styles, { withTheme: true })(CreateUserDialog)
 );

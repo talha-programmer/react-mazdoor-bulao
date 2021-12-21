@@ -9,10 +9,14 @@ import axios from "axios";
 import Echo from "laravel-echo";
 import pusherJs from "pusher-js";
 import { AuthContext } from "./context/AuthContext";
+import { userTypesCodes } from "./config/enums/userTypes";
 
 const LoggedInComponent = lazy(() => import("./logged_in/components/Main"));
 
 const LoggedOutComponent = lazy(() => import("./logged_out/components/Main"));
+
+const AdminComponent = lazy(() => import("./admin/components/Main"));
+
 const Router = () => {
   const { token, user } = useContext(AuthContext);
 
@@ -66,6 +70,12 @@ const Router = () => {
               // Private routes which require login
               <Route path="/user">
                 <LoggedInComponent />
+              </Route>
+            )}
+
+            {user && user.user_type == userTypesCodes.ADMIN && (
+              <Route path="/admin">
+                <AdminComponent />
               </Route>
             )}
             <Route>

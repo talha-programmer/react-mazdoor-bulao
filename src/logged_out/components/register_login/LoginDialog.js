@@ -26,6 +26,7 @@ import Cookies from "js-cookie";
 import { useQueryClient } from "react-query";
 import queryKeys from "../../../config/queryKeys";
 import { AuthContext } from "../../../context/AuthContext";
+import { userTypesCodes } from "../../../config/enums/userTypes";
 
 const styles = (theme) => ({
   forgotPassword: {
@@ -79,7 +80,11 @@ function LoginDialog(props) {
           Cookies.set("loginToken", data.login_token, { expires: 1 }); // expires in 1 day
           setToken(data.login_token);
           queryClient.invalidateQueries(queryKeys.user);
-          history.push("/");
+          if (data?.user?.user_type == userTypesCodes.ADMIN) {
+            history.push("/admin/users");
+          } else {
+            history.push("/");
+          }
           onClose();
         }
       })

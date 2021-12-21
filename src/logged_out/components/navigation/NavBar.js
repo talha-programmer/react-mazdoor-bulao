@@ -32,6 +32,7 @@ import useRecentChat from "../../../hooks/chat/useRecentChat";
 import PersonIcon from "@material-ui/icons/Person";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { userTypesCodes } from "../../../config/enums/userTypes";
 
 const styles = (theme) => ({
   appBar: {
@@ -265,6 +266,12 @@ function NavBar(props) {
     }
   ];
 
+  const dashboardMenuItem = {
+    name: "Dashboard",
+    link: "/admin/users",
+    icon: <DashboardIcon className="text-white" />
+  };
+
   const loggedInMenuItems = [
     {
       name: "Dashboard",
@@ -279,7 +286,7 @@ function NavBar(props) {
 
   const dropdownMenuItems = [
     {
-      name: "Buying Zone",
+      name: "Buyer Zone",
       dropdown: true,
       dropdownItems: [
         {
@@ -291,13 +298,13 @@ function NavBar(props) {
           link: "/user/jobs_posted"
         },
         {
-          name: "Buying Orders",
+          name: "Buyer Orders",
           link: "/user/buying_orders"
         }
       ]
     },
     {
-      name: "Selling Zone",
+      name: "Worker Zone",
       dropdown: true,
       dropdownItems: [
         {
@@ -305,7 +312,7 @@ function NavBar(props) {
           link: "/user/bids"
         },
         {
-          name: "Selling Orders",
+          name: "Worker Orders",
           link: "/user/selling_orders"
         }
       ]
@@ -380,6 +387,11 @@ function NavBar(props) {
               {token ? (
                 <Hidden smDown>
                   <Grid container spacing={2}>
+                    {user?.user_type == userTypesCodes.ADMIN && (
+                      <Grid item>
+                        <DisplayMenuItem item={dashboardMenuItem} />
+                      </Grid>
+                    )}
                     <Grid item>
                       <MessagePopperButton messages={recentMessages} />
                     </Grid>

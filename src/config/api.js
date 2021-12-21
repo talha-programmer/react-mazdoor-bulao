@@ -1,11 +1,14 @@
 function api() {
   const home = "http://127.0.0.1:8000/api";
+  const admin = home + "/admin";
   return {
     home: home,
     login: home + "/login",
     register: home + "/register",
     logout: home + "/logout",
     user: home + "/user",
+    deleteUser: home + "/user/delete",
+    saveUser: home + "/user/save",
     userProfile: home + "/user/user_profile",
     storeUserProfile: home + "/user/store_user_profile",
     bids: home + "/user/bids",
@@ -32,7 +35,11 @@ function api() {
     recentChat: home + "/chat/recent_chat",
     sendMessage: home + "/chat/send_message",
     sendReview: home + "/send_review",
-    orderReviews: home + "/order_reviews"
+    orderReviews: home + "/order_reviews",
+
+    admin: {
+      users: admin + "/users"
+    }
   };
 }
 
