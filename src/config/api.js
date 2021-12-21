@@ -1,5 +1,6 @@
 function api() {
-  const home = "http://api.mazdoorbulao.ml/api";
+  const home =
+    "https://cors-anywhere.herokuapp.com/http://api.mazdoorbulao.ml/api";
   const admin = home + "/admin";
   return {
     home: home,
