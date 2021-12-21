@@ -27,7 +27,7 @@ function Main(props) {
 
   // const selectDashboard = useCallback(() => {
   //   smoothScrollTop();
-  //   document.title = "WaVer - Dashboard";
+  //   document.title = "MazdoorBulao - Dashboard";
   //   setSelectedTab("Dashboard");
   //   if (!hasFetchedCardChart) {
   //     setHasFetchedCardChart(true);
@@ -44,7 +44,7 @@ function Main(props) {
 
   // const selectJobsPosted = useCallback(() => {
   //   smoothScrollTop();
-  //   document.title = "WaVer - Jobs Posted";
+  //   document.title = "MazdoorBulao - Jobs Posted";
   //   setSelectedTab("JobsPosted");
   // }, [setSelectedTab]);
 

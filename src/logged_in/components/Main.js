@@ -119,7 +119,7 @@ function Main(props) {
 
   const selectDashboard = useCallback(() => {
     smoothScrollTop();
-    document.title = "WaVer - Dashboard";
+    document.title = "MazdoorBulao - Dashboard";
     setSelectedTab("Dashboard");
     if (!hasFetchedCardChart) {
       setHasFetchedCardChart(true);
@@ -136,37 +136,37 @@ function Main(props) {
 
   const selectJobsPosted = useCallback(() => {
     smoothScrollTop();
-    document.title = "WaVer - Jobs Posted";
+    document.title = "MazdoorBulao - Jobs Posted";
     setSelectedTab("JobsPosted");
   }, [setSelectedTab]);
 
   const selectBids = useCallback(() => {
     smoothScrollTop();
-    document.title = "WaVer - Bids";
+    document.title = "MazdoorBulao - Bids";
     setSelectedTab("Bids");
   }, [setSelectedTab]);
 
   const selectBuyingOrders = useCallback(() => {
     smoothScrollTop();
-    document.title = "WaVer - Buying Orders";
+    document.title = "MazdoorBulao - Buying Orders";
     setSelectedTab("BuyingOrders");
   }, [setSelectedTab]);
 
   const selectSellingOrders = useCallback(() => {
     smoothScrollTop();
-    document.title = "WaVer - Selling Orders";
+    document.title = "MazdoorBulao - Selling Orders";
     setSelectedTab("SellingOrders");
   }, [setSelectedTab]);
 
   const selectChat = useCallback(() => {
     smoothScrollTop();
-    document.title = "WaVer - Chat";
+    document.title = "MazdoorBulao - Chat";
     setSelectedTab("Chat");
   }, [setSelectedTab]);
 
   const selectWorkerProfile = useCallback(() => {
     smoothScrollTop();
-    document.title = "WaVer - Worker Profile";
+    document.title = "MazdoorBulao - Worker Profile";
     setSelectedTab("WorkerProfile");
   }, [setSelectedTab]);
 

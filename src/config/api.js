@@ -1,5 +1,5 @@
 function api() {
-  const home = "http://127.0.0.1:8000/api";
+  const home = "http://api.mazdoorbulao.ml/api";
   const admin = home + "/admin";
   return {
     home: home,

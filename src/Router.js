@@ -43,7 +43,7 @@ const Router = () => {
       return {
         authorize: (socketId, callback) => {
           axios
-            .post("http://localhost:8000/broadcasting/auth", {
+            .post("http://api.mazdoorbulao.ml/broadcasting/auth", {
               socket_id: socketId,
               channel_name: channel.name
             })
