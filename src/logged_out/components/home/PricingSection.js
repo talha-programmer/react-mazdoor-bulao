@@ -147,7 +147,7 @@ function PricingSection(props) {
                         <Typography
                           variant={isWidthUp("lg", width) ? "h3" : "h4"}
                         >
-                          Find Electrical, Plumbing, Masonary and Other Jobs
+                          Explore Jobs Section Now to find Jobs in Your City
                         </Typography>
                       </Box>
                       <div>
@@ -156,9 +156,9 @@ function PricingSection(props) {
                             variant={isWidthUp("lg", width) ? "h6" : "body1"}
                             color="textSecondary"
                           >
-                            MazdoorBulao is a platform to connect Buyers with
-                            Workers. Workers can find jobs and Buyers can hire
-                            them.
+                            All Labor related jobs are listed in our website
+                            fitered by the city. You can select your city to
+                            find jobs in your area
                           </Typography>
                         </Box>
                         <Button
@@ -177,7 +177,7 @@ function PricingSection(props) {
                   <Hidden smDown>
                     <Grid item md={6}>
                       <ZoomImage
-                        src={`${process.env.PUBLIC_URL}/images/logged_out/headerImage.jpg`}
+                        src={`${process.env.PUBLIC_URL}/images/logged_out/homeImage2.jpg`}
                         className={classes.image}
                         alt="Header Image"
                       />
