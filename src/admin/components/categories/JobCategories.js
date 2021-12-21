@@ -29,20 +29,24 @@ import { Add, Delete, MoreVert } from "@material-ui/icons";
 import { Box } from "@material-ui/core";
 import { useEffect } from "react";
 import Edit from "@material-ui/icons/Edit";
-import useDeleteUser from "../../../hooks/user/useDeleteUser";
 import { toast } from "react-toastify";
 import useJobCategories from "../../../hooks/jobs/useJobCategories";
+import CategoryDialog from "./CategoryDialog";
+import useDeleteCategory from "../../../hooks/jobs/useDeleteCategory";
 
 // ----------------------------------------------------------------------
 
-const TABLE_HEAD = [{ id: "name", label: "Name", alignRight: false }];
+const TABLE_HEAD = [
+  { id: "index", label: "Sr.No", alignRight: false },
+  { id: "name", label: "Name", alignRight: false }
+];
 
 export default function JobCategories() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [filteredCategories, setFilteredCategories] = useState();
-
+  let index = 1;
   const { data: jobCategories, isFetched } = useJobCategories();
 
   function MoreMenu({ categoryId }) {
@@ -53,7 +57,7 @@ export default function JobCategories() {
       isSuccess: deleteSuccess,
       isError: deleteError,
       data
-    } = useDeleteUser();
+    } = useDeleteCategory();
 
     useEffect(() => {
       if (deleteSuccess) {
@@ -211,6 +215,8 @@ export default function JobCategories() {
 
                     return (
                       <TableRow hover key={id} tabIndex={-1}>
+                        <TableCell align="left">{index++}</TableCell>
+
                         <TableCell align="left">{name}</TableCell>
 
                         <TableCell align="right">
@@ -238,6 +244,9 @@ export default function JobCategories() {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Card>
+      )}
+      {dialogOpen && (
+        <CategoryDialog open={dialogOpen} setOpen={setDialogOpen} />
       )}
     </Container>
   );

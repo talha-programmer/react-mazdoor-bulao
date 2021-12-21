@@ -21,6 +21,8 @@ function api() {
     jobs: home + "/jobs",
     cities: home + "/cities",
     jobCategories: home + "/job_categories",
+    saveCategory: home + "/store_job_category",
+    deleteCategory: home + "/delete_job_category",
     storeJob: home + "/store_job",
     storeBid: home + "/store_job_bid",
     order: home + "/order",
