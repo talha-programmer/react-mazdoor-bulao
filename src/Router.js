@@ -35,7 +35,7 @@ const Router = () => {
   window.Echo = new Echo({
     broadcaster: "pusher",
     key: "2222",
-    wsHost: "localhost",
+    wsHost: "api.mazdoorbulao.ml",
     wsPort: 6001,
     forceTLS: false,
     disableStats: true,
