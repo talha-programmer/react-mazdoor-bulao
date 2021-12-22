@@ -26,7 +26,8 @@ const Router = () => {
   //const authToken = localStorage.getItem("loginToken");
   axios.defaults.headers.common = {
     Authorization: `Bearer ${token}`,
-    Accept: "application/json"
+    Accept: "application/json",
+    "Access-Control-Allow-Origin": "*"
   };
 
   window.Pusher = pusherJs;
