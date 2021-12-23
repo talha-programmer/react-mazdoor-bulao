@@ -6,11 +6,15 @@ import queryKeys from "../../config/queryKeys";
 function useStartOrder() {
   const queryClient = useQueryClient();
   return useMutation(
-    (order) => axios.post(api.startOrder, order).then((result) => result.data),
+    (order) =>
+      axios.post(api.startOrder, order).then((result) => {
+        queryClient.invalidateQueries(queryKeys.buyingOrders);
+        queryClient.invalidateQueries([queryKeys.postedJobs, order.job_id]);
+        return result.data;
+      }),
     {
       onSuccess: () => {
         // Invalidate and refetch
-        queryClient.invalidateQueries(queryKeys.buyingOrders);
       }
     }
   );

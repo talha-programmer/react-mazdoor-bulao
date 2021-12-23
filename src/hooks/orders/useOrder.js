@@ -4,9 +4,10 @@ import api from "../../config/api";
 import queryKeys from "../../config/queryKeys";
 
 function useOrder(orderId) {
-  async function getJob() {
+  async function getOrder() {
     let order = null;
     try {
+      console.log(orderId);
       await axios
         .post(api.order + `/${orderId}`)
         .then((result) => (order = result.data.order));
@@ -16,7 +17,7 @@ function useOrder(orderId) {
     }
   }
 
-  return useQuery([queryKeys.singleOrder, orderId], getJob);
+  return useQuery([queryKeys.singleOrder, orderId], getOrder);
 }
 
 export default useOrder;

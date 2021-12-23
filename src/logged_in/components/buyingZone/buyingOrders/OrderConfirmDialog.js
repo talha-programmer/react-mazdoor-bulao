@@ -11,9 +11,6 @@ import {
 } from "@material-ui/core";
 import FormDialog from "../../../../shared/components/FormDialog";
 import useCompleteBuyingOrder from "../../../../hooks/orders/useCompleteBuyingOrder";
-import { Rating } from "@material-ui/lab";
-import { reviewTypesCodes } from "../../../../config/enums/reviewTypes";
-import useSendReview from "../../../../hooks/review/useSendReview";
 
 const styles = (theme) => ({
   card: {

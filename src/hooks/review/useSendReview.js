@@ -8,9 +8,10 @@ function useSendReview() {
   return useMutation(
     (review) =>
       axios.post(api.sendReview, review).then((result) => {
+        queryClient.invalidateQueries([queryKeys.singleOrder, review.order_id]);
         queryClient.invalidateQueries([
-          queryKeys.singleOrder,
-          review?.order_id
+          queryKeys.orderReviews,
+          review.order_id
         ]);
 
         return result.data;
